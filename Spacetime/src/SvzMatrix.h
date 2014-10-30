@@ -440,7 +440,7 @@ operator << (ostream& ostrm, const matrixT& m)
       {
          T x = m(i,j);
          //ostrm << x << '\t';
-		 printf("%6.6f\t", x);
+		 printf("%7.2f\t", x);
       }
       ostrm << endl;
    }

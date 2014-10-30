@@ -25,15 +25,15 @@ using namespace physx;
 // Define global variables for spacetime optimization																	//
 //======================================================================================================================//
 
-// change this to suppress verbose debugging output
-#define V_DEBUG 1
+#define T_DEBUG 1  // comment this to suppress textual debugging output
+//#define V_DEBUG 1  // comment this to suppress visual  debugging output
 
 // for accessing X, Y, and Z components
 #define DOF 3
 enum {X, Y, Z};
 
 // list of actor components
-enum {BASE, LEG1, LEG2, HEAD};
+enum {BASE, LEG1, LEG2, LEG3, HEAD};
 
 // is the program running?
 bool pause = false;
@@ -165,6 +165,32 @@ void addDynamicActors(void)
 	dynamic_actors.push_back(leg2);
 
 	//--------------------------------------------------------------------------//
+	// lamp third leg actor													//
+	//--------------------------------------------------------------------------//
+
+	// third leg geometry
+	PxBoxGeometry leg3_geometry(0.5, 10.0, 0.5);
+
+	// second leg transformation
+	transform.p = PxVec3(0,20.0f*sin(PxPi/4.0f)+20.0f*sin(PxPi/4.0f)+1.1f, -20.0f*cos(PxPi/4.0f)+20.0f*cos(PxPi/4.0f)+10);
+	transform.q = PxQuat(PxPi/2.0f, PxVec3(1,0,0));
+
+	// second leg creation
+	PxRigidDynamic *leg3 = PxCreateDynamic(*gPhysics, transform, 
+		leg3_geometry, *mMaterial, density);
+	if (!leg3)
+		cerr << "create actor failed!" << endl;
+
+	// second leg properties
+	leg3->setAngularDamping(0.75);
+	leg3->setMass(10);
+	leg3->setName("leg3");
+
+	// second leg addition
+	gScene->addActor(*leg3);
+	dynamic_actors.push_back(leg3);
+
+	//--------------------------------------------------------------------------//
 	// lamp head actor															//
 	//--------------------------------------------------------------------------//
 
@@ -172,7 +198,8 @@ void addDynamicActors(void)
 	PxSphereGeometry bulb_geometry(PxReal(2.0));
 
 	// lamp head transformation
-	transform.p = PxVec3(0,18.6f,0);
+	transform.p = PxVec3(0,20.0f*sin(PxPi/4.0f)+20.0f*sin(PxPi/4.0f)+1.1f, -20.0f*cos(PxPi/4.0f)+20.0f*cos(PxPi/4.0f)+22);
+	transform.q = PxQuat(PxPi/2.0f, PxVec3(1,0,0));
 
 	// lamp head creation
 	PxRigidDynamic *bulb = PxCreateDynamic(*gPhysics, transform, 
@@ -186,8 +213,8 @@ void addDynamicActors(void)
 	bulb->setName("bulb");
 
 	// lamp head addition
-	//gScene->addActor(*bulb);
-	//dynamic_actors.push_back(bulb);
+	gScene->addActor(*bulb);
+	dynamic_actors.push_back(bulb);
 }
 
 //======================================================================================================================//
@@ -224,15 +251,24 @@ void addJoints(void)
 	leg_joint->setConstraintFlag(PxConstraintFlag::eVISUALIZATION, true);
 	joint_local_positions.push_back(PxVec3(0,-10,0));
 
-	/*
+	// Create hinge joint between legs
+	body0_transform = PxTransform(PxVec3(0,  10.0, 0));
+	body1_transform = PxTransform(PxVec3(0, -10.0, 0), PxQuat(-PxPi/4.0, PxVec3(1,0,0)));
+	PxRevoluteJoint* leg_joint2 = PxRevoluteJointCreate(*gPhysics, 
+		dynamic_actors[LEG2], body0_transform, dynamic_actors[LEG3], body1_transform);
+	leg_joint2->setLimit(PxJointAngularLimitPair(3.0*PxPi/4.0, -1.0*PxPi/4.0));
+	leg_joint2->setRevoluteJointFlag(PxRevoluteJointFlag::eLIMIT_ENABLED, true);
+	leg_joint2->setConstraintFlag(PxConstraintFlag::eVISUALIZATION, true);
+	joint_local_positions.push_back(PxVec3(0,-10,0));
+
 	// Create bulb joint
-	body0_transform = PxTransform(PxVec3(0, 4.0,0));
-	body1_transform = PxTransform(PxVec3(0,-2.0,0));
+	body0_transform = PxTransform(PxVec3(0, 10.0, 0));
+	body1_transform = PxTransform(PxVec3(0, -2.0, 0));
 	PxSphericalJoint* bulb_joint = PxSphericalJointCreate(*gPhysics,
-		dynamic_actors[LEG2],body0_transform, dynamic_actors[HEAD], body1_transform);
+		dynamic_actors[LEG3],body0_transform, dynamic_actors[HEAD], body1_transform);
 	bulb_joint->setLimitCone(PxJointLimitCone(0.5,0.5,PxReal(1.0f)));
 	bulb_joint->setSphericalJointFlag(PxSphericalJointFlag::eLIMIT_ENABLED, true);
-	*/
+	joint_local_positions.push_back(PxVec3(0,-2,0));
 }
 
 //======================================================================================================================//
@@ -300,12 +336,6 @@ matrix<PxReal> buildJacobian(void)
 				// get global difference vector r
 				PxVec3 diff = global_com - global_jnt;
 				R(i,j) = vec3(diff.x, diff.y, diff.z);
-
-				#ifdef V_DEBUG_DIFF
-					printf("global_jnt[%d] = <%f,%f,%f>\n", j, global_jnt.x, global_jnt.y, global_jnt.z);
-					printf("global_com[%d] = <%f,%f,%f>\n", i, global_com.x, global_com.y, global_com.z);
-					cout << "diff[" << j << "->" << i << "] = <" << diff.x << ", " << diff.y << ", " << diff.z << ">" << endl;
-				#endif
 			}
 		}
 	}
@@ -382,7 +412,7 @@ void stepPhysics(void)
 {
 	if (pause) return;
 
-	#ifdef V_DEBUG
+	#ifdef T_DEBUG
 		cout << "-----------------------------------------------------------------------------------------------" << endl;
 		cout << "time = " << gScene->getTimestamp() << endl;
 		cout << endl;
@@ -408,7 +438,7 @@ void stepPhysics(void)
 		body0->addTorque( 1.0127*PxVec3(T(i*DOF+X,0), T(i*DOF+Y,0), T(i*DOF+Z,0)));
 		body1->addTorque(-1.0127*PxVec3(T(i*DOF+X,0), T(i*DOF+Y,0), T(i*DOF+Z,0)));
 
-		#ifdef V_DEBUG
+		#ifdef T_DEBUG
 			cout << "J = \n" << J << endl;
 			cout << "F = \n" << F << endl;
 			printf("The torque on the joint between %s and %s is equal to \n\t<%f,%f,%f>\n\n\n", 
