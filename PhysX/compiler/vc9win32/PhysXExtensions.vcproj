@@ -1,0 +1,477 @@
+<?xml version="1.0" encoding="Windows-1252"?>
+<VisualStudioProject
+ProjectType="Visual C++"
+Version="9.00"
+Name="PhysXExtensions"
+>
+<Platforms>
+	<Platform Name="Win32"/>
+</Platforms>
+<Configurations>
+  <Configuration
+    Name="checked|Win32"
+    OutputDirectory="./../../../Lib/win32"
+    IntermediateDirectory="./Win32/PhysXExtensions/checked"
+    ConfigurationType="4"
+    InheritedPropertySheets=""
+    CharacterSet=""
+    >
+    <Tool
+      Name="VCCLCompilerTool"
+      AdditionalIncludeDirectories="&quot;./../../../Include/foundation&quot;;&quot;./../../foundation/include&quot;;&quot;./../../../Include/physxprofilesdk&quot;;&quot;./../../../Include/physxvisualdebuggersdk&quot;;&quot;./../../../Include/common&quot;;&quot;./../../../Include/geometry&quot;;&quot;./../../../Include/pvd&quot;;&quot;./../../../Include/cooking&quot;;&quot;./../../../Include/extensions&quot;;&quot;./../../../Include/vehicle&quot;;&quot;./../../../Include/pxtask&quot;;&quot;./../../../Include/cloth&quot;;&quot;./../../../Include&quot;;&quot;./../../Common/src&quot;;&quot;./../../GeomUtils/headers&quot;;&quot;./../../GeomUtils/src/contact&quot;;&quot;./../../GeomUtils/src/common&quot;;&quot;./../../GeomUtils/src/convex&quot;;&quot;./../../GeomUtils/src/distance&quot;;&quot;./../../GeomUtils/src/gjk&quot;;&quot;./../../GeomUtils/src/intersection&quot;;&quot;./../../GeomUtils/src/mesh&quot;;&quot;./../../GeomUtils/src/hf&quot;;&quot;./../../GeomUtils/src/pcm&quot;;&quot;./../../PhysXMetaData/core/include&quot;;&quot;./../../PhysXMetaData/extensions/include&quot;;&quot;./../../PhysXProfileSDK&quot;;&quot;./../../PhysXExtensions/src&quot;;&quot;./../../PhysXExtensions/src/serialization/Xml&quot;;&quot;./../../PhysXExtensions/src/serialization/Binary&quot;;&quot;./../../PvdRuntime/src&quot;;"
+      PreprocessorDefinitions="PX_BUILD_NUMBER=0;WIN32;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_ALLOW_MSC_VER_MISMATCH;_ALLOW_ITERATOR_DEBUG_LEVEL_MISMATCH;PX_PHYSX_STATIC_LIB;NDEBUG;PX_CHECKED;PX_SUPPORT_VISUAL_DEBUGGER;PX_NVTX;"
+      WarningLevel="4"
+      FloatingPointModel="2"
+      EnableEnhancedInstructionSet="2"
+      StringPooling="true"
+      RuntimeTypeInfo="false"
+      WarnAsError="true"
+      BufferSecurityCheck="false"
+      Optimization="3"
+      AdditionalOptions="/MP /Wall /wd4514 /wd4710 /wd4711 /wd4820"
+      ExceptionHandling="0"
+      RuntimeLibrary="0"
+      UsePrecompiledHeader="0"
+      PrecompiledHeaderThrough=""
+      />
+    <Tool Name="VCCustomBuildTool"/>
+    <Tool 
+      Name="VCLibrarianTool" 
+      OutputFile="$(OutDir)/PhysX3ExtensionsCHECKED.lib" 
+      ProgramDatabaseFile="$(OutDir)/PhysX3ExtensionsCHECKED.lib.pdb" 
+      LinkLibraryDependencies="true"
+      AdditionalOptions="/MACHINE:X86"
+      AdditionalDependencies=""
+      AdditionalLibraryDirectories=""
+      />
+    <Tool Name="VCMIDLTool"/>
+    <Tool Name="VCPreBuildEventTool"/>
+    <Tool Name="VCPostBuildEventTool"/>
+    <Tool Name="VCPreLinkEventTool"/>
+    <Tool Name="VCResourceCompilerTool"/>
+    <Tool Name="VCWebServiceProxyGeneratorTool"/>
+    <Tool Name="VCXMLDataGeneratorTool"/>
+    <Tool Name="VCWebDeploymentTool"/>
+    <Tool Name="VCManagedWrapperGeneratorTool"/>
+    <Tool Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
+  </Configuration>
+  <Configuration
+    Name="profile|Win32"
+    OutputDirectory="./../../../Lib/win32"
+    IntermediateDirectory="./Win32/PhysXExtensions/profile"
+    ConfigurationType="4"
+    InheritedPropertySheets=""
+    CharacterSet=""
+    >
+    <Tool
+      Name="VCCLCompilerTool"
+      AdditionalIncludeDirectories="&quot;./../../../Include/foundation&quot;;&quot;./../../foundation/include&quot;;&quot;./../../../Include/physxprofilesdk&quot;;&quot;./../../../Include/physxvisualdebuggersdk&quot;;&quot;./../../../Include/common&quot;;&quot;./../../../Include/geometry&quot;;&quot;./../../../Include/pvd&quot;;&quot;./../../../Include/cooking&quot;;&quot;./../../../Include/extensions&quot;;&quot;./../../../Include/vehicle&quot;;&quot;./../../../Include/pxtask&quot;;&quot;./../../../Include/cloth&quot;;&quot;./../../../Include&quot;;&quot;./../../Common/src&quot;;&quot;./../../GeomUtils/headers&quot;;&quot;./../../GeomUtils/src/contact&quot;;&quot;./../../GeomUtils/src/common&quot;;&quot;./../../GeomUtils/src/convex&quot;;&quot;./../../GeomUtils/src/distance&quot;;&quot;./../../GeomUtils/src/gjk&quot;;&quot;./../../GeomUtils/src/intersection&quot;;&quot;./../../GeomUtils/src/mesh&quot;;&quot;./../../GeomUtils/src/hf&quot;;&quot;./../../GeomUtils/src/pcm&quot;;&quot;./../../PhysXMetaData/core/include&quot;;&quot;./../../PhysXMetaData/extensions/include&quot;;&quot;./../../PhysXProfileSDK&quot;;&quot;./../../PhysXExtensions/src&quot;;&quot;./../../PhysXExtensions/src/serialization/Xml&quot;;&quot;./../../PhysXExtensions/src/serialization/Binary&quot;;&quot;./../../PvdRuntime/src&quot;;"
+      PreprocessorDefinitions="PX_BUILD_NUMBER=0;WIN32;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_ALLOW_MSC_VER_MISMATCH;_ALLOW_ITERATOR_DEBUG_LEVEL_MISMATCH;PX_PHYSX_STATIC_LIB;NDEBUG;PX_PROFILE;PX_SUPPORT_VISUAL_DEBUGGER;PX_NVTX;"
+      WarningLevel="4"
+      FloatingPointModel="2"
+      EnableEnhancedInstructionSet="2"
+      StringPooling="true"
+      RuntimeTypeInfo="false"
+      WarnAsError="true"
+      BufferSecurityCheck="false"
+      Optimization="3"
+      AdditionalOptions="/MP /Wall /wd4514 /wd4710 /wd4711 /wd4820"
+      ExceptionHandling="0"
+      RuntimeLibrary="0"
+      UsePrecompiledHeader="0"
+      PrecompiledHeaderThrough=""
+      />
+    <Tool Name="VCCustomBuildTool"/>
+    <Tool 
+      Name="VCLibrarianTool" 
+      OutputFile="$(OutDir)/PhysX3ExtensionsPROFILE.lib" 
+      ProgramDatabaseFile="$(OutDir)/PhysX3ExtensionsPROFILE.lib.pdb" 
+      LinkLibraryDependencies="true"
+      AdditionalOptions="/INCREMENTAL:NO /MACHINE:X86"
+      AdditionalDependencies=""
+      AdditionalLibraryDirectories=""
+      />
+    <Tool Name="VCMIDLTool"/>
+    <Tool Name="VCPreBuildEventTool"/>
+    <Tool Name="VCPostBuildEventTool"/>
+    <Tool Name="VCPreLinkEventTool"/>
+    <Tool Name="VCResourceCompilerTool"/>
+    <Tool Name="VCWebServiceProxyGeneratorTool"/>
+    <Tool Name="VCXMLDataGeneratorTool"/>
+    <Tool Name="VCWebDeploymentTool"/>
+    <Tool Name="VCManagedWrapperGeneratorTool"/>
+    <Tool Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
+  </Configuration>
+  <Configuration
+    Name="release|Win32"
+    OutputDirectory="./../../../Lib/win32"
+    IntermediateDirectory="./Win32/PhysXExtensions/release"
+    ConfigurationType="4"
+    InheritedPropertySheets=""
+    CharacterSet=""
+    >
+    <Tool
+      Name="VCCLCompilerTool"
+      AdditionalIncludeDirectories="&quot;./../../../Include/foundation&quot;;&quot;./../../foundation/include&quot;;&quot;./../../../Include/physxprofilesdk&quot;;&quot;./../../../Include/physxvisualdebuggersdk&quot;;&quot;./../../../Include/common&quot;;&quot;./../../../Include/geometry&quot;;&quot;./../../../Include/pvd&quot;;&quot;./../../../Include/cooking&quot;;&quot;./../../../Include/extensions&quot;;&quot;./../../../Include/vehicle&quot;;&quot;./../../../Include/pxtask&quot;;&quot;./../../../Include/cloth&quot;;&quot;./../../../Include&quot;;&quot;./../../Common/src&quot;;&quot;./../../GeomUtils/headers&quot;;&quot;./../../GeomUtils/src/contact&quot;;&quot;./../../GeomUtils/src/common&quot;;&quot;./../../GeomUtils/src/convex&quot;;&quot;./../../GeomUtils/src/distance&quot;;&quot;./../../GeomUtils/src/gjk&quot;;&quot;./../../GeomUtils/src/intersection&quot;;&quot;./../../GeomUtils/src/mesh&quot;;&quot;./../../GeomUtils/src/hf&quot;;&quot;./../../GeomUtils/src/pcm&quot;;&quot;./../../PhysXMetaData/core/include&quot;;&quot;./../../PhysXMetaData/extensions/include&quot;;&quot;./../../PhysXProfileSDK&quot;;&quot;./../../PhysXExtensions/src&quot;;&quot;./../../PhysXExtensions/src/serialization/Xml&quot;;&quot;./../../PhysXExtensions/src/serialization/Binary&quot;;&quot;./../../PvdRuntime/src&quot;;"
+      PreprocessorDefinitions="PX_BUILD_NUMBER=0;WIN32;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_ALLOW_MSC_VER_MISMATCH;_ALLOW_ITERATOR_DEBUG_LEVEL_MISMATCH;PX_PHYSX_STATIC_LIB;NDEBUG;"
+      WarningLevel="4"
+      FloatingPointModel="2"
+      EnableEnhancedInstructionSet="2"
+      StringPooling="true"
+      RuntimeTypeInfo="false"
+      WarnAsError="true"
+      BufferSecurityCheck="false"
+      Optimization="3"
+      AdditionalOptions="/MP /Wall /wd4514 /wd4710 /wd4711 /wd4820"
+      ExceptionHandling="0"
+      RuntimeLibrary="0"
+      UsePrecompiledHeader="0"
+      PrecompiledHeaderThrough=""
+      />
+    <Tool Name="VCCustomBuildTool"/>
+    <Tool 
+      Name="VCLibrarianTool" 
+      OutputFile="$(OutDir)/PhysX3Extensions.lib" 
+      ProgramDatabaseFile="$(OutDir)/PhysX3Extensions.lib.pdb" 
+      LinkLibraryDependencies="true"
+      AdditionalOptions="/INCREMENTAL:NO /MACHINE:X86"
+      AdditionalDependencies=""
+      AdditionalLibraryDirectories=""
+      />
+    <Tool Name="VCMIDLTool"/>
+    <Tool Name="VCPreBuildEventTool"/>
+    <Tool Name="VCPostBuildEventTool"/>
+    <Tool Name="VCPreLinkEventTool"/>
+    <Tool Name="VCResourceCompilerTool"/>
+    <Tool Name="VCWebServiceProxyGeneratorTool"/>
+    <Tool Name="VCXMLDataGeneratorTool"/>
+    <Tool Name="VCWebDeploymentTool"/>
+    <Tool Name="VCManagedWrapperGeneratorTool"/>
+    <Tool Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
+  </Configuration>
+</Configurations>
+<References></References>
+<Files>
+  <Filter Name="include" Filter=""> <!--  -->
+    <File RelativePath="..\..\..\Include\extensions\PxBinaryConverter.h">
+    </File>
+    <File RelativePath="..\..\..\Include\extensions\PxBroadPhaseExt.h">
+    </File>
+    <File RelativePath="..\..\..\Include\extensions\PxClothFabricCooker.h">
+    </File>
+    <File RelativePath="..\..\..\Include\extensions\PxClothMeshDesc.h">
+    </File>
+    <File RelativePath="..\..\..\Include\extensions\PxClothMeshQuadifier.h">
+    </File>
+    <File RelativePath="..\..\..\Include\extensions\PxClothTetherCooker.h">
+    </File>
+    <File RelativePath="..\..\..\Include\extensions\PxCollectionExt.h">
+    </File>
+    <File RelativePath="..\..\..\Include\extensions\PxConstraintExt.h">
+    </File>
+    <File RelativePath="..\..\..\Include\extensions\PxD6Joint.h">
+    </File>
+    <File RelativePath="..\..\..\Include\extensions\PxDefaultAllocator.h">
+    </File>
+    <File RelativePath="..\..\..\Include\extensions\PxDefaultCpuDispatcher.h">
+    </File>
+    <File RelativePath="..\..\..\Include\extensions\PxDefaultErrorCallback.h">
+    </File>
+    <File RelativePath="..\..\..\Include\extensions\PxDefaultSimulationFilterShader.h">
+    </File>
+    <File RelativePath="..\..\..\Include\extensions\PxDefaultStreams.h">
+    </File>
+    <File RelativePath="..\..\..\Include\extensions\PxDistanceJoint.h">
+    </File>
+    <File RelativePath="..\..\..\Include\extensions\PxExtensionsAPI.h">
+    </File>
+    <File RelativePath="..\..\..\Include\extensions\PxFixedJoint.h">
+    </File>
+    <File RelativePath="..\..\..\Include\extensions\PxJoint.h">
+    </File>
+    <File RelativePath="..\..\..\Include\extensions\PxJointLimit.h">
+    </File>
+    <File RelativePath="..\..\..\Include\extensions\PxJointRepXSerializer.h">
+    </File>
+    <File RelativePath="..\..\..\Include\extensions\PxParticleExt.h">
+    </File>
+    <File RelativePath="..\..\..\Include\extensions\PxPrismaticJoint.h">
+    </File>
+    <File RelativePath="..\..\..\Include\extensions\PxRepXSerializer.h">
+    </File>
+    <File RelativePath="..\..\..\Include\extensions\PxRepXSimpleType.h">
+    </File>
+    <File RelativePath="..\..\..\Include\extensions\PxRevoluteJoint.h">
+    </File>
+    <File RelativePath="..\..\..\Include\extensions\PxRigidBodyExt.h">
+    </File>
+    <File RelativePath="..\..\..\Include\extensions\PxSerialization.h">
+    </File>
+    <File RelativePath="..\..\..\Include\extensions\PxShapeExt.h">
+    </File>
+    <File RelativePath="..\..\..\Include\extensions\PxSimpleFactory.h">
+    </File>
+    <File RelativePath="..\..\..\Include\extensions\PxSmoothNormals.h">
+    </File>
+    <File RelativePath="..\..\..\Include\extensions\PxSphericalJoint.h">
+    </File>
+    <File RelativePath="..\..\..\Include\extensions\PxStringTableExt.h">
+    </File>
+    <File RelativePath="..\..\..\Include\extensions\PxTriangleMeshExt.h">
+    </File>
+    <File RelativePath="..\..\..\Include\extensions\PxVisualDebuggerExt.h">
+    </File>
+  </Filter>
+  <Filter Name="src" Filter=""> <!--  -->
+    <File RelativePath="..\..\PhysXExtensions\src\ExtConstraintHelper.h">
+    </File>
+    <File RelativePath="..\..\PhysXExtensions\src\ExtCpuWorkerThread.h">
+    </File>
+    <File RelativePath="..\..\PhysXExtensions\src\ExtD6Joint.h">
+    </File>
+    <File RelativePath="..\..\PhysXExtensions\src\ExtDefaultCpuDispatcher.h">
+    </File>
+    <File RelativePath="..\..\PhysXExtensions\src\ExtDistanceJoint.h">
+    </File>
+    <File RelativePath="..\..\PhysXExtensions\src\ExtFixedJoint.h">
+    </File>
+    <File RelativePath="..\..\PhysXExtensions\src\ExtInertiaTensor.h">
+    </File>
+    <File RelativePath="..\..\PhysXExtensions\src\ExtJoint.h">
+    </File>
+    <File RelativePath="..\..\PhysXExtensions\src\ExtJointMetaDataExtensions.h">
+    </File>
+    <File RelativePath="..\..\PhysXExtensions\src\ExtPlatform.h">
+    </File>
+    <File RelativePath="..\..\PhysXExtensions\src\ExtPrismaticJoint.h">
+    </File>
+    <File RelativePath="..\..\PhysXExtensions\src\ExtPvdClientImpl.h">
+    </File>
+    <File RelativePath="..\..\PhysXExtensions\src\ExtRevoluteJoint.h">
+    </File>
+    <File RelativePath="..\..\PhysXExtensions\src\ExtSerialization.h">
+    </File>
+    <File RelativePath="..\..\PhysXExtensions\src\ExtSharedQueueEntryPool.h">
+    </File>
+    <File RelativePath="..\..\PhysXExtensions\src\ExtSphericalJoint.h">
+    </File>
+    <File RelativePath="..\..\PhysXExtensions\src\ExtTaskQueueHelper.h">
+    </File>
+    <File RelativePath="..\..\PhysXExtensions\src\ExtVisualDebugger.h">
+    </File>
+    <File RelativePath="..\..\PhysXExtensions\src\ExtBroadPhase.cpp">
+    </File>
+    <File RelativePath="..\..\PhysXExtensions\src\ExtClothFabricCooker.cpp">
+    </File>
+    <File RelativePath="..\..\PhysXExtensions\src\ExtClothGeodesicTetherCooker.cpp">
+    </File>
+    <File RelativePath="..\..\PhysXExtensions\src\ExtClothMeshQuadifier.cpp">
+    </File>
+    <File RelativePath="..\..\PhysXExtensions\src\ExtClothSimpleTetherCooker.cpp">
+    </File>
+    <File RelativePath="..\..\PhysXExtensions\src\ExtCollection.cpp">
+    </File>
+    <File RelativePath="..\..\PhysXExtensions\src\ExtCpuWorkerThread.cpp">
+    </File>
+    <File RelativePath="..\..\PhysXExtensions\src\ExtD6Joint.cpp">
+    </File>
+    <File RelativePath="..\..\PhysXExtensions\src\ExtD6JointSolverPrep.cpp">
+    </File>
+    <File RelativePath="..\..\PhysXExtensions\src\ExtDefaultCpuDispatcher.cpp">
+    </File>
+    <File RelativePath="..\..\PhysXExtensions\src\ExtDefaultErrorCallback.cpp">
+    </File>
+    <File RelativePath="..\..\PhysXExtensions\src\ExtDefaultSimulationFilterShader.cpp">
+    </File>
+    <File RelativePath="..\..\PhysXExtensions\src\ExtDefaultStreams.cpp">
+    </File>
+    <File RelativePath="..\..\PhysXExtensions\src\ExtDistanceJoint.cpp">
+    </File>
+    <File RelativePath="..\..\PhysXExtensions\src\ExtDistanceJointSolverPrep.cpp">
+    </File>
+    <File RelativePath="..\..\PhysXExtensions\src\ExtExtensions.cpp">
+    </File>
+    <File RelativePath="..\..\PhysXExtensions\src\ExtFixedJoint.cpp">
+    </File>
+    <File RelativePath="..\..\PhysXExtensions\src\ExtFixedJointSolverPrep.cpp">
+    </File>
+    <File RelativePath="..\..\PhysXExtensions\src\ExtJoint.cpp">
+    </File>
+    <File RelativePath="..\..\PhysXExtensions\src\ExtMetaData.cpp">
+    </File>
+    <File RelativePath="..\..\PhysXExtensions\src\ExtParticleExt.cpp">
+    </File>
+    <File RelativePath="..\..\PhysXExtensions\src\ExtPrismaticJoint.cpp">
+    </File>
+    <File RelativePath="..\..\PhysXExtensions\src\ExtPrismaticJointSolverPrep.cpp">
+    </File>
+    <File RelativePath="..\..\PhysXExtensions\src\ExtPvdClientImpl.cpp">
+    </File>
+    <File RelativePath="..\..\PhysXExtensions\src\ExtPxStringTable.cpp">
+    </File>
+    <File RelativePath="..\..\PhysXExtensions\src\ExtRevoluteJoint.cpp">
+    </File>
+    <File RelativePath="..\..\PhysXExtensions\src\ExtRevoluteJointSolverPrep.cpp">
+    </File>
+    <File RelativePath="..\..\PhysXExtensions\src\ExtRigidBodyExt.cpp">
+    </File>
+    <File RelativePath="..\..\PhysXExtensions\src\ExtSimpleFactory.cpp">
+    </File>
+    <File RelativePath="..\..\PhysXExtensions\src\ExtSmoothNormals.cpp">
+    </File>
+    <File RelativePath="..\..\PhysXExtensions\src\ExtSphericalJoint.cpp">
+    </File>
+    <File RelativePath="..\..\PhysXExtensions\src\ExtSphericalJointSolverPrep.cpp">
+    </File>
+    <File RelativePath="..\..\PhysXExtensions\src\ExtTriangleMeshExt.cpp">
+    </File>
+    <File RelativePath="..\..\PhysXExtensions\src\ExtVisualDebugger.cpp">
+    </File>
+  </Filter>
+  <Filter Name="serialization" Filter=""> <!--  -->
+    <Filter Name="Binary" Filter=""> <!--  -->
+      <File RelativePath="..\..\PhysXExtensions\src\serialization\Binary\SnConvX.h">
+      </File>
+      <File RelativePath="..\..\PhysXExtensions\src\serialization\Binary\SnConvX_Align.h">
+      </File>
+      <File RelativePath="..\..\PhysXExtensions\src\serialization\Binary\SnConvX_Common.h">
+      </File>
+      <File RelativePath="..\..\PhysXExtensions\src\serialization\Binary\SnConvX_Convert.h">
+      </File>
+      <File RelativePath="..\..\PhysXExtensions\src\serialization\Binary\SnConvX_MetaData.h">
+      </File>
+      <File RelativePath="..\..\PhysXExtensions\src\serialization\Binary\SnConvX_Output.h">
+      </File>
+      <File RelativePath="..\..\PhysXExtensions\src\serialization\Binary\SnConvX_Union.h">
+      </File>
+      <File RelativePath="..\..\PhysXExtensions\src\serialization\Binary\SnSerializationContext.h">
+      </File>
+      <File RelativePath="..\..\PhysXExtensions\src\serialization\Binary\SnBinaryDeserialization.cpp">
+      </File>
+      <File RelativePath="..\..\PhysXExtensions\src\serialization\Binary\SnBinarySerialization.cpp">
+      </File>
+      <File RelativePath="..\..\PhysXExtensions\src\serialization\Binary\SnConvX.cpp">
+      </File>
+      <File RelativePath="..\..\PhysXExtensions\src\serialization\Binary\SnConvX_Align.cpp">
+      </File>
+      <File RelativePath="..\..\PhysXExtensions\src\serialization\Binary\SnConvX_Convert.cpp">
+      </File>
+      <File RelativePath="..\..\PhysXExtensions\src\serialization\Binary\SnConvX_Error.cpp">
+      </File>
+      <File RelativePath="..\..\PhysXExtensions\src\serialization\Binary\SnConvX_MetaData.cpp">
+      </File>
+      <File RelativePath="..\..\PhysXExtensions\src\serialization\Binary\SnConvX_Output.cpp">
+      </File>
+      <File RelativePath="..\..\PhysXExtensions\src\serialization\Binary\SnConvX_Union.cpp">
+      </File>
+      <File RelativePath="..\..\PhysXExtensions\src\serialization\Binary\SnSerializationContext.cpp">
+      </File>
+    </Filter>
+    <Filter Name="Xml" Filter=""> <!--  -->
+      <File RelativePath="..\..\PhysXExtensions\src\serialization\Xml\SnPxStreamOperators.h">
+      </File>
+      <File RelativePath="..\..\PhysXExtensions\src\serialization\Xml\SnRepX1_0Defaults.h">
+      </File>
+      <File RelativePath="..\..\PhysXExtensions\src\serialization\Xml\SnRepX3_1Defaults.h">
+      </File>
+      <File RelativePath="..\..\PhysXExtensions\src\serialization\Xml\SnRepX3_2Defaults.h">
+      </File>
+      <File RelativePath="..\..\PhysXExtensions\src\serialization\Xml\SnRepXCollection.h">
+      </File>
+      <File RelativePath="..\..\PhysXExtensions\src\serialization\Xml\SnRepXCoreSerializer.h">
+      </File>
+      <File RelativePath="..\..\PhysXExtensions\src\serialization\Xml\SnRepXErrorCode.h">
+      </File>
+      <File RelativePath="..\..\PhysXExtensions\src\serialization\Xml\SnRepXErrorCodeDefs.h">
+      </File>
+      <File RelativePath="..\..\PhysXExtensions\src\serialization\Xml\SnRepXSerializerImpl.h">
+      </File>
+      <File RelativePath="..\..\PhysXExtensions\src\serialization\Xml\SnRepXUpgrader.h">
+      </File>
+      <File RelativePath="..\..\PhysXExtensions\src\serialization\Xml\SnSimpleXmlWriter.h">
+      </File>
+      <File RelativePath="..\..\PhysXExtensions\src\serialization\Xml\SnXmlDeserializer.h">
+      </File>
+      <File RelativePath="..\..\PhysXExtensions\src\serialization\Xml\SnXmlImpl.h">
+      </File>
+      <File RelativePath="..\..\PhysXExtensions\src\serialization\Xml\SnXmlMemoryAllocator.h">
+      </File>
+      <File RelativePath="..\..\PhysXExtensions\src\serialization\Xml\SnXmlMemoryPool.h">
+      </File>
+      <File RelativePath="..\..\PhysXExtensions\src\serialization\Xml\SnXmlMemoryPoolStreams.h">
+      </File>
+      <File RelativePath="..\..\PhysXExtensions\src\serialization\Xml\SnXmlReader.h">
+      </File>
+      <File RelativePath="..\..\PhysXExtensions\src\serialization\Xml\SnXmlSerializer.h">
+      </File>
+      <File RelativePath="..\..\PhysXExtensions\src\serialization\Xml\SnXmlSimpleXmlWriter.h">
+      </File>
+      <File RelativePath="..\..\PhysXExtensions\src\serialization\Xml\SnXmlStringToType.h">
+      </File>
+      <File RelativePath="..\..\PhysXExtensions\src\serialization\Xml\SnXmlVisitorReader.h">
+      </File>
+      <File RelativePath="..\..\PhysXExtensions\src\serialization\Xml\SnXmlVisitorWriter.h">
+      </File>
+      <File RelativePath="..\..\PhysXExtensions\src\serialization\Xml\SnXmlWriter.h">
+      </File>
+      <File RelativePath="..\..\PhysXExtensions\src\serialization\Xml\SnJointRepXSerializer.cpp">
+      </File>
+      <File RelativePath="..\..\PhysXExtensions\src\serialization\Xml\SnRepXCoreSerializer.cpp">
+      </File>
+      <File RelativePath="..\..\PhysXExtensions\src\serialization\Xml\SnRepXUpgrader.cpp">
+      </File>
+      <File RelativePath="..\..\PhysXExtensions\src\serialization\Xml\SnXmlSerialization.cpp">
+      </File>
+    </Filter>
+    <File RelativePath="..\..\PhysXExtensions\src\serialization\SnSerializationRegistry.h">
+    </File>
+    <File RelativePath="..\..\PhysXExtensions\src\serialization\SnSerialUtils.h">
+    </File>
+    <File RelativePath="..\..\PhysXExtensions\src\serialization\SnSerialization.cpp">
+    </File>
+    <File RelativePath="..\..\PhysXExtensions\src\serialization\SnSerializationRegistry.cpp">
+    </File>
+    <File RelativePath="..\..\PhysXExtensions\src\serialization\SnSerialUtils.cpp">
+    </File>
+  </Filter>
+  <Filter Name="metadata" Filter=""> <!--  -->
+    <Filter Name="core" Filter=""> <!--  -->
+      <Filter Name="include" Filter=""> <!--  -->
+        <File RelativePath="..\..\PhysXMetaData\core\include\PvdMetaDataDefineProperties.h">
+        </File>
+        <File RelativePath="..\..\PhysXMetaData\core\include\PvdMetaDataExtensions.h">
+        </File>
+        <File RelativePath="..\..\PhysXMetaData\core\include\PvdMetaDataPropertyVisitor.h">
+        </File>
+        <File RelativePath="..\..\PhysXMetaData\core\include\PxAutoGeneratedMetaDataObjectNames.h">
+        </File>
+        <File RelativePath="..\..\PhysXMetaData\core\include\PxAutoGeneratedMetaDataObjects.h">
+        </File>
+        <File RelativePath="..\..\PhysXMetaData\core\include\PxMetaDataCompare.h">
+        </File>
+        <File RelativePath="..\..\PhysXMetaData\core\include\PxMetaDataCppPrefix.h">
+        </File>
+        <File RelativePath="..\..\PhysXMetaData\core\include\PxMetaDataObjects.h">
+        </File>
+        <File RelativePath="..\..\PhysXMetaData\core\include\RepXMetaDataPropertyVisitor.h">
+        </File>
+      </Filter>
+    </Filter>
+    <Filter Name="extensions" Filter=""> <!--  -->
+      <Filter Name="include" Filter=""> <!--  -->
+        <File RelativePath="..\..\PhysXMetaData\extensions\include\PxExtensionAutoGeneratedMetaDataObjectNames.h">
+        </File>
+        <File RelativePath="..\..\PhysXMetaData\extensions\include\PxExtensionAutoGeneratedMetaDataObjects.h">
+        </File>
+        <File RelativePath="..\..\PhysXMetaData\extensions\include\PxExtensionMetaDataObjects.h">
+        </File>
+      </Filter>
+      <Filter Name="src" Filter=""> <!--  -->
+        <File RelativePath="..\..\PhysXMetaData\extensions\src\PxExtensionAutoGeneratedMetaDataObjects.cpp">
+        </File>
+      </Filter>
+    </Filter>
+  </Filter>
+</Files>
+<Globals></Globals>
+</VisualStudioProject>

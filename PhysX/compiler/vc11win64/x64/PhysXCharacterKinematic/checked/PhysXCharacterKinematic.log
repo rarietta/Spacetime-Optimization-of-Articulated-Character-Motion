@@ -1,0 +1,36 @@
+﻿Build started 9/24/2014 3:07:39 PM.
+     1>Project "C:\NVIDIA\PhysX-3.3.1_PC_SDK_Core\Source\compiler\vc11win64\PhysXCharacterKinematic.vcxproj" on node 2 (Build target(s)).
+     1>ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\x86_amd64\CL.exe /c /I./../../../Include/foundation /I./../../foundation/include /I./../../../Include/physxprofilesdk /I./../../../Include/physxvisualdebuggersdk /I./../../../Include/characterkinematic /I./../../../Include/common /I./../../../Include/geometry /I./../../../Include/extensions /I./../../../Include/pxtask /I./../../../Include /I./../../GeomUtils/headers /I./../../Common/src /I./../../GeomUtils/src/contact /I./../../GeomUtils/src/common /I./../../GeomUtils/src/convex /I./../../GeomUtils/src/distance /I./../../GeomUtils/src/gjk /I./../../GeomUtils/src/intersection /I./../../GeomUtils/src/mesh /I./../../GeomUtils/src/hf /I./../../GeomUtils/src/pcm /Zi /nologo /W4 /WX /Ox /D PX_PHYSX_CHARACTER_EXPORTS /D WIN32 /D WIN64 /D _CRT_SECURE_NO_DEPRECATE /D _CRT_NONSTDC_NO_DEPRECATE /D _ALLOW_MSC_VER_MISMATCH /D _ALLOW_ITERATOR_DEBUG_LEVEL_MISMATCH /D NDEBUG /D PX_CHECKED /D PX_SUPPORT_VISUAL_DEBUGGER /D PX_NVTX /D PX_PHYSX_DLL_NAME_POSTFIX=CHECKED /D _WINDLL /GF /Gm- /MT /GS- /fp:fast /Zc:wchar_t /Zc:forScope /GR- /Fo"./x64/PhysXCharacterKinematic/checked\\" /Fd"./x64/PhysXCharacterKinematic/checked\vc110.pdb" /Gd /TP /errorReport:prompt /MP /Wall /wd4514 /wd4710 /wd4711 /wd4820 ..\..\PhysXCharacterKinematic\src\CctBoxController.cpp ..\..\PhysXCharacterKinematic\src\CctCapsuleController.cpp ..\..\PhysXCharacterKinematic\src\CctCharacterController.cpp ..\..\PhysXCharacterKinematic\src\CctCharacterControllerCallbacks.cpp ..\..\PhysXCharacterKinematic\src\CctCharacterControllerManager.cpp ..\..\PhysXCharacterKinematic\src\CctController.cpp ..\..\PhysXCharacterKinematic\src\CctObstacleContext.cpp ..\..\PhysXCharacterKinematic\src\CctSweptBox.cpp ..\..\PhysXCharacterKinematic\src\CctSweptCapsule.cpp ..\..\PhysXCharacterKinematic\src\CctSweptVolume.cpp
+         CctBoxController.cpp
+         CctCapsuleController.cpp
+         CctCharacterController.cpp
+         CctCharacterControllerCallbacks.cpp
+         CctCharacterControllerManager.cpp
+         CctController.cpp
+         CctObstacleContext.cpp
+         CctSweptBox.cpp
+         CctSweptCapsule.cpp
+         CctSweptVolume.cpp
+       ResourceCompile:
+         C:\Program Files (x86)\Windows Kits\8.0\bin\x86\rc.exe /l"0x0409" /nologo /fo"./x64/PhysXCharacterKinematic/checked\PhysX3CharacterKinematic.res" ..\resource_x64\PhysX3CharacterKinematic.rc 
+       Link:
+         C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\x86_amd64\link.exe /ERRORREPORT:PROMPT /OUT:"./../../../bin/win64\PhysX3CharacterKinematicCHECKED_x64.dll" /NOLOGO ./../../../Lib/win64/PhysX3CommonCHECKED_x64.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /PDB:"./../../../bin/win64\/PhysX3CharacterKinematicCHECKED_x64.dll.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"./../../../Lib/win64/PhysX3CharacterKinematicCHECKED_x64.lib" /MACHINE:X64 /MAP /MACHINE:x64 /DLL ./x64/PhysXCharacterKinematic/checked\PhysX3CharacterKinematic.res
+         ./x64/PhysXCharacterKinematic/checked\CctBoxController.obj
+         ./x64/PhysXCharacterKinematic/checked\CctCapsuleController.obj
+         ./x64/PhysXCharacterKinematic/checked\CctCharacterController.obj
+         ./x64/PhysXCharacterKinematic/checked\CctCharacterControllerCallbacks.obj
+         ./x64/PhysXCharacterKinematic/checked\CctCharacterControllerManager.obj
+         ./x64/PhysXCharacterKinematic/checked\CctController.obj
+         ./x64/PhysXCharacterKinematic/checked\CctObstacleContext.obj
+         ./x64/PhysXCharacterKinematic/checked\CctSweptBox.obj
+         ./x64/PhysXCharacterKinematic/checked\CctSweptCapsule.obj
+         ./x64/PhysXCharacterKinematic/checked\CctSweptVolume.obj
+         "C:\NVIDIA\PhysX-3.3.1_PC_SDK_Core\Lib\win64\PhysX3ExtensionsCHECKED.lib"
+            Creating library ./../../../Lib/win64/PhysX3CharacterKinematicCHECKED_x64.lib and object ./../../../Lib/win64/PhysX3CharacterKinematicCHECKED_x64.exp
+         PhysXCharacterKinematic.vcxproj -> C:\NVIDIA\PhysX-3.3.1_PC_SDK_Core\Source\compiler\vc11win64\./../../../bin/win64\PhysX3CharacterKinematicCHECKED_x64.dll
+     1>Done Building Project "C:\NVIDIA\PhysX-3.3.1_PC_SDK_Core\Source\compiler\vc11win64\PhysXCharacterKinematic.vcxproj" (Build target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:05.61
