@@ -7,21 +7,45 @@
     <Filter Include="Source Files">
       <UniqueIdentifier>{35f74a4a-d7eb-4b9b-8863-b50e53f160d3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Math Utilities">
+      <UniqueIdentifier>{9f556840-a775-4f88-a3e8-d7a0720bba4a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Render Utilities">
+      <UniqueIdentifier>{0aab5205-c538-490f-96bf-dc2e98327a1b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\CameraUtil.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\RenderLoop.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\RenderUtil.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\SpacetimeOptimization.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\SvzAlgebra.cpp">
+      <Filter>Source Files\Math Utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CameraUtil.cpp">
+      <Filter>Source Files\Render Utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="src\RenderUtil.cpp">
+      <Filter>Source Files\Render Utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SpacetimeApplication.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SpacetimeInit.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SpacetimeCleanup.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Spacetime.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SpacetimeState.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Render.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SpacetimeDynamics.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -38,9 +62,11 @@
     <ClInclude Include="src\SvzMatrix.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="resource.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ResourceCompile Include="SpacetimeOptimization.rc" />
+    <ClInclude Include="src\Spacetime.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Render.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

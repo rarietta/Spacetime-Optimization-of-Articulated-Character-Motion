@@ -20,20 +20,24 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\CameraUtil.cpp" />
-    <ClCompile Include="src\RenderLoop.cpp" />
+    <ClCompile Include="src\Spacetime.cpp" />
+    <ClCompile Include="src\SpacetimeCleanup.cpp" />
+    <ClCompile Include="src\SpacetimeDynamics.cpp" />
+    <ClCompile Include="src\SpacetimeApplication.cpp" />
     <ClCompile Include="src\RenderUtil.cpp" />
     <ClCompile Include="src\SpacetimeOptimization.cpp" />
+    <ClCompile Include="src\Render.cpp" />
+    <ClCompile Include="src\SpacetimeState.cpp" />
     <ClCompile Include="src\SvzAlgebra.cpp" />
+    <ClCompile Include="src\SpacetimeInit.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="resource.h" />
     <ClInclude Include="src\CameraUtil.h" />
+    <ClInclude Include="src\Render.h" />
     <ClInclude Include="src\RenderUtil.h" />
     <ClInclude Include="src\SvzAlgebra.h" />
     <ClInclude Include="src\SvzMatrix.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ResourceCompile Include="SpacetimeOptimization.rc" />
+    <ClInclude Include="src\Spacetime.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{622F31A0-58DF-4441-866F-258932B3FC87}</ProjectGuid>

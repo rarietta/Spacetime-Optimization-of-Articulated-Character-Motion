@@ -148,12 +148,9 @@ void renderGeometry(const PxGeometryHolder& h)
 namespace RenderUtil
 {
 
-namespace
-{
 void reshapeCallback(int width, int height)
 {
 	glViewport(0, 0, width, height);
-}
 }
 
 void setupDefaultWindow(const char *name)

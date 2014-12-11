@@ -8,489 +8,183 @@
 // This code...																											//
 //======================================================================================================================//
 
-#define PVD_HOST "127.0.0.1"
-
-#include "PxPhysicsAPI.h"
-#include "SvzAlgebra.h"
-#include "SvzMatrix.h"
-#include <iostream>
-#include <assert.h>
-#include <ctype.h>
-#include <vector>
-
-using namespace std;
-using namespace physx;
+#include "Spacetime.h"
+#define UDIFF_THRESHOLD 0.01
 
 //======================================================================================================================//
 // Define global variables for spacetime optimization																	//
 //======================================================================================================================//
 
-#define T_DEBUG 1  // comment this to suppress textual debugging output
+//#define T_DEBUG 1  // comment this to suppress textual debugging output
 //#define V_DEBUG 1  // comment this to suppress visual  debugging output
 
-// for accessing X, Y, and Z components
-#define DOF 3
-enum {X, Y, Z};
-
-// list of actor components
-enum {BASE, LEG1, LEG2, LEG3, HEAD};
-
-// is the program running?
-bool pause = false;
-
-// Required physX runtime variable initializations
-PxScene* gScene = NULL;
-PxPhysics* gPhysics = NULL;
-PxMaterial*	gMaterial	= NULL;
-PxFoundation* gFoundation = NULL;
-PxDefaultCpuDispatcher*	gDispatcher = NULL;
-PxVisualDebuggerConnection*	gConnection	= NULL;
-PxDefaultAllocator gAllocator;
-PxDefaultErrorCallback gErrorCallback;
-
-// list of joint positions relative to attached bodies
-std::vector<PxRigidStatic*> static_actors;
-std::vector<PxRigidDynamic*> dynamic_actors;
-std::vector<PxVec3> joint_local_positions;
-
-//======================================================================================================================//
-// Hard-coded function to create custom static environment actors (called by initPhysics() on load)						//
-//======================================================================================================================//
-
-void addStaticActors(void)
+PxReal SSDmatrix(matrix<PxReal> A, matrix<PxReal> B)
 {
-	//--------------------------------------------------------------------------//
-	// ground plane actor														//
-	//--------------------------------------------------------------------------//
-
-	gMaterial = gPhysics->createMaterial(0.5f, 0.5f, 0.6f);
-	PxRigidStatic* groundPlane = PxCreatePlane(*gPhysics, PxPlane(0,1,0,0), *gMaterial);
-	gScene->addActor(*groundPlane);
-	static_actors.push_back(groundPlane);
-}
-
-//======================================================================================================================//
-// Hard-coded function to create custom dynamic actors in character (called by initPhysics() on load)					//
-//======================================================================================================================//
-
-void addDynamicActors(void)
-{
-	// universal material properties
-	PxMaterial* mMaterial = gPhysics->createMaterial(0.5,0.5,0.5);
-	PxReal density = 1.0f; 
-
-	// reusable transform
-	PxTransform transform(PxVec3(0,0,0), PxQuat::createIdentity()); 
-
-	//--------------------------------------------------------------------------//
-	// lamp base actor															//
-	//--------------------------------------------------------------------------//
-
-	// lamp base geometry
-	PxBoxGeometry base_geometry(4.0, 0.5, 4.0);
-
-	// lamp base transformation
-	PxVec3 base_translation(0,0.6f,0);
-	PxQuat base_rotation(PxQuat::createIdentity());
-	PxTransform base_transform(base_translation, base_rotation);
-
-	// lamp base creation
-	PxRigidDynamic *base = PxCreateDynamic(*gPhysics, base_transform, 
-		base_geometry, *mMaterial, density);
-	if (!base)
-		cerr << "create actor failed!" << endl;
-	
-	// lamp base properties
-	base->setAngularDamping(0.75);
-    base->setLinearVelocity(PxVec3(0,0,0)); 
-	base->setMass(PxReal(200));
-	base->setName("base");
-
-	// lamp base addition
-	gScene->addActor(*base);
-	dynamic_actors.push_back(base);
-
-	//--------------------------------------------------------------------------//
-	// lamp first leg actor														//
-	//--------------------------------------------------------------------------//
-
-	// first leg geometry
-	PxBoxGeometry leg1_geometry(0.5, 10.0, 0.5);
-
-	// first leg transformation
-	PxVec3 leg1_translation(0.0f, 10.0f*sin(PxPi/4.0f)+1.1f, -10.0f*cos(PxPi/4.0f));
-	PxQuat leg1_rotation(-PxPi/4.0f, PxVec3(1,0,0));
-	PxTransform leg1_transform(leg1_translation, leg1_rotation);
-	
-	// first leg creation
-	PxRigidDynamic *leg1 = PxCreateDynamic(*gPhysics, leg1_transform, 
-		leg1_geometry, *mMaterial, density);
-	if (!leg1)
-		cerr << "create actor failed!" << endl;
-
-	// first leg properties
-    leg1->setAngularDamping(0.75);
-    leg1->setLinearVelocity(PxVec3(0,0,0));
-	leg1->setMass(10.0f);
-	leg1->setName("leg1");
-
-	// first leg addition
-	gScene->addActor(*leg1);
-	dynamic_actors.push_back(leg1);
-
-	//--------------------------------------------------------------------------//
-	// lamp second leg actor													//
-	//--------------------------------------------------------------------------//
-
-	// second leg geometry
-	PxBoxGeometry leg2_geometry(0.5, 10.0, 0.5);
-
-	// second leg transformation
-	transform.p = PxVec3(0,20.0f*sin(PxPi/4.0f)+10.0f*sin(PxPi/4.0f)+1.1f, -20.0f*cos(PxPi/4.0f)+10.0f*cos(PxPi/4.0f));
-	transform.q = PxQuat(PxPi/4.0f, PxVec3(1,0,0));
-
-	// second leg creation
-	PxRigidDynamic *leg2 = PxCreateDynamic(*gPhysics, transform, 
-		leg2_geometry, *mMaterial, density);
-	if (!leg2)
-		cerr << "create actor failed!" << endl;
-
-	// second leg properties
-	leg2->setAngularDamping(0.75);
-	leg2->setMass(10);
-	leg2->setName("leg2");
-
-	// second leg addition
-	gScene->addActor(*leg2);
-	dynamic_actors.push_back(leg2);
-
-	//--------------------------------------------------------------------------//
-	// lamp third leg actor													//
-	//--------------------------------------------------------------------------//
-
-	// third leg geometry
-	PxBoxGeometry leg3_geometry(0.5, 10.0, 0.5);
-
-	// second leg transformation
-	transform.p = PxVec3(0,20.0f*sin(PxPi/4.0f)+20.0f*sin(PxPi/4.0f)+1.1f, -20.0f*cos(PxPi/4.0f)+20.0f*cos(PxPi/4.0f)+10);
-	transform.q = PxQuat(PxPi/2.0f, PxVec3(1,0,0));
-
-	// second leg creation
-	PxRigidDynamic *leg3 = PxCreateDynamic(*gPhysics, transform, 
-		leg3_geometry, *mMaterial, density);
-	if (!leg3)
-		cerr << "create actor failed!" << endl;
-
-	// second leg properties
-	leg3->setAngularDamping(0.75);
-	leg3->setMass(10);
-	leg3->setName("leg3");
-
-	// second leg addition
-	gScene->addActor(*leg3);
-	dynamic_actors.push_back(leg3);
-
-	//--------------------------------------------------------------------------//
-	// lamp head actor															//
-	//--------------------------------------------------------------------------//
-
-	// lamp head geometry
-	PxSphereGeometry bulb_geometry(PxReal(2.0));
-
-	// lamp head transformation
-	transform.p = PxVec3(0,20.0f*sin(PxPi/4.0f)+20.0f*sin(PxPi/4.0f)+1.1f, -20.0f*cos(PxPi/4.0f)+20.0f*cos(PxPi/4.0f)+22);
-	transform.q = PxQuat(PxPi/2.0f, PxVec3(1,0,0));
-
-	// lamp head creation
-	PxRigidDynamic *bulb = PxCreateDynamic(*gPhysics, transform, 
-		bulb_geometry, *mMaterial, density);
-	if (!bulb)
-		cerr << "create actor failed!" << endl;
-	
-	// lamp head properties
-	bulb->setAngularDamping(0.75);
-	bulb->setMass(5);
-	bulb->setName("bulb");
-
-	// lamp head addition
-	gScene->addActor(*bulb);
-	dynamic_actors.push_back(bulb);
-}
-
-//======================================================================================================================//
-// Hard-coded function to create custom joints in character (called by initPhysics() on load)							//
-//======================================================================================================================//
-
-void addJoints(void)
-{
-	// reusable transforms
-	PxTransform body0_transform;
-	PxTransform body1_transform;
-
-	// Create spherical joint at base
-	PxQuat base_quat1(PxPi/2.0f, PxVec3(0,0,1));
-	PxQuat base_quat2(PxPi/8.0f, PxVec3(0,1,0));
-	body0_transform = PxTransform(PxVec3(0,  0.5f, 0), base_quat1*base_quat2);
-	body1_transform = PxTransform(PxVec3(0, -10.0f, 0), base_quat1);
-	PxD6Joint* base_joint = PxD6JointCreate(*gPhysics, 
-		dynamic_actors[BASE], body0_transform, dynamic_actors[LEG1], body1_transform);
-	base_joint->setSwingLimit(PxJointLimitCone(PxPi/2, PxPi/2));
-	base_joint->setMotion(PxD6Axis::eSWING2, PxD6Motion::eLOCKED);
-	base_joint->setMotion(PxD6Axis::eSWING1, PxD6Motion::eLIMITED);
-	base_joint->setConstraintFlag(PxConstraintFlag::eREPORTING, true);
-	base_joint->setConstraintFlag(PxConstraintFlag::eVISUALIZATION, true);
-	joint_local_positions.push_back(PxVec3(0,-10,0));
-
-	// Create hinge joint between legs
-	body0_transform = PxTransform(PxVec3(0,  10.0, 0));
-	body1_transform = PxTransform(PxVec3(0, -10.0, 0), PxQuat(-PxPi/2.0, PxVec3(1,0,0)));
-	PxRevoluteJoint* leg_joint = PxRevoluteJointCreate(*gPhysics, 
-		dynamic_actors[LEG1], body0_transform, dynamic_actors[LEG2], body1_transform);
-	leg_joint->setLimit(PxJointAngularLimitPair(3.0*PxPi/4.0, -1.0*PxPi/4.0));
-	leg_joint->setRevoluteJointFlag(PxRevoluteJointFlag::eLIMIT_ENABLED, true);
-	leg_joint->setConstraintFlag(PxConstraintFlag::eVISUALIZATION, true);
-	joint_local_positions.push_back(PxVec3(0,-10,0));
-
-	// Create hinge joint between legs
-	body0_transform = PxTransform(PxVec3(0,  10.0, 0));
-	body1_transform = PxTransform(PxVec3(0, -10.0, 0), PxQuat(-PxPi/4.0, PxVec3(1,0,0)));
-	PxRevoluteJoint* leg_joint2 = PxRevoluteJointCreate(*gPhysics, 
-		dynamic_actors[LEG2], body0_transform, dynamic_actors[LEG3], body1_transform);
-	leg_joint2->setLimit(PxJointAngularLimitPair(3.0*PxPi/4.0, -1.0*PxPi/4.0));
-	leg_joint2->setRevoluteJointFlag(PxRevoluteJointFlag::eLIMIT_ENABLED, true);
-	leg_joint2->setConstraintFlag(PxConstraintFlag::eVISUALIZATION, true);
-	joint_local_positions.push_back(PxVec3(0,-10,0));
-
-	// Create bulb joint
-	body0_transform = PxTransform(PxVec3(0, 10.0, 0));
-	body1_transform = PxTransform(PxVec3(0, -2.0, 0));
-	PxSphericalJoint* bulb_joint = PxSphericalJointCreate(*gPhysics,
-		dynamic_actors[LEG3],body0_transform, dynamic_actors[HEAD], body1_transform);
-	bulb_joint->setLimitCone(PxJointLimitCone(0.5,0.5,PxReal(1.0f)));
-	bulb_joint->setSphericalJointFlag(PxSphericalJointFlag::eLIMIT_ENABLED, true);
-	joint_local_positions.push_back(PxVec3(0,-2,0));
-}
-
-//======================================================================================================================//
-// Initialize physics setup and call hard-coded functions to create custom actors and joints							//
-//======================================================================================================================//
-
-void initPhysics(void)
-{
-	gFoundation = PxCreateFoundation(PX_PHYSICS_VERSION, gAllocator, gErrorCallback);
-	PxProfileZoneManager* profileZoneManager = &PxProfileZoneManager::createProfileZoneManager(gFoundation);
-	gPhysics = PxCreatePhysics(PX_PHYSICS_VERSION, *gFoundation, PxTolerancesScale(), true, profileZoneManager);
-
-	PxSceneDesc sceneDesc(gPhysics->getTolerancesScale());
-	sceneDesc.gravity		= PxVec3(0.0f, -9.81f, 0.0f);
-	gDispatcher				= PxDefaultCpuDispatcherCreate(2);
-	sceneDesc.cpuDispatcher	= gDispatcher;
-	sceneDesc.filterShader	= PxDefaultSimulationFilterShader;
-	gScene					= gPhysics->createScene(sceneDesc);
-
-	#ifdef V_DEBUG
-		gScene->setVisualizationParameter(PxVisualizationParameter::eSCALE, 1.0f);
-		gScene->setVisualizationParameter(PxVisualizationParameter::eACTOR_AXES, 5.0f);
-		gScene->setVisualizationParameter(PxVisualizationParameter::eJOINT_LOCAL_FRAMES, 50.0f);
-		gScene->setVisualizationParameter(PxVisualizationParameter::eJOINT_LIMITS, 20.0f);
-		gScene->setVisualizationParameter(PxVisualizationParameter::eBODY_ANG_VELOCITY, 50.0f);
-	#endif
-
-	addStaticActors();
-	addDynamicActors();
-	addJoints();
-}
-
-//======================================================================================================================//
-// Build the Jacobian matrix for the system at the current timestep														//
-//======================================================================================================================//
-
-matrix<PxReal> buildJacobian(void)
-{
-	// get all joints in scene
-	PxRigidActor *a1[2], *a2[2];
-	PxU32 jointCount = gScene->getNbConstraints();
-	PxConstraint** jointBuffer1 = new PxConstraint*[jointCount];
-	PxConstraint** jointBuffer2 = new PxConstraint*[jointCount];
-	gScene->getConstraints(jointBuffer1, jointCount);
-	gScene->getConstraints(jointBuffer2, jointCount);
-		
-	// calculate arm lengths r
-	matrix<vec3> R(jointCount, jointCount);
-	for (PxU32 i = 0; i < jointCount; i++) {
-		for (PxU32 j = 0; j < jointCount; j++)
-		{
-			if (i >= j) {
-				// get global position of center of mass
-				jointBuffer1[i]->getActors(a1[0], a1[1]);
-				PxRigidBody *body1 = (PxRigidBody *) a1[1];
-				PxTransform xform1 = body1->getGlobalPose();
-				PxVec3 global_com = xform1.transform(body1->getCMassLocalPose().p);
-
-				// get global position of joint
-				jointBuffer2[j]->getActors(a2[0], a2[1]);
-				PxRigidBody *body2 = (PxRigidBody *) a2[1];
-				PxTransform xform2 = body2->getGlobalPose();
-				PxVec3 global_jnt = xform2.transform(joint_local_positions[j]);
-
-				// get global difference vector r
-				PxVec3 diff = global_com - global_jnt;
-				R(i,j) = vec3(diff.x, diff.y, diff.z);
-			}
+	PxReal SSD = 0;
+	for (int i = 0; i < A.RowNo(); i++) {
+		for (int j = 0; j < A.ColNo(); j++) {
+			SSD += (A(i,j)-B(i,j))*(A(i,j)-B(i,j));
 		}
 	}
+	return SSD;
+}
 
-	matrix<PxReal> J(jointCount*DOF, jointCount*DOF);
-	for (PxU32 i = 0; i < jointCount; i++)
-	{
-		// get joint axes a_x, a_y, a_z
-		std::vector<vec3> axes;
-		vec3 a_xi(1,0,0); axes.push_back(a_xi);
-		vec3 a_yi(0,1,0); axes.push_back(a_yi);
-		vec3 a_zi(0,0,1); axes.push_back(a_zi);
-
-		// build individual J_i matrix of size jointCount*DOF x DOF
-		for (int n = 0; n < DOF; n++) {
-			vec3 axis_n = axes[n];
-			for (PxU32 j = 0; j < jointCount; j++) {
-				if (j < i) {
-					// if the current body is unaffected by the joint
-					// the values in the row of the J_i matrix are 0
-					J(j*DOF+X, i*DOF+n) = 0.0f;
-					J(j*DOF+Y, i*DOF+n) = 0;
-					J(j*DOF+Z, i*DOF+n) = 0;
-				} else {
-					// populate matrix with 3-vector cross product 
-					// of joint's n-th axis of rotation and r_cm_j
-					// (vector from the joint to the j-th center of mass)
-					vec3 cross_product = axis_n.Cross(R(j,i));
-					J(j*DOF+X, i*DOF+n) = cross_product[X];
-					J(j*DOF+Y, i*DOF+n) = cross_product[Y];
-					J(j*DOF+Z, i*DOF+n) = cross_product[Z];
-				}
-			}
-		}
-	}
-
-	delete(jointBuffer1);
-	delete(jointBuffer2);
-	return J;
+PxReal SSDvector(std::vector<matrix<PxReal>> A, std::vector<matrix<PxReal>> B)
+{
+	PxReal SSD = 0;
+	for (int i = 0; i < A.size(); i++)
+		SSD += SSDmatrix(A[i], B[i]);
+	return SSD;
 }
 
 //======================================================================================================================//
-// Build the force vector due to gravity at the current timestep														//
+// Main optimization calculation loop																					//
 //======================================================================================================================//
 
-matrix<PxReal> buildForceVector(void)
-{
-	// get all joints in scene
-	PxRigidActor *a[2];
-	PxU32 jointCount = gScene->getNbConstraints();
-	PxConstraint** jointBuffer = new PxConstraint*[jointCount];
-	gScene->getConstraints(jointBuffer, jointCount);
+matrix<PxReal>
+Spacetime::Optimize(void)
+{	
+	//------------------------------------------------------------------------------------------------------------------//
+	// compute M, C, G terms from kinematics equation																	//
+	// also compute derivatives of M, C, G terms with ADOL-C															//
+	//------------------------------------------------------------------------------------------------------------------//
 
-	matrix<PxReal> F(jointCount*DOF, 1);
-	for (PxU32 i = 0; i < jointCount; i++) {
-		jointBuffer[i]->getActors(a[0], a[1]);
-		PxRigidBody *body1 = (PxRigidBody *) a[1];
-		PxVec3 gravity = gScene->getGravity();
-		PxReal mass = body1->getMass();
-		F(i*DOF+X, 0) = (mass * gravity).x;
-		F(i*DOF+Y, 0) = (mass * gravity).y;
-		F(i*DOF+Z, 0) = (mass * gravity).z;
-	}
+	// virtual work calculation yields gravitational torque vector
+	matrix<PxReal> J = buildJacobian();
+	matrix<PxReal> F = buildForceVector();
+	matrix<PxReal> T = ~J*F;
 
-	delete(jointBuffer);
-	return F;
-}
+	// compute inverse mass matrix by altering rows of input torque
+	matrix<PxReal> M_inv = computeInverseMassMatrix(T);
+	matrix<PxReal> M(M_inv); //M = (matrix<PxReal>) M.Inv();
 
-//======================================================================================================================//
-// Simulate the physics engine forward by one timestep																	//
-//======================================================================================================================//
-
-void stepPhysics(void)
-{
-	if (pause) return;
+	// compute C term of kinematics formula
+	matrix<PxReal> C = computeCVector(T, M);
 
 	#ifdef T_DEBUG
 		cout << "-----------------------------------------------------------------------------------------------" << endl;
 		cout << "time = " << gScene->getTimestamp() << endl;
 		cout << endl;
+		cout << "J = \n" << J << endl;
+		cout << "F = \n" << F << endl;
+		cout << "T = \n" << T << endl;
+		cout << "M_inv = \n" << M_inv << endl;
+		cout << "M = \n" << M << endl;
+		cout << "C = \n" << C << endl;
+		switchPause();
 	#endif
-	
-	// get all joints in scene
-	PxRigidActor *a[2];
-	PxU32 jointCount = gScene->getNbConstraints();
-	PxConstraint** jointBuffer = new PxConstraint*[jointCount];
-	gScene->getConstraints(jointBuffer, jointCount);
-		
-	// virtual work calculation
-	matrix<PxReal> J = buildJacobian();
-	matrix<PxReal> F = buildForceVector();
-	matrix<PxReal> T = ~J*F;
 
-	// apply torques to maintain static equilibrium
-	for (unsigned int i = 0; i < jointCount; i++)
+	//------------------------------------------------------------------------------------------------------------------//
+	// u = initial estimate on input torque sequence w/ PD controller													//
+	//------------------------------------------------------------------------------------------------------------------//
+
+	saveState();
+	std::vector<matrix<PxReal>> uSequence;
+	for (int i = 0; i < numTimeSteps; i++) 
 	{
-		jointBuffer[i]->getActors(a[0], a[1]);
-		PxRigidBody *body0 = (PxRigidBody *) a[0];
-		PxRigidBody *body1 = (PxRigidBody *) a[1];
-		body0->addTorque( 1.0127*PxVec3(T(i*DOF+X,0), T(i*DOF+Y,0), T(i*DOF+Z,0)));
-		body1->addTorque(-1.0127*PxVec3(T(i*DOF+X,0), T(i*DOF+Y,0), T(i*DOF+Z,0)));
+		// virtual work calculation yields gravitational torque vector
+		matrix<PxReal> J = buildJacobian();
+		matrix<PxReal> G = buildForceVector();
+		matrix<PxReal> T = ~J*F;
 
-		#ifdef T_DEBUG
-			cout << "J = \n" << J << endl;
-			cout << "F = \n" << F << endl;
-			printf("The torque on the joint between %s and %s is equal to \n\t<%f,%f,%f>\n\n\n", 
-				a[0]->getName(), a[1]->getName(), -T(i*DOF+X,0), -T(i*DOF+Y,0), -T(i*DOF+Z,0));
-		#endif
+		// compute inverse mass matrix by altering rows of input torque
+		matrix<PxReal> M_inv = computeInverseMassMatrix(T);
+		matrix<PxReal> M(M_inv); M = (matrix<PxReal>) M.Inv();
+
+		// compute C term of kinematics formula
+		matrix<PxReal> C = computeCVector(T, M);
+
+		PxReal Kp = 10;
+		PxReal Kv = 10;
+		matrix<PxReal> theta = calculateAngularPosition();
+		matrix<PxReal> thetad(state_d); thetad.SetSize(DOF*joints.size(), 1);
+		matrix<PxReal> thetaDot = calculateAngularVelocity();
+		matrix<PxReal> u = C + G + M*(Kp*(thetad - theta) - Kv*thetaDot);
+		uSequence.push_back(u);
+
+		applyTorqueVector(u);
+		stepPhysics();
 	}
+	restoreState();
 
-	// free memory
-	delete(jointBuffer);
+	//------------------------------------------------------------------------------------------------------------------//
+	// iteratively solve for optimal input torque sequence																//
+	//------------------------------------------------------------------------------------------------------------------//
+		
+	// save initial state
+	saveState();
 
-	// simulate and return
-	gScene->simulate(1.0f/60.0f);
-	gScene->fetchResults(true);
-}
+	PxU32 jointCount = gScene->getNbConstraints();
+	std::vector<matrix<PxReal>> GSequence;
+	std::vector<matrix<PxReal>> CSequence;
+	std::vector<matrix<PxReal>> MSequence;
+	std::vector<matrix<PxReal>> M_invSequence;
+	std::vector<matrix<PxReal>> stateSequence;
+	std::vector<matrix<PxReal>> costateSequence;
 
-//======================================================================================================================//
-// Required physX function for terminating physics engine																//
-//======================================================================================================================//
+	PxReal uDiff;
+	do 
+	{
+		// clear the state and costate sequences from the last solver iteration
+		GSequence.clear();
+		CSequence.clear();
+		MSequence.clear();
+		M_invSequence.clear();
+		stateSequence.clear();
+		costateSequence.clear();
 
-void cleanupPhysics(void)
-{
-	gScene->release();
-	gDispatcher->release();
-	PxProfileZoneManager* profileZoneManager = gPhysics->getProfileZoneManager();
-	if(gConnection != NULL)
-		gConnection->release();
-	gPhysics->release();	
-	profileZoneManager->release();
-	gFoundation->release();
-}
+		// 1) solve for the state sequence given the current u vector sequence
+		saveState();
+		stateSequence.push_back(state_0);
+		for (int i = 0; i < numTimeSteps-1; i++) 
+		{	
+			// virtual work calculation yields gravitational torque vector
+			matrix<PxReal> J = buildJacobian();
+			matrix<PxReal> G = buildForceVector();
+			matrix<PxReal> T = ~J*F;
 
-//======================================================================================================================//
-// Process user input -- only supports pausing in current state															//
-//======================================================================================================================//
+			// compute inverse mass matrix by altering rows of input torque
+			matrix<PxReal> M_inv = computeInverseMassMatrix(T);
+			matrix<PxReal> M(M_inv); M = (matrix<PxReal>) M.Inv();
 
-void keyPress(const char key)
-{
-	switch(toupper(key)) {
-		case 'P': pause = !pause; break;
-	}
-}
+			// compute C term of kinematics formula
+			matrix<PxReal> C = computeCVector(T, M);
+			
+			// compute current state vector derivative with computed
+			// matrix values and the current input torque vector u
+			matrix<PxReal> xDot = M_inv * (T + C + G);
+			stateSequence.push_back(stateSequence[i] + xDot*deltaT);
+			stepPhysics();
+		}
+		restoreState();
 
-//======================================================================================================================//
-// Main render loop for physics simulation																				//
-//======================================================================================================================//
+		// 2) simulate lagrangian costate sequence backwards from final state using x, u
+		// TODO: initialize lambda vector at end state
+		matrix<PxReal> lambda_n;
+		costateSequence.insert(costateSequence.begin(), lambda_n);
+		for (int i = numTimeSteps-1; i > 0; i--) 
+		{
+			// lambdaDot = -dL/dX + transpose(lambda)*df/dX
+			matrix<PxReal> dfdx = compute_dfdx(i);
+			matrix<PxReal> lambdaDot = ~costateSequence.front()*dfdx;
+			costateSequence.insert(costateSequence.begin(), costateSequence.front()-deltaT*lambdaDot);
+		}
 
-#if defined(PX_XBOXONE) || defined(PX_WINMODERN)
-int main(Platform::Array<Platform::String^>^)
-#else
-int main(int, char**)
-#endif
-{
-	extern void renderLoop();
-	renderLoop();
+
+		// 3) update u from constraint formula
+		std::vector<matrix<PxReal>> new_uSequence;
+		for (int i = 0; i < numTimeSteps; i++)
+			new_uSequence.push_back(~costateSequence[i]*M_invSequence[i]);
+		uDiff = SSDvector(uSequence, new_uSequence);
+		uSequence = new_uSequence;
+
+	} while (uDiff > UDIFF_THRESHOLD);
+	
+	//------------------------------------------------------------------------------------------------------------------//
+	// compute optimal pose/position sequence from optimal u															//
+	//------------------------------------------------------------------------------------------------------------------//
+
+	// TODO
+	matrix<PxReal> Opt(1,1);
+	return Opt;
 }
