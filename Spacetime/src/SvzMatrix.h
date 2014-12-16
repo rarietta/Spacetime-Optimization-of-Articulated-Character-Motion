@@ -439,8 +439,8 @@ operator << (ostream& ostrm, const matrixT& m)
       for (size_t j=0; j < m.ColNo(); j++)
       {
          T x = m(i,j);
+		 printf("%9.4f\t", x);
          //ostrm << x << '\t';
-		 printf("%7.2f\t", x);
       }
       ostrm << endl;
    }
@@ -1098,8 +1098,8 @@ matrixT::ValOut() _NO_THROW
    using namespace math;
 #endif
 
-typedef matrix<double> CMatrix;  // ***SHL change this line to use Reals
-//typedef matrix<Real> CMatrix;  
+//typedef matrix<double> CMatrix;  // ***SHL change this line to use Reals
+typedef matrix<Real> CMatrix;  
 
 #if !defined(_MSC_VER)
 #define _MSC_EXTENSIONS      // To include overloaded abs function definitions!

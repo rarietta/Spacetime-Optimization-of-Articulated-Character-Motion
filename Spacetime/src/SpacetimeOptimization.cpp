@@ -18,7 +18,7 @@
 //#define T_DEBUG 1  // comment this to suppress textual debugging output
 //#define V_DEBUG 1  // comment this to suppress visual  debugging output
 
-PxReal SSDmatrix(matrix<PxReal> A, matrix<PxReal> B)
+PxReal SSDmatrix(matrix<double> A, matrix<double> B)
 {
 	PxReal SSD = 0;
 	for (int i = 0; i < A.RowNo(); i++) {
@@ -29,7 +29,7 @@ PxReal SSDmatrix(matrix<PxReal> A, matrix<PxReal> B)
 	return SSD;
 }
 
-PxReal SSDvector(std::vector<matrix<PxReal>> A, std::vector<matrix<PxReal>> B)
+PxReal SSDvector(std::vector<matrix<double>> A, std::vector<matrix<double>> B)
 {
 	PxReal SSD = 0;
 	for (int i = 0; i < A.size(); i++)
@@ -41,7 +41,7 @@ PxReal SSDvector(std::vector<matrix<PxReal>> A, std::vector<matrix<PxReal>> B)
 // Main optimization calculation loop																					//
 //======================================================================================================================//
 
-matrix<PxReal>
+matrix<double>
 Spacetime::Optimize(void)
 {	
 	//------------------------------------------------------------------------------------------------------------------//
@@ -50,28 +50,32 @@ Spacetime::Optimize(void)
 	//------------------------------------------------------------------------------------------------------------------//
 
 	// virtual work calculation yields gravitational torque vector
-	matrix<PxReal> J = buildJacobian();
-	matrix<PxReal> F = buildForceVector();
-	matrix<PxReal> T = ~J*F;
+	matrix<double> J = buildJacobian();
+	matrix<double> G = computeGVector();
+	matrix<double> T = ~J*G;
 
 	// compute inverse mass matrix by altering rows of input torque
-	matrix<PxReal> M_inv = computeInverseMassMatrix(T);
-	matrix<PxReal> M(M_inv); //M = (matrix<PxReal>) M.Inv();
-
+	matrix<double> M_inv = computeInverseMassMatrix(T);
+	matrix<double> M(M_inv); M = (matrix<double>) M.Inv();
+	matrix<double> eye = M_inv * M;
+	
 	// compute C term of kinematics formula
-	matrix<PxReal> C = computeCVector(T, M);
+	matrix<double> C = computeCVector(T, M);
+
 
 	#ifdef T_DEBUG
-		cout << "-----------------------------------------------------------------------------------------------" << endl;
-		cout << "time = " << gScene->getTimestamp() << endl;
-		cout << endl;
-		cout << "J = \n" << J << endl;
-		cout << "F = \n" << F << endl;
-		cout << "T = \n" << T << endl;
-		cout << "M_inv = \n" << M_inv << endl;
-		cout << "M = \n" << M << endl;
-		cout << "C = \n" << C << endl;
-		switchPause();
+		if (!pause) {
+			cout << "-----------------------------------------------------------------------------------------------" << endl;
+			cout << "time = " << gScene->getTimestamp() << endl;
+			cout << endl;
+			cout << "J = \n" << J << endl;
+			cout << "G = \n" << G << endl;
+			cout << "T = \n" << T << endl;
+			cout << "M_inv = \n" << M_inv << endl;
+			cout << "M = \n" << M << endl;
+			cout << "eye test: \n" << eye << endl;
+			cout << "C = \n" << C << endl;
+		}
 	#endif
 
 	//------------------------------------------------------------------------------------------------------------------//
@@ -79,27 +83,27 @@ Spacetime::Optimize(void)
 	//------------------------------------------------------------------------------------------------------------------//
 
 	saveState();
-	std::vector<matrix<PxReal>> uSequence;
+	std::vector<matrix<double>> uSequence;
 	for (int i = 0; i < numTimeSteps; i++) 
 	{
 		// virtual work calculation yields gravitational torque vector
-		matrix<PxReal> J = buildJacobian();
-		matrix<PxReal> G = buildForceVector();
-		matrix<PxReal> T = ~J*F;
+		matrix<double> J = buildJacobian();
+		matrix<double> G = computeGVector();
+		G = -(~J*G);
 
 		// compute inverse mass matrix by altering rows of input torque
-		matrix<PxReal> M_inv = computeInverseMassMatrix(T);
-		matrix<PxReal> M(M_inv); M = (matrix<PxReal>) M.Inv();
+		matrix<double> M_inv = computeInverseMassMatrix(T);
+		matrix<double> M(M_inv); M = (matrix<double>) M.Inv();
 
 		// compute C term of kinematics formula
-		matrix<PxReal> C = computeCVector(T, M);
+		matrix<double> C = computeCVector(T, M);
 
-		PxReal Kp = 10;
-		PxReal Kv = 10;
-		matrix<PxReal> theta = calculateAngularPosition();
-		matrix<PxReal> thetad(state_d); thetad.SetSize(DOF*joints.size(), 1);
-		matrix<PxReal> thetaDot = calculateAngularVelocity();
-		matrix<PxReal> u = C + G + M*(Kp*(thetad - theta) - Kv*thetaDot);
+		double Kp = 10;
+		double Kv = 10;
+		matrix<double> theta = calculateAngularPosition();
+		matrix<double> thetad(state_d); thetad.SetSize(DOF*joints.size(), 1);
+		matrix<double> thetaDot = calculateAngularVelocity();
+		matrix<double> u = C + G + M*(Kp*(thetad - theta) - Kv*thetaDot);
 		uSequence.push_back(u);
 
 		applyTorqueVector(u);
@@ -107,20 +111,26 @@ Spacetime::Optimize(void)
 	}
 	restoreState();
 
+	for (int i = 0; i < numTimeSteps; i++)
+		cout << "u[" << i << "] = \n" << uSequence[i] << endl;
+
+	applyTorqueVector(T);
+	return T;
+
 	//------------------------------------------------------------------------------------------------------------------//
 	// iteratively solve for optimal input torque sequence																//
 	//------------------------------------------------------------------------------------------------------------------//
-		
+	/*
 	// save initial state
 	saveState();
 
 	PxU32 jointCount = gScene->getNbConstraints();
-	std::vector<matrix<PxReal>> GSequence;
-	std::vector<matrix<PxReal>> CSequence;
-	std::vector<matrix<PxReal>> MSequence;
-	std::vector<matrix<PxReal>> M_invSequence;
-	std::vector<matrix<PxReal>> stateSequence;
-	std::vector<matrix<PxReal>> costateSequence;
+	std::vector<matrix<double>> GSequence;
+	std::vector<matrix<double>> CSequence;
+	std::vector<matrix<double>> MSequence;
+	std::vector<matrix<double>> M_invSequence;
+	std::vector<matrix<double>> stateSequence;
+	std::vector<matrix<double>> costateSequence;
 
 	PxReal uDiff;
 	do 
@@ -139,20 +149,20 @@ Spacetime::Optimize(void)
 		for (int i = 0; i < numTimeSteps-1; i++) 
 		{	
 			// virtual work calculation yields gravitational torque vector
-			matrix<PxReal> J = buildJacobian();
-			matrix<PxReal> G = buildForceVector();
-			matrix<PxReal> T = ~J*F;
+			matrix<double> J = buildJacobian();
+			matrix<double> G = computeGVector();
+			matrix<double> T = ~J*F;
 
 			// compute inverse mass matrix by altering rows of input torque
-			matrix<PxReal> M_inv = computeInverseMassMatrix(T);
-			matrix<PxReal> M(M_inv); M = (matrix<PxReal>) M.Inv();
+			matrix<double> M_inv = computeInverseMassMatrix(T);
+			matrix<double> M(M_inv); M = (matrix<double>) M.Inv();
 
 			// compute C term of kinematics formula
-			matrix<PxReal> C = computeCVector(T, M);
+			matrix<double> C = computeCVector(T, M);
 			
 			// compute current state vector derivative with computed
 			// matrix values and the current input torque vector u
-			matrix<PxReal> xDot = M_inv * (T + C + G);
+			matrix<double> xDot = M_inv * (T + C + G);
 			stateSequence.push_back(stateSequence[i] + xDot*deltaT);
 			stepPhysics();
 		}
@@ -160,19 +170,20 @@ Spacetime::Optimize(void)
 
 		// 2) simulate lagrangian costate sequence backwards from final state using x, u
 		// TODO: initialize lambda vector at end state
-		matrix<PxReal> lambda_n;
+		matrix<double> lambda_n;
 		costateSequence.insert(costateSequence.begin(), lambda_n);
 		for (int i = numTimeSteps-1; i > 0; i--) 
 		{
 			// lambdaDot = -dL/dX + transpose(lambda)*df/dX
-			matrix<PxReal> dfdx = compute_dfdx(i);
-			matrix<PxReal> lambdaDot = ~costateSequence.front()*dfdx;
+			matrix<double> dLdx = compute_dLdx(i);
+			matrix<double> dfdx = compute_dfdx(i);
+			matrix<double> lambdaDot = -dLdx + ~costateSequence.front()*dfdx;
 			costateSequence.insert(costateSequence.begin(), costateSequence.front()-deltaT*lambdaDot);
 		}
 
 
 		// 3) update u from constraint formula
-		std::vector<matrix<PxReal>> new_uSequence;
+		std::vector<matrix<double>> new_uSequence;
 		for (int i = 0; i < numTimeSteps; i++)
 			new_uSequence.push_back(~costateSequence[i]*M_invSequence[i]);
 		uDiff = SSDvector(uSequence, new_uSequence);
@@ -185,6 +196,7 @@ Spacetime::Optimize(void)
 	//------------------------------------------------------------------------------------------------------------------//
 
 	// TODO
-	matrix<PxReal> Opt(1,1);
+	matrix<double> Opt(1,1);
 	return Opt;
+	*/
 }

@@ -18,32 +18,35 @@
 #include <ctype.h>
 #include <vector>
 #include <adolc/adolc.h>
-#include <adolc/adouble.h>
+
+#define T_DEBUG 1
 
 using namespace std;
 using namespace physx;
+
+enum {G_TAG, C_TAG, M_TAG, MINV_TAG};
 
 class Spacetime
 {
 public:
 
 	// for accessing X, Y, and Z components
-	#define DOF 3
+	#define DOF 1
 	enum {X, Y, Z};
 	
 	// constructor
 	Spacetime(void);
-	Spacetime(matrix<PxReal> startPose, matrix<PxReal> endPose, PxU32 numTimeSteps);
-	matrix<PxReal> state_0;
-	matrix<PxReal> state_d;
+	Spacetime(matrix<double> startPose, matrix<double> endPose, PxU32 numTimeSteps);
+	matrix<double> state_0;
+	matrix<double> state_d;
 	PxU32 numTimeSteps;
-	PxReal deltaT;
+	double deltaT;
 	
 	// Init functions (SpacetimeInit.cpp)
 	void initPhysics(void);
 
 	// Optimization functions (SpacetimeOptimization.cpp)
-	matrix<PxReal> Optimize(void);
+	matrix<double> Optimize(void);
 	
 	// State functions (SpacetimeState.cpp)
 	void switchPause(void);
@@ -91,17 +94,23 @@ private:
 	void addJoints(void);
 
 	// State functions (SpacetimeState.cpp)
+	matrix<double> buildStateVector(void);
 	void saveState(void);
 	void restoreState(void);
-	void setState(matrix<PxReal> stateVector);
+	void setState(matrix<double> stateVector);
 
 	// Kinematics functions (SpacetimeKinematics.cpp)
-	void applyTorqueVector(matrix<PxReal> T);
-	matrix<PxReal> buildJacobian(void);
-	matrix<PxReal> buildForceVector(void);
-	matrix<PxReal> calculateAngularVelocity(void);
-	matrix<PxReal> calculateAngularPosition(void);
-	matrix<PxReal> computeInverseMassMatrix(matrix<PxReal> T);
-	matrix<PxReal> computeCVector(matrix<PxReal> T, matrix<PxReal> M);
-	matrix<PxReal> compute_dfdx(PxU32 t);
+	void applyTorqueVector(matrix<double> T);
+	matrix<double> buildJacobian(void);
+	matrix<double> computeGVector(void);
+	matrix<double> calculateAngularVelocity(void);
+	matrix<double> calculateAngularPosition(void);
+	matrix<double> computeInverseMassMatrix(matrix<double> T);
+	matrix<double> computeCVector(matrix<double> T, matrix<double> M);
+
+	// Partial derivative functions (SpacetimeDerivatives.cpp)
+	matrix<double> compute_dLdx(PxU32 t);
+	matrix<double> compute_dLdu(PxU32 t);
+	matrix<double> compute_dfdx(PxU32 t);
+	matrix<double> compute_dfdu(PxU32 t);
 };

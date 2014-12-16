@@ -23,9 +23,11 @@ Spacetime::Spacetime(void)
 	gDispatcher = NULL;
 	gConnection	= NULL;
 	deltaT = 1.0 / 60.0;
+
+	numTimeSteps = 10;
 }
 
-Spacetime::Spacetime(matrix<PxReal> startPose, matrix<PxReal> endPose, PxU32 numTimeSteps) 
+Spacetime::Spacetime(matrix<double> startPose, matrix<double> endPose, PxU32 numTimeSteps) 
 {
 	// is the program running?
 	pause = false;

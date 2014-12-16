@@ -47,6 +47,7 @@ void idleCallback()
 
 void renderCallback()
 {
+	//render_system->Optimize();
 	render_system->stepPhysics();
 
 	RenderUtil::startRender(sCamera->getEye(), sCamera->getDir());
@@ -110,6 +111,6 @@ void renderLoop(Spacetime *sys)
 
 	atexit(exitCallback);
 
-	render_system->initPhysics();
+	//render_system->initPhysics();
 	glutMainLoop();
 }

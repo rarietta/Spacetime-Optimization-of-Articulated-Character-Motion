@@ -20,6 +20,7 @@ extern void renderLoop(Spacetime *sys);
 
 void main(int, char**) {
 	Spacetime *render_system = new Spacetime();
-	matrix<PxReal> optimized = render_system->Optimize();
+	render_system->initPhysics();
+	matrix<double> optimized = render_system->Optimize();
 	renderLoop(render_system);
 }
