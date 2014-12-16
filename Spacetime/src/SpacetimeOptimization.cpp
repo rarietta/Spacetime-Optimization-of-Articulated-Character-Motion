@@ -12,6 +12,44 @@
 #define UDIFF_THRESHOLD 0.01
 
 //======================================================================================================================//
+// Debug																												//
+//======================================================================================================================//
+void
+Spacetime::debug(void)
+{
+	//------------------------------------------------------------------------------------------------------------------//
+	// compute M, C, G terms from kinematics equation																	//
+	// also compute derivatives of M, C, G terms with ADOL-C															//
+	//------------------------------------------------------------------------------------------------------------------//
+
+	// virtual work calculation yields gravitational torque vector
+	matrix<double> J = buildJacobian();
+	matrix<double> G = computeGVector();
+	matrix<double> T = ~J*G;
+
+	// compute inverse mass matrix by altering rows of input torque
+	matrix<double> M_inv = computeInverseMassMatrix(T);
+	matrix<double> M(M_inv); M = (matrix<double>) M.Inv();
+	matrix<double> eye = M_inv * M;
+	
+	// compute C term of kinematics formula
+	matrix<double> C = computeCVector(T, M);
+
+	if (!pause) {
+		cout << "-----------------------------------------------------------------------------------------------" << endl;
+		cout << "time = " << gScene->getTimestamp() << endl;
+		cout << endl;
+		cout << "J = \n" << J << endl;
+		cout << "G = \n" << G << endl;
+		cout << "T = \n" << T << endl;
+		cout << "M_inv = \n" << M_inv << endl;
+		cout << "M = \n" << M << endl;
+		cout << "eye test: \n" << eye << endl;
+		cout << "C = \n" << C << endl;
+	}
+}
+
+//======================================================================================================================//
 // Define global variables for spacetime optimization																	//
 //======================================================================================================================//
 
@@ -41,49 +79,10 @@ PxReal SSDvector(std::vector<matrix<double>> A, std::vector<matrix<double>> B)
 // Main optimization calculation loop																					//
 //======================================================================================================================//
 
-matrix<double>
-Spacetime::Optimize(void)
-{	
-	//------------------------------------------------------------------------------------------------------------------//
-	// compute M, C, G terms from kinematics equation																	//
-	// also compute derivatives of M, C, G terms with ADOL-C															//
-	//------------------------------------------------------------------------------------------------------------------//
-
-	// virtual work calculation yields gravitational torque vector
-	matrix<double> J = buildJacobian();
-	matrix<double> G = computeGVector();
-	matrix<double> T = ~J*G;
-
-	// compute inverse mass matrix by altering rows of input torque
-	matrix<double> M_inv = computeInverseMassMatrix(T);
-	matrix<double> M(M_inv); M = (matrix<double>) M.Inv();
-	matrix<double> eye = M_inv * M;
-	
-	// compute C term of kinematics formula
-	matrix<double> C = computeCVector(T, M);
-
-
-	#ifdef T_DEBUG
-		if (!pause) {
-			cout << "-----------------------------------------------------------------------------------------------" << endl;
-			cout << "time = " << gScene->getTimestamp() << endl;
-			cout << endl;
-			cout << "J = \n" << J << endl;
-			cout << "G = \n" << G << endl;
-			cout << "T = \n" << T << endl;
-			cout << "M_inv = \n" << M_inv << endl;
-			cout << "M = \n" << M << endl;
-			cout << "eye test: \n" << eye << endl;
-			cout << "C = \n" << C << endl;
-		}
-	#endif
-
-	//------------------------------------------------------------------------------------------------------------------//
-	// u = initial estimate on input torque sequence w/ PD controller													//
-	//------------------------------------------------------------------------------------------------------------------//
-
+void
+Spacetime::makeInitialGuess(void)
+{
 	saveState();
-	std::vector<matrix<double>> uSequence;
 	for (int i = 0; i < numTimeSteps; i++) 
 	{
 		// virtual work calculation yields gravitational torque vector
@@ -92,29 +91,31 @@ Spacetime::Optimize(void)
 		G = -(~J*G);
 
 		// compute inverse mass matrix by altering rows of input torque
-		matrix<double> M_inv = computeInverseMassMatrix(T);
+		matrix<double> M_inv = computeInverseMassMatrix(G);
 		matrix<double> M(M_inv); M = (matrix<double>) M.Inv();
 
 		// compute C term of kinematics formula
-		matrix<double> C = computeCVector(T, M);
+		matrix<double> C = computeCVector(G, M);
 
-		double Kp = 10;
-		double Kv = 10;
+		double Kp = .0010;
+		double Kv = .0010;
 		matrix<double> theta = calculateAngularPosition();
 		matrix<double> thetad(state_d); thetad.SetSize(DOF*joints.size(), 1);
 		matrix<double> thetaDot = calculateAngularVelocity();
 		matrix<double> u = C + G + M*(Kp*(thetad - theta) - Kv*thetaDot);
 		uSequence.push_back(u);
-
-		applyTorqueVector(u);
-		stepPhysics();
 	}
-	restoreState();
 
 	for (int i = 0; i < numTimeSteps; i++)
 		cout << "u[" << i << "] = \n" << uSequence[i] << endl;
 
-	applyTorqueVector(T);
+	return;
+}
+
+matrix<double>
+Spacetime::Optimize(void)
+{	
+	matrix<double> T;
 	return T;
 
 	//------------------------------------------------------------------------------------------------------------------//

@@ -74,10 +74,6 @@ Spacetime::buildJacobian(void)
 					// of joint's n-th axis of rotation and r_cm_j
 					// (vector from the joint to the j-th center of mass)
 					vec3 cross_product = axis_n.Cross(R(j,i));
-					if (!pause) {
-						cout << "R(j,i) = <" << R(j,i)[X] << ", "  << R(j,i)[Y] << ", " << R(j,i)[Z] << ">" << endl;
-						cout << cross_product[X] << endl;
-					}
 					J(j*3+X, i*DOF+n) = cross_product[X];
 					J(j*3+Y, i*DOF+n) = cross_product[Y];
 					J(j*3+Z, i*DOF+n) = cross_product[Z];
@@ -204,21 +200,23 @@ Spacetime::calculateAngularPosition(void)
 {
 	// create matrix
 	matrix<double> angularPositionVector(DOF*joints.size(), 1);
+	
+	PxRigidActor *a[2];
 
 	// apply torque to joints
 	for (unsigned int i = 0; i < joints.size(); i++) {
 		PxReal thetaX; PxVec3 axisX;
 		PxReal thetaY; PxVec3 axisY;
-		PxReal thetaZ; PxVec3 axisZ; 
-		PxTransform localPose = joints[i]->getLocalPose(PxJointActorIndex::eACTOR1);
-		localPose.q.toRadiansAndUnitAxis(thetaX, axisX);
-		localPose.q.toRadiansAndUnitAxis(thetaY, axisY);
-		localPose.q.toRadiansAndUnitAxis(thetaZ, axisZ);
-		cout << "thetaX = " << thetaX << endl;
-		cout << "axisX = <" << axisX[X] << ", " << axisX[Y] << ", " << axisX[Z] << ">" << endl;
+		PxReal thetaZ; PxVec3 axisZ;
+		joints[i]->getActors(a[PxJointActorIndex::eACTOR0], a[PxJointActorIndex::eACTOR1]);
+		PxRigidBody *body1 = (PxRigidBody *) a[PxJointActorIndex::eACTOR1];
+		PxTransform globalPose = body1->getGlobalPose();
+		globalPose.q.toRadiansAndUnitAxis(thetaX, axisX);
+		globalPose.q.toRadiansAndUnitAxis(thetaY, axisY);
+		globalPose.q.toRadiansAndUnitAxis(thetaZ, axisZ);
 		if (DOF > X) { angularPositionVector(i*DOF+X, 0) = thetaX; }
-		if (DOF > Y) { angularPositionVector(i*DOF+Y, 0) = thetaY; }
-		if (DOF > Z) { angularPositionVector(i*DOF+Z, 0) = thetaZ; }
+		if (DOF > Y) { angularPositionVector(i*DOF+Y, 0) = thetaY; } // INCORRECT FOR DOF > 1
+		if (DOF > Z) { angularPositionVector(i*DOF+Z, 0) = thetaZ; } // INCORRECT FOR DOF > 1
 	}
 
 	return angularPositionVector;

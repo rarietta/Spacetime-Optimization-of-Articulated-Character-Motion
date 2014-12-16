@@ -39,20 +39,25 @@ public:
 	Spacetime(matrix<double> startPose, matrix<double> endPose, PxU32 numTimeSteps);
 	matrix<double> state_0;
 	matrix<double> state_d;
+	std::vector<matrix<double>> uSequence;
 	PxU32 numTimeSteps;
 	double deltaT;
-	
+	PxVec3 root;
+
 	// Init functions (SpacetimeInit.cpp)
 	void initPhysics(void);
 
 	// Optimization functions (SpacetimeOptimization.cpp)
+	void makeInitialGuess(void);
 	matrix<double> Optimize(void);
 	
 	// State functions (SpacetimeState.cpp)
 	void switchPause(void);
+	void setState(matrix<double> stateVector);
 
 	// Kinematics functions (SpacetimeKinematics.cpp)
 	void stepPhysics(void);
+	void applyTorqueVector(matrix<double> T);
 
 	// Cleanup functions (SpacetimeCleanup.cpp)
 	void cleanupPhysics(void);
@@ -94,13 +99,12 @@ private:
 	void addJoints(void);
 
 	// State functions (SpacetimeState.cpp)
-	matrix<double> buildStateVector(void);
 	void saveState(void);
 	void restoreState(void);
-	void setState(matrix<double> stateVector);
+	matrix<double> getState(void);
 
 	// Kinematics functions (SpacetimeKinematics.cpp)
-	void applyTorqueVector(matrix<double> T);
+	void debug(void);
 	matrix<double> buildJacobian(void);
 	matrix<double> computeGVector(void);
 	matrix<double> calculateAngularVelocity(void);

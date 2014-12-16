@@ -49,6 +49,7 @@ Spacetime::addDynamicActors(void)
 	PxBoxGeometry base_geometry(4.0, 0.5, 4.0);
 
 	// lamp base transformation
+	root = PxVec3(0,0.6,0);
 	PxVec3 base_translation(0,0.6f,0);
 	PxQuat base_rotation(PxQuat::createIdentity());
 	PxTransform base_transform(base_translation, base_rotation);
@@ -68,7 +69,62 @@ Spacetime::addDynamicActors(void)
 	// lamp base addition
 	gScene->addActor(*base);
 	dynamic_actors.push_back(base);
+	
+	//--------------------------------------------------------------------------//
+	// lamp first leg actor														//
+	//--------------------------------------------------------------------------//
 
+	// first leg geometry
+	PxBoxGeometry leg1_geometry(0.5, 10.0, 0.5);
+
+	// first leg transformation
+	PxVec3 leg1_translation(0.0f, 10.0f*sin(PxPi/4.0f)+1.1f, -10.0f*cos(PxPi/4.0f));
+	PxQuat leg1_rotation(-PxPi/4.0f, PxVec3(1,0,0));
+	PxTransform leg1_transform(leg1_translation, leg1_rotation);
+	
+	// first leg creation
+	PxRigidDynamic *leg1 = PxCreateDynamic(*gPhysics, leg1_transform, 
+		leg1_geometry, *mMaterial, density);
+	if (!leg1)
+		cerr << "create actor failed!" << endl;
+
+	// first leg properties
+    leg1->setAngularDamping(0.75);
+    leg1->setLinearVelocity(PxVec3(0,0,0));
+	leg1->setMass(10.0f);
+	leg1->setName("leg1");
+
+	// first leg addition
+	gScene->addActor(*leg1);
+	dynamic_actors.push_back(leg1);
+
+	//--------------------------------------------------------------------------//
+	// lamp second leg actor													//
+	//--------------------------------------------------------------------------//
+
+	// second leg geometry
+	PxBoxGeometry leg2_geometry(0.5, 10.0, 0.5);
+
+	// second leg transformation
+	transform.p = PxVec3(0,20.0f*sin(PxPi/4.0f)+10.0f*sin(PxPi/4.0f)+1.1f, -20.0f*cos(PxPi/4.0f)+10.0f*cos(PxPi/4.0f));
+	transform.q = PxQuat(PxPi/4.0f, PxVec3(1,0,0));
+
+	// second leg creation
+	PxRigidDynamic *leg2 = PxCreateDynamic(*gPhysics, transform, 
+		leg2_geometry, *mMaterial, density);
+	if (!leg2)
+		cerr << "create actor failed!" << endl;
+
+	// second leg properties
+	leg2->setAngularDamping(0.75);
+	leg2->setMass(10);
+	leg2->setName("leg2");
+
+	// second leg addition
+	gScene->addActor(*leg2);
+	dynamic_actors.push_back(leg2);
+
+	/*
 	//--------------------------------------------------------------------------//
 	// lamp first leg actor														//
 	//--------------------------------------------------------------------------//
@@ -174,6 +230,7 @@ Spacetime::addDynamicActors(void)
 	// lamp head addition
 	gScene->addActor(*bulb);
 	dynamic_actors.push_back(bulb);
+	*/
 }
 
 //======================================================================================================================//
@@ -213,6 +270,7 @@ Spacetime::addJoints(void)
 	joint_local_positions.push_back(PxVec3(0,-10,0));
 	joints.push_back((PxJoint*)leg_joint);
 
+	/*
 	// Create hinge joint between legs
 	body0_transform = PxTransform(PxVec3(0,  10.0, 0));
 	body1_transform = PxTransform(PxVec3(0, -10.0, 0), PxQuat(-PxPi/4.0, PxVec3(1,0,0)));
@@ -233,6 +291,7 @@ Spacetime::addJoints(void)
 	bulb_joint->setSphericalJointFlag(PxSphericalJointFlag::eLIMIT_ENABLED, true);
 	joint_local_positions.push_back(PxVec3(0,-2,0));
 	joints.push_back((PxJoint*)bulb_joint);
+	*/
 }
 
 //======================================================================================================================//

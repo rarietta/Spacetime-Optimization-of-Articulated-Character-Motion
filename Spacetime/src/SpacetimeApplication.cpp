@@ -21,6 +21,7 @@ extern void renderLoop(Spacetime *sys);
 void main(int, char**) {
 	Spacetime *render_system = new Spacetime();
 	render_system->initPhysics();
+	render_system->makeInitialGuess();
 	matrix<double> optimized = render_system->Optimize();
 	renderLoop(render_system);
 }

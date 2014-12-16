@@ -12,18 +12,6 @@
 // Utility functions for saving and restoring the state of the system since physX has no builtin funcionality			//
 //======================================================================================================================//
 
-matrix<double>
-Spacetime::buildStateVector(void) {
-	matrix<double> state(joints.size()*DOF*2,1);
-	matrix<double> theta = calculateAngularPosition();
-	matrix<double> thetaDot = calculateAngularVelocity();
-	for (int i = 0; i < joints.size()*DOF; i++)
-		state(i,1) = theta(i,1);
-	for (int i = 0; i < joints.size()*DOF; i++)
-		state(i+joints.size()*DOF,1) = theta(i,1);
-	return state;
-}
-
 void 
 Spacetime::saveState(void) {
 	linearVelocityVector.clear();
@@ -49,13 +37,46 @@ Spacetime::restoreState(void) {
 
 void
 Spacetime::setState(matrix<double> stateVector) {
-	for (int i = 0; i < joints.size(); i++) {
+	std::vector<PxQuat> theta;
+	for (int i = 1; i <= joints.size(); i++) {
 		PxQuat q = PxQuat::createIdentity();
-		q *= PxQuat(stateVector(i*DOF+X,0), PxVec3(1,0,0));
-		q *= PxQuat(stateVector(i*DOF+Y,0), PxVec3(0,1,0));
-		q *= PxQuat(stateVector(i*DOF+Z,0), PxVec3(0,0,1));
-		// TODO
+		if (DOF > X) { q *= PxQuat(stateVector(i*DOF+X-1,0), PxVec3(1,0,0)); }
+		if (DOF > Y) { q *= PxQuat(stateVector(i*DOF+Y-1,0), PxVec3(0,1,0)); }
+		if (DOF > Z) { q *= PxQuat(stateVector(i*DOF+Z-1,0), PxVec3(0,0,1)); }
+		theta.push_back(q);
 	}
+	dynamic_actors[0]->setGlobalPose(PxTransform(root, PxQuat::createIdentity()));
+	PxVec3 lastJointPos = dynamic_actors[0]->getGlobalPose().p;
+	for (int i = 1; i <= joints.size(); i++) {
+		PxRigidDynamic *current = dynamic_actors[i];
+		PxVec3 t = theta[i-1].rotate(-joint_local_positions[i-1]);
+		PxVec3 gPos = lastJointPos + t;
+		current->setGlobalPose(PxTransform(gPos, theta[i-1]));
+		lastJointPos = lastJointPos + 2*t;
+	}
+	for (int i = 1; i <= joints.size(); i++) {
+		PxRigidDynamic *current = dynamic_actors[i];
+		PxVec3 angularVelocity;
+		if (DOF > X) { angularVelocity[X] = stateVector(joints.size()*DOF-1 + i*DOF+X,0); }
+		else		 { angularVelocity[X] = 0.0; }
+		if (DOF > Y) { angularVelocity[Y] = stateVector(joints.size()*DOF-1 + i*DOF+Y,0); }
+		else		 { angularVelocity[Y] = 0.0; }
+		if (DOF > Z) { angularVelocity[Z] = stateVector(joints.size()*DOF-1 + i*DOF+Z,0); }
+		else		 { angularVelocity[Z] = 0.0; }
+		current->setAngularVelocity(angularVelocity);
+	}
+}
+
+matrix<double>
+Spacetime::getState(void) {
+	matrix<double> state(joints.size()*DOF*2,1);
+	matrix<double> theta = calculateAngularPosition();
+	matrix<double> thetaDot = calculateAngularVelocity();
+	for (int i = 0; i < joints.size()*DOF; i++)
+		state(i,1) = theta(i,1);
+	for (int i = 0; i < joints.size()*DOF; i++)
+		state(i+joints.size()*DOF,1) = theta(i,1);
+	return state;
 }
 
 void
