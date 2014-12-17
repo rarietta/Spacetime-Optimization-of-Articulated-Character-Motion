@@ -1,0 +1,59 @@
+﻿  BipartiteGraphBicoloring.cpp
+c1xx : fatal error C1083: Cannot open source file: 'bipartitegraphbicoloring\BipartiteGraphBicoloring.cpp': No such file or directory
+  BipartiteGraphBicoloringInterface.cpp
+c1xx : fatal error C1083: Cannot open source file: 'bipartitegraphbicoloring\BipartiteGraphBicoloringInterface.cpp': No such file or directory
+  BipartiteGraphCore.cpp
+c1xx : fatal error C1083: Cannot open source file: 'bipartitegraphbicoloring\BipartiteGraphCore.cpp': No such file or directory
+  BipartiteGraphInputOutput.cpp
+c1xx : fatal error C1083: Cannot open source file: 'bipartitegraphbicoloring\BipartiteGraphInputOutput.cpp': No such file or directory
+  BipartiteGraphOrdering.cpp
+c1xx : fatal error C1083: Cannot open source file: 'bipartitegraphbicoloring\BipartiteGraphOrdering.cpp': No such file or directory
+  BipartiteGraphVertexCover.cpp
+c1xx : fatal error C1083: Cannot open source file: 'BipartiteGraphBicoloring\BipartiteGraphVertexCover.cpp': No such file or directory
+  BipartiteGraphPartialColoring.cpp
+c1xx : fatal error C1083: Cannot open source file: 'bipartitegraphpartialcoloring\BipartiteGraphPartialColoring.cpp': No such file or directory
+  BipartiteGraphPartialColoringInterface.cpp
+c1xx : fatal error C1083: Cannot open source file: 'bipartitegraphpartialcoloring\BipartiteGraphPartialColoringInterface.cpp': No such file or directory
+  BipartiteGraphPartialOrdering.cpp
+c1xx : fatal error C1083: Cannot open source file: 'bipartitegraphpartialcoloring\BipartiteGraphPartialOrdering.cpp': No such file or directory
+  GraphColoring.cpp
+c1xx : fatal error C1083: Cannot open source file: 'graphcoloring\GraphColoring.cpp': No such file or directory
+  GraphColoringInterface.cpp
+c1xx : fatal error C1083: Cannot open source file: 'graphcoloring\GraphColoringInterface.cpp': No such file or directory
+  GraphCore.cpp
+c1xx : fatal error C1083: Cannot open source file: 'graphcoloring\GraphCore.cpp': No such file or directory
+  GraphInputOutput.cpp
+c1xx : fatal error C1083: Cannot open source file: 'graphcoloring\GraphInputOutput.cpp': No such file or directory
+  GraphOrdering.cpp
+c1xx : fatal error C1083: Cannot open source file: 'graphcoloring\GraphOrdering.cpp': No such file or directory
+  HessianRecovery.cpp
+c1xx : fatal error C1083: Cannot open source file: 'recovery\HessianRecovery.cpp': No such file or directory
+  JacobianRecovery1D.cpp
+c1xx : fatal error C1083: Cannot open source file: 'recovery\JacobianRecovery1D.cpp': No such file or directory
+  JacobianRecovery2D.cpp
+c1xx : fatal error C1083: Cannot open source file: 'recovery\JacobianRecovery2D.cpp': No such file or directory
+  RecoveryCore.cpp
+c1xx : fatal error C1083: Cannot open source file: 'recovery\RecoveryCore.cpp': No such file or directory
+  CoutLock.cpp
+c1xx : fatal error C1083: Cannot open source file: 'Utilities\CoutLock.cpp': No such file or directory
+  current_time.cpp
+c1xx : fatal error C1083: Cannot open source file: 'Utilities\current_time.cpp': No such file or directory
+  Generating Code...
+  Compiling...
+  DisjointSets.cpp
+c1xx : fatal error C1083: Cannot open source file: 'utilities\DisjointSets.cpp': No such file or directory
+  extra.cpp
+c1xx : fatal error C1083: Cannot open source file: 'utilities\extra.cpp': No such file or directory
+  File.cpp
+c1xx : fatal error C1083: Cannot open source file: 'utilities\File.cpp': No such file or directory
+  MatrixDeallocation.cpp
+c1xx : fatal error C1083: Cannot open source file: 'utilities\MatrixDeallocation.cpp': No such file or directory
+  mmio.cpp
+c1xx : fatal error C1083: Cannot open source file: 'Utilities\mmio.cpp': No such file or directory
+  Pause.cpp
+c1xx : fatal error C1083: Cannot open source file: 'utilities\Pause.cpp': No such file or directory
+  StringTokenizer.cpp
+c1xx : fatal error C1083: Cannot open source file: 'utilities\StringTokenizer.cpp': No such file or directory
+  Timer.cpp
+c1xx : fatal error C1083: Cannot open source file: 'utilities\Timer.cpp': No such file or directory
+  Generating Code...

@@ -1,0 +1,56 @@
+﻿  adalloc.c
+  convolut.c
+  drivers.c
+  driversf.c
+  odedrivers.c
+  odedriversf.c
+  taylor.c
+  fortutils.c
+  forward_partx.c
+  fos_an_forward.c
+  fos_an_reverse.c
+  fos_forward.c
+  fos_reverse.c
+  fov_an_forward.c
+  fov_forward.c
+  fov_offset_forward.c
+  fov_reverse.c
+  hos_forward.c
+  hos_ov_reverse.c
+  hos_reverse.c
+  Generating Code...
+  Compiling...
+  hov_forward.c
+  hov_reverse.c
+  hov_wk_forward.c
+  indopro_forward_s.c
+  indopro_forward_t.c
+  int_forward_s.c
+  int_forward_t.c
+  int_reverse_s.c
+  int_reverse_t.c
+  interfacesf.c
+  nonl_ind_forward_s.c
+  nonl_ind_forward_t.c
+  nonl_ind_old_forward_s.c
+  nonl_ind_old_forward_t.c
+  revolve.c
+  tapedoc.c
+  taping.c
+  zos_an_forward.c
+  zos_forward.c
+  Generating Code...
+  adouble.cpp
+  adouble_tl.cpp
+  advector.cpp
+  checkpointing.cpp
+  externfcts.cpp
+  fixpoint.cpp
+  interfaces.cpp
+  param.cpp
+  tape_handling.cpp
+  Generating Code...
+LINK : warning LNK4075: ignoring '/INCREMENTAL' due to '/OPT:ICF' specification
+     Creating library C:\Users\Richard\Documents\Academics\Penn\03_F2014\CIS599 - Masters Independent Study\Spacetime-Optimization-of-Articulated-Character-Motion\ADOL-C\MSVisualStudio\v10\x64\nosparse\adolc.lib and object C:\Users\Richard\Documents\Academics\Penn\03_F2014\CIS599 - Masters Independent Study\Spacetime-Optimization-of-Articulated-Character-Motion\ADOL-C\MSVisualStudio\v10\x64\nosparse\adolc.exp
+  adolc.vcxproj -> C:\Users\Richard\Documents\Academics\Penn\03_F2014\CIS599 - Masters Independent Study\Spacetime-Optimization-of-Articulated-Character-Motion\ADOL-C\MSVisualStudio\v10\x64\nosparse\adolc.dll
+  adolc.vcxproj -> C:\Users\Richard\Documents\Academics\Penn\03_F2014\CIS599 - Masters Independent Study\Spacetime-Optimization-of-Articulated-Character-Motion\ADOL-C\MSVisualStudio\v10\x64\nosparse\adolc.dll

@@ -165,10 +165,10 @@
       <BasicRuntimeChecks>UninitializedLocalUsageCheck</BasicRuntimeChecks>
       <AdditionalOptions>/MP</AdditionalOptions>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>./../ADOL-C/ADOL-C/;./../ADOL-C/windows/nosparse;./../Bin;./../Include;./../ADOL-C/lib;./../ADOL-C/include;./../ADOL-C/bin;./../PhysX/foundation/include;./../PhysX/Common/src;./../PhysX/GeomUtils/src;./../PhysX/GeomUtils/headers;./../PhysX/GeomUtils/include;./../PhysX/GeomUtils/src/contact;./../PhysX/GeomUtils/src/common;./../PhysX/GeomUtils/src/convex;./../PhysX/GeomUtils/src/distance;./../PhysX/GeomUtils/src/gjk;./../PhysX/GeomUtils/src/intersection;./../PhysX/GeomUtils/src/mesh;./../PhysX/GeomUtils/src/hf;./../PhysX/GeomUtils/src/Ice;./../PhysX/GeomUtils/src/pcm;./Graphics/include/win32/GL;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\..\ADOL-C\ADOL-C\src;.\..\ADOL-C\ADOL-C\include;.\..\ADOL-C\MSVisualStudio\v10\x64\nosparse;./../ADOL-C/ADOL-C/;./../ADOL-C/windows/nosparse;./../Bin;./../Include;./../ADOL-C/lib;./../ADOL-C/include;./../ADOL-C/bin;./../PhysX/foundation/include;./../PhysX/Common/src;./../PhysX/GeomUtils/src;./../PhysX/GeomUtils/headers;./../PhysX/GeomUtils/include;./../PhysX/GeomUtils/src/contact;./../PhysX/GeomUtils/src/common;./../PhysX/GeomUtils/src/convex;./../PhysX/GeomUtils/src/distance;./../PhysX/GeomUtils/src/gjk;./../PhysX/GeomUtils/src/intersection;./../PhysX/GeomUtils/src/mesh;./../PhysX/GeomUtils/src/hf;./../PhysX/GeomUtils/src/Ice;./../PhysX/GeomUtils/src/pcm;./Graphics/include/win32/GL;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;WIN64;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_ALLOW_MSC_VER_MISMATCH;_ALLOW_ITERATOR_DEBUG_LEVEL_MISMATCH;PHYSX_PROFILE_SDK;RENDER_SNIPPET;_DEBUG;PX_DEBUG;PX_CHECKED;PX_SUPPORT_VISUAL_DEBUGGER;PX_NVTX;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ExceptionHandling>Sync</ExceptionHandling>
-      <WarningLevel>Level4</WarningLevel>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>
@@ -200,10 +200,10 @@
       <BasicRuntimeChecks>UninitializedLocalUsageCheck</BasicRuntimeChecks>
       <AdditionalOptions>/MP</AdditionalOptions>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>./../ADOL-C/ADOL-C/;./../ADOL-C/windows/nosparse;./../Bin;./../Include;./../ADOL-C/lib;./../ADOL-C/include;./../ADOL-C/bin;./../PhysX/foundation/include;./../PhysX/Common/src;./../PhysX/GeomUtils/src;./../PhysX/GeomUtils/headers;./../PhysX/GeomUtils/include;./../PhysX/GeomUtils/src/contact;./../PhysX/GeomUtils/src/common;./../PhysX/GeomUtils/src/convex;./../PhysX/GeomUtils/src/distance;./../PhysX/GeomUtils/src/gjk;./../PhysX/GeomUtils/src/intersection;./../PhysX/GeomUtils/src/mesh;./../PhysX/GeomUtils/src/hf;./../PhysX/GeomUtils/src/Ice;./../PhysX/GeomUtils/src/pcm;./Graphics/include/win32/GL;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\..\ADOL-C\ADOL-C\src;.\..\ADOL-C\ADOL-C\include;.\..\ADOL-C\MSVisualStudio\v10\x64\nosparse;./../ADOL-C/ADOL-C/;./../ADOL-C/windows/nosparse;./../Bin;./../Include;./../ADOL-C/lib;./../ADOL-C/include;./../ADOL-C/bin;./../PhysX/foundation/include;./../PhysX/Common/src;./../PhysX/GeomUtils/src;./../PhysX/GeomUtils/headers;./../PhysX/GeomUtils/include;./../PhysX/GeomUtils/src/contact;./../PhysX/GeomUtils/src/common;./../PhysX/GeomUtils/src/convex;./../PhysX/GeomUtils/src/distance;./../PhysX/GeomUtils/src/gjk;./../PhysX/GeomUtils/src/intersection;./../PhysX/GeomUtils/src/mesh;./../PhysX/GeomUtils/src/hf;./../PhysX/GeomUtils/src/Ice;./../PhysX/GeomUtils/src/pcm;./Graphics/include/win32/GL;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;WIN64;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_ALLOW_MSC_VER_MISMATCH;_ALLOW_ITERATOR_DEBUG_LEVEL_MISMATCH;PHYSX_PROFILE_SDK;RENDER_SNIPPET;_DEBUG;PX_DEBUG;PX_CHECKED;PX_SUPPORT_VISUAL_DEBUGGER;PX_NVTX;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ExceptionHandling>Sync</ExceptionHandling>
-      <WarningLevel>Level4</WarningLevel>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>
@@ -249,10 +249,10 @@
       <FloatingPointModel>Fast</FloatingPointModel>
       <AdditionalOptions>/MP</AdditionalOptions>
       <Optimization>Full</Optimization>
-      <AdditionalIncludeDirectories>./../ADOL-C/ADOL-C/;./../ADOL-C/windows/nosparse;./../Bin;./../Include;./../ADOL-C/lib;./../ADOL-C/include;./../ADOL-C/bin;./../PhysX/foundation/include;./../PhysX/Common/src;./../PhysX/GeomUtils/src;./../PhysX/GeomUtils/headers;./../PhysX/GeomUtils/include;./../PhysX/GeomUtils/src/contact;./../PhysX/GeomUtils/src/common;./../PhysX/GeomUtils/src/convex;./../PhysX/GeomUtils/src/distance;./../PhysX/GeomUtils/src/gjk;./../PhysX/GeomUtils/src/intersection;./../PhysX/GeomUtils/src/mesh;./../PhysX/GeomUtils/src/hf;./../PhysX/GeomUtils/src/Ice;./../PhysX/GeomUtils/src/pcm;./Graphics/include/win32/GL;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\..\ADOL-C\ADOL-C\src;.\..\ADOL-C\ADOL-C\include;.\..\ADOL-C\MSVisualStudio\v10\x64\nosparse;./../ADOL-C/ADOL-C/;./../ADOL-C/windows/nosparse;./../Bin;./../Include;./../ADOL-C/lib;./../ADOL-C/include;./../ADOL-C/bin;./../PhysX/foundation/include;./../PhysX/Common/src;./../PhysX/GeomUtils/src;./../PhysX/GeomUtils/headers;./../PhysX/GeomUtils/include;./../PhysX/GeomUtils/src/contact;./../PhysX/GeomUtils/src/common;./../PhysX/GeomUtils/src/convex;./../PhysX/GeomUtils/src/distance;./../PhysX/GeomUtils/src/gjk;./../PhysX/GeomUtils/src/intersection;./../PhysX/GeomUtils/src/mesh;./../PhysX/GeomUtils/src/hf;./../PhysX/GeomUtils/src/Ice;./../PhysX/GeomUtils/src/pcm;./Graphics/include/win32/GL;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;WIN64;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_ALLOW_MSC_VER_MISMATCH;_ALLOW_ITERATOR_DEBUG_LEVEL_MISMATCH;PHYSX_PROFILE_SDK;RENDER_SNIPPET;NDEBUG;PX_CHECKED;PX_SUPPORT_VISUAL_DEBUGGER;PX_NVTX;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ExceptionHandling>Sync</ExceptionHandling>
-      <WarningLevel>Level4</WarningLevel>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>
@@ -282,10 +282,10 @@
       <FloatingPointModel>Fast</FloatingPointModel>
       <AdditionalOptions>/MP</AdditionalOptions>
       <Optimization>Full</Optimization>
-      <AdditionalIncludeDirectories>./../ADOL-C/ADOL-C/;./../ADOL-C/windows/nosparse;./../Bin;./../Include;./../ADOL-C/lib;./../ADOL-C/include;./../ADOL-C/bin;./../PhysX/foundation/include;./../PhysX/Common/src;./../PhysX/GeomUtils/src;./../PhysX/GeomUtils/headers;./../PhysX/GeomUtils/include;./../PhysX/GeomUtils/src/contact;./../PhysX/GeomUtils/src/common;./../PhysX/GeomUtils/src/convex;./../PhysX/GeomUtils/src/distance;./../PhysX/GeomUtils/src/gjk;./../PhysX/GeomUtils/src/intersection;./../PhysX/GeomUtils/src/mesh;./../PhysX/GeomUtils/src/hf;./../PhysX/GeomUtils/src/Ice;./../PhysX/GeomUtils/src/pcm;./Graphics/include/win32/GL;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\..\ADOL-C\ADOL-C\src;.\..\ADOL-C\ADOL-C\include;.\..\ADOL-C\MSVisualStudio\v10\x64\nosparse;./../ADOL-C/ADOL-C/;./../ADOL-C/windows/nosparse;./../Bin;./../Include;./../ADOL-C/lib;./../ADOL-C/include;./../ADOL-C/bin;./../PhysX/foundation/include;./../PhysX/Common/src;./../PhysX/GeomUtils/src;./../PhysX/GeomUtils/headers;./../PhysX/GeomUtils/include;./../PhysX/GeomUtils/src/contact;./../PhysX/GeomUtils/src/common;./../PhysX/GeomUtils/src/convex;./../PhysX/GeomUtils/src/distance;./../PhysX/GeomUtils/src/gjk;./../PhysX/GeomUtils/src/intersection;./../PhysX/GeomUtils/src/mesh;./../PhysX/GeomUtils/src/hf;./../PhysX/GeomUtils/src/Ice;./../PhysX/GeomUtils/src/pcm;./Graphics/include/win32/GL;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;WIN64;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_ALLOW_MSC_VER_MISMATCH;_ALLOW_ITERATOR_DEBUG_LEVEL_MISMATCH;PHYSX_PROFILE_SDK;RENDER_SNIPPET;NDEBUG;PX_CHECKED;PX_SUPPORT_VISUAL_DEBUGGER;PX_NVTX;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ExceptionHandling>Sync</ExceptionHandling>
-      <WarningLevel>Level4</WarningLevel>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>
@@ -330,10 +330,10 @@
       <FloatingPointModel>Fast</FloatingPointModel>
       <AdditionalOptions>/MP</AdditionalOptions>
       <Optimization>Full</Optimization>
-      <AdditionalIncludeDirectories>./../ADOL-C/ADOL-C/;./../ADOL-C/windows/nosparse;./../Bin;./../Include;./../ADOL-C/lib;./../ADOL-C/include;./../ADOL-C/bin;./../PhysX/foundation/include;./../PhysX/Common/src;./../PhysX/GeomUtils/src;./../PhysX/GeomUtils/headers;./../PhysX/GeomUtils/include;./../PhysX/GeomUtils/src/contact;./../PhysX/GeomUtils/src/common;./../PhysX/GeomUtils/src/convex;./../PhysX/GeomUtils/src/distance;./../PhysX/GeomUtils/src/gjk;./../PhysX/GeomUtils/src/intersection;./../PhysX/GeomUtils/src/mesh;./../PhysX/GeomUtils/src/hf;./../PhysX/GeomUtils/src/Ice;./../PhysX/GeomUtils/src/pcm;./Graphics/include/win32/GL;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\..\ADOL-C\ADOL-C\src;.\..\ADOL-C\ADOL-C\include;.\..\ADOL-C\MSVisualStudio\v10\x64\nosparse;./../ADOL-C/ADOL-C/;./../ADOL-C/windows/nosparse;./../Bin;./../Include;./../ADOL-C/lib;./../ADOL-C/include;./../ADOL-C/bin;./../PhysX/foundation/include;./../PhysX/Common/src;./../PhysX/GeomUtils/src;./../PhysX/GeomUtils/headers;./../PhysX/GeomUtils/include;./../PhysX/GeomUtils/src/contact;./../PhysX/GeomUtils/src/common;./../PhysX/GeomUtils/src/convex;./../PhysX/GeomUtils/src/distance;./../PhysX/GeomUtils/src/gjk;./../PhysX/GeomUtils/src/intersection;./../PhysX/GeomUtils/src/mesh;./../PhysX/GeomUtils/src/hf;./../PhysX/GeomUtils/src/Ice;./../PhysX/GeomUtils/src/pcm;./Graphics/include/win32/GL;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;WIN64;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_ALLOW_MSC_VER_MISMATCH;_ALLOW_ITERATOR_DEBUG_LEVEL_MISMATCH;PHYSX_PROFILE_SDK;RENDER_SNIPPET;NDEBUG;PX_PROFILE;PX_SUPPORT_VISUAL_DEBUGGER;PX_NVTX;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ExceptionHandling>Sync</ExceptionHandling>
-      <WarningLevel>Level4</WarningLevel>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>
@@ -363,10 +363,10 @@
       <FloatingPointModel>Fast</FloatingPointModel>
       <AdditionalOptions>/MP</AdditionalOptions>
       <Optimization>Full</Optimization>
-      <AdditionalIncludeDirectories>./../ADOL-C/ADOL-C/;./../ADOL-C/windows/nosparse;./../Bin;./../Include;./../ADOL-C/lib;./../ADOL-C/include;./../ADOL-C/bin;./../PhysX/foundation/include;./../PhysX/Common/src;./../PhysX/GeomUtils/src;./../PhysX/GeomUtils/headers;./../PhysX/GeomUtils/include;./../PhysX/GeomUtils/src/contact;./../PhysX/GeomUtils/src/common;./../PhysX/GeomUtils/src/convex;./../PhysX/GeomUtils/src/distance;./../PhysX/GeomUtils/src/gjk;./../PhysX/GeomUtils/src/intersection;./../PhysX/GeomUtils/src/mesh;./../PhysX/GeomUtils/src/hf;./../PhysX/GeomUtils/src/Ice;./../PhysX/GeomUtils/src/pcm;./Graphics/include/win32/GL;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\..\ADOL-C\ADOL-C\src;.\..\ADOL-C\ADOL-C\include;.\..\ADOL-C\MSVisualStudio\v10\x64\nosparse;./../ADOL-C/ADOL-C/;./../ADOL-C/windows/nosparse;./../Bin;./../Include;./../ADOL-C/lib;./../ADOL-C/include;./../ADOL-C/bin;./../PhysX/foundation/include;./../PhysX/Common/src;./../PhysX/GeomUtils/src;./../PhysX/GeomUtils/headers;./../PhysX/GeomUtils/include;./../PhysX/GeomUtils/src/contact;./../PhysX/GeomUtils/src/common;./../PhysX/GeomUtils/src/convex;./../PhysX/GeomUtils/src/distance;./../PhysX/GeomUtils/src/gjk;./../PhysX/GeomUtils/src/intersection;./../PhysX/GeomUtils/src/mesh;./../PhysX/GeomUtils/src/hf;./../PhysX/GeomUtils/src/Ice;./../PhysX/GeomUtils/src/pcm;./Graphics/include/win32/GL;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;WIN64;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_ALLOW_MSC_VER_MISMATCH;_ALLOW_ITERATOR_DEBUG_LEVEL_MISMATCH;PHYSX_PROFILE_SDK;RENDER_SNIPPET;NDEBUG;PX_PROFILE;PX_SUPPORT_VISUAL_DEBUGGER;PX_NVTX;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ExceptionHandling>Sync</ExceptionHandling>
-      <WarningLevel>Level4</WarningLevel>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>
@@ -437,10 +437,10 @@
       <FloatingPointModel>Fast</FloatingPointModel>
       <AdditionalOptions>/MP</AdditionalOptions>
       <Optimization>Full</Optimization>
-      <AdditionalIncludeDirectories>./../ADOL-C/ADOL-C/;./../ADOL-C/windows/nosparse;./../Bin;./../Include;./../ADOL-C/lib;./../ADOL-C/include;./../ADOL-C/bin;./../PhysX/foundation/include;./../PhysX/Common/src;./../PhysX/GeomUtils/src;./../PhysX/GeomUtils/headers;./../PhysX/GeomUtils/include;./../PhysX/GeomUtils/src/contact;./../PhysX/GeomUtils/src/common;./../PhysX/GeomUtils/src/convex;./../PhysX/GeomUtils/src/distance;./../PhysX/GeomUtils/src/gjk;./../PhysX/GeomUtils/src/intersection;./../PhysX/GeomUtils/src/mesh;./../PhysX/GeomUtils/src/hf;./../PhysX/GeomUtils/src/Ice;./../PhysX/GeomUtils/src/pcm;./Graphics/include/win32/GL;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\..\ADOL-C\ADOL-C\src;.\..\ADOL-C\ADOL-C\include;.\..\ADOL-C\MSVisualStudio\v10\x64\nosparse;./../ADOL-C/ADOL-C/;./../ADOL-C/windows/nosparse;./../Bin;./../Include;./../ADOL-C/lib;./../ADOL-C/include;./../ADOL-C/bin;./../PhysX/foundation/include;./../PhysX/Common/src;./../PhysX/GeomUtils/src;./../PhysX/GeomUtils/headers;./../PhysX/GeomUtils/include;./../PhysX/GeomUtils/src/contact;./../PhysX/GeomUtils/src/common;./../PhysX/GeomUtils/src/convex;./../PhysX/GeomUtils/src/distance;./../PhysX/GeomUtils/src/gjk;./../PhysX/GeomUtils/src/intersection;./../PhysX/GeomUtils/src/mesh;./../PhysX/GeomUtils/src/hf;./../PhysX/GeomUtils/src/Ice;./../PhysX/GeomUtils/src/pcm;./Graphics/include/win32/GL;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;WIN64;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_ALLOW_MSC_VER_MISMATCH;_ALLOW_ITERATOR_DEBUG_LEVEL_MISMATCH;PHYSX_PROFILE_SDK;RENDER_SNIPPET;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ExceptionHandling>Sync</ExceptionHandling>
-      <WarningLevel>Level4</WarningLevel>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>
@@ -450,7 +450,7 @@
       <AdditionalOptions>/INCREMENTAL:NO /LIBPATH:../../../Lib/win64 PhysX3Common_x64.lib PhysX3_x64.lib PhysX3Cooking_x64.lib PhysX3CharacterKinematic_x64.lib PhysX3Extensions.lib PhysX3Vehicle.lib PhysXProfileSDK.lib PhysXVisualDebuggerSDK.lib PxTask.lib</AdditionalOptions>
       <AdditionalDependencies>Winmm.lib;OpenGL32.lib;glut32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)$(ProjectName).exe</OutputFile>
-      <AdditionalLibraryDirectories>./../ADOL-C/windows/nosparse;./../Bin/win64/;./../ADOL-C/lib/;./../ADOL-C/include;./../ADOL-C/bin;./../Common/lib/win64;./lib/win64;./Graphics/lib/win64/glut;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>.\..\ADOL-C\MSVisualStudio\v10\nosparse;.\..\ADOL-C\MSVisualStudio\v10\x64\nosparse;./../Bin/win64/;./../ADOL-C/lib/;./../ADOL-C/include;./../ADOL-C/bin;./../Common/lib/win64;./lib/win64;./Graphics/lib/win64/glut;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ProgramDatabaseFile>$(OutDir)/$(ProjectName).exe.pdb</ProgramDatabaseFile>
       <SubSystem>Console</SubSystem>
       <ImportLibrary>$(OutDir)$(TargetName).lib</ImportLibrary>
@@ -470,10 +470,10 @@
       <FloatingPointModel>Fast</FloatingPointModel>
       <AdditionalOptions>/MP</AdditionalOptions>
       <Optimization>Full</Optimization>
-      <AdditionalIncludeDirectories>./../ADOL-C/ADOL-C/;./../ADOL-C/windows/nosparse;./../Bin;./../Include;./../ADOL-C/lib;./../ADOL-C/include;./../ADOL-C/bin;./../PhysX/foundation/include;./../PhysX/Common/src;./../PhysX/GeomUtils/src;./../PhysX/GeomUtils/headers;./../PhysX/GeomUtils/include;./../PhysX/GeomUtils/src/contact;./../PhysX/GeomUtils/src/common;./../PhysX/GeomUtils/src/convex;./../PhysX/GeomUtils/src/distance;./../PhysX/GeomUtils/src/gjk;./../PhysX/GeomUtils/src/intersection;./../PhysX/GeomUtils/src/mesh;./../PhysX/GeomUtils/src/hf;./../PhysX/GeomUtils/src/Ice;./../PhysX/GeomUtils/src/pcm;./Graphics/include/win32/GL;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\..\ADOL-C\ADOL-C\src;.\..\ADOL-C\ADOL-C\include;.\..\ADOL-C\MSVisualStudio\v10\x64\nosparse;./../ADOL-C/ADOL-C/;./../ADOL-C/windows/nosparse;./../Bin;./../Include;./../ADOL-C/lib;./../ADOL-C/include;./../ADOL-C/bin;./../PhysX/foundation/include;./../PhysX/Common/src;./../PhysX/GeomUtils/src;./../PhysX/GeomUtils/headers;./../PhysX/GeomUtils/include;./../PhysX/GeomUtils/src/contact;./../PhysX/GeomUtils/src/common;./../PhysX/GeomUtils/src/convex;./../PhysX/GeomUtils/src/distance;./../PhysX/GeomUtils/src/gjk;./../PhysX/GeomUtils/src/intersection;./../PhysX/GeomUtils/src/mesh;./../PhysX/GeomUtils/src/hf;./../PhysX/GeomUtils/src/Ice;./../PhysX/GeomUtils/src/pcm;./Graphics/include/win32/GL;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;WIN64;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_ALLOW_MSC_VER_MISMATCH;_ALLOW_ITERATOR_DEBUG_LEVEL_MISMATCH;PHYSX_PROFILE_SDK;RENDER_SNIPPET;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ExceptionHandling>Sync</ExceptionHandling>
-      <WarningLevel>Level4</WarningLevel>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>
@@ -483,7 +483,7 @@
       <AdditionalOptions>/INCREMENTAL:NO /LIBPATH:../../../Lib/win64 PhysX3Common_x64.lib PhysX3_x64.lib PhysX3Cooking_x64.lib PhysX3CharacterKinematic_x64.lib PhysX3Extensions.lib PhysX3Vehicle.lib PhysXProfileSDK.lib PhysXVisualDebuggerSDK.lib PxTask.lib</AdditionalOptions>
       <AdditionalDependencies>Winmm.lib;OpenGL32.lib;glut32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)$(ProjectName).exe</OutputFile>
-      <AdditionalLibraryDirectories>./../ADOL-C/windows/nosparse;./../Bin/win64/;./../ADOL-C/lib/;./../ADOL-C/include;./../ADOL-C/bin;./../Common/lib/win64;./lib/win64;./Graphics/lib/win64/glut;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>./../ADOL-C/MSVisualStudio/v10/x64/nosparse;./../ADOL-C/MSVisualStudio/v10/nosparse;./../Bin/win64/;./../ADOL-C/lib/;./../ADOL-C/include;./../ADOL-C/bin;./../Common/lib/win64;./lib/win64;./Graphics/lib/win64/glut;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ProgramDatabaseFile>$(OutDir)/$(ProjectName).exe.pdb</ProgramDatabaseFile>
       <SubSystem>Console</SubSystem>
       <ImportLibrary>$(OutDir)$(TargetName).lib</ImportLibrary>
@@ -501,10 +501,10 @@
       <FloatingPointModel>Fast</FloatingPointModel>
       <AdditionalOptions>/MP</AdditionalOptions>
       <Optimization>Full</Optimization>
-      <AdditionalIncludeDirectories>./../ADOL-C/ADOL-C/;./../ADOL-C/windows/nosparse;./../Bin;./../Include;./../ADOL-C/lib;./../ADOL-C/include;./../ADOL-C/bin;./../PhysX/foundation/include;./../PhysX/Common/src;./../PhysX/GeomUtils/src;./../PhysX/GeomUtils/headers;./../PhysX/GeomUtils/include;./../PhysX/GeomUtils/src/contact;./../PhysX/GeomUtils/src/common;./../PhysX/GeomUtils/src/convex;./../PhysX/GeomUtils/src/distance;./../PhysX/GeomUtils/src/gjk;./../PhysX/GeomUtils/src/intersection;./../PhysX/GeomUtils/src/mesh;./../PhysX/GeomUtils/src/hf;./../PhysX/GeomUtils/src/Ice;./../PhysX/GeomUtils/src/pcm;./Graphics/include/win32/GL;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\..\ADOL-C\ADOL-C\src;.\..\ADOL-C\ADOL-C\include;.\..\ADOL-C\MSVisualStudio\v10\x64\nosparse;./../ADOL-C/ADOL-C/;./../ADOL-C/windows/nosparse;./../Bin;./../Include;./../ADOL-C/lib;./../ADOL-C/include;./../ADOL-C/bin;./../PhysX/foundation/include;./../PhysX/Common/src;./../PhysX/GeomUtils/src;./../PhysX/GeomUtils/headers;./../PhysX/GeomUtils/include;./../PhysX/GeomUtils/src/contact;./../PhysX/GeomUtils/src/common;./../PhysX/GeomUtils/src/convex;./../PhysX/GeomUtils/src/distance;./../PhysX/GeomUtils/src/gjk;./../PhysX/GeomUtils/src/intersection;./../PhysX/GeomUtils/src/mesh;./../PhysX/GeomUtils/src/hf;./../PhysX/GeomUtils/src/Ice;./../PhysX/GeomUtils/src/pcm;./Graphics/include/win32/GL;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;WIN64;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_ALLOW_MSC_VER_MISMATCH;_ALLOW_ITERATOR_DEBUG_LEVEL_MISMATCH;PHYSX_PROFILE_SDK;RENDER_SNIPPET;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ExceptionHandling>Sync</ExceptionHandling>
-      <WarningLevel>Level4</WarningLevel>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>
@@ -514,7 +514,7 @@
       <AdditionalOptions>/INCREMENTAL:NO /LIBPATH:../../../Lib/win64 PhysX3Common_x64.lib PhysX3_x64.lib PhysX3Cooking_x64.lib PhysX3CharacterKinematic_x64.lib PhysX3Extensions.lib PhysX3Vehicle.lib PhysXProfileSDK.lib PhysXVisualDebuggerSDK.lib PxTask.lib</AdditionalOptions>
       <AdditionalDependencies>Winmm.lib;OpenGL32.lib;glut32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)$(ProjectName).exe</OutputFile>
-      <AdditionalLibraryDirectories>./../ADOL-C/windows/nosparse;./../Bin/win64/;./../ADOL-C/lib/;./../ADOL-C/include;./../ADOL-C/bin;./../Common/lib/win64;./lib/win64;./Graphics/lib/win64/glut;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>./../ADOL-C/MSVisualStudio/v10/x64/nosparse;./../Bin/win64/;./../ADOL-C/lib/;./../ADOL-C/include;./../ADOL-C/bin;./../Common/lib/win64;./lib/win64;./Graphics/lib/win64/glut;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ProgramDatabaseFile>$(OutDir)/$(ProjectName).exe.pdb</ProgramDatabaseFile>
       <SubSystem>Console</SubSystem>
       <ImportLibrary>$(OutDir)$(TargetName).lib</ImportLibrary>
@@ -532,10 +532,10 @@
       <FloatingPointModel>Fast</FloatingPointModel>
       <AdditionalOptions>/MP</AdditionalOptions>
       <Optimization>Full</Optimization>
-      <AdditionalIncludeDirectories>./../ADOL-C/ADOL-C/;./../ADOL-C/windows/nosparse;./../Bin;./../Include;./../ADOL-C/lib;./../ADOL-C/include;./../ADOL-C/bin;./../PhysX/foundation/include;./../PhysX/Common/src;./../PhysX/GeomUtils/src;./../PhysX/GeomUtils/headers;./../PhysX/GeomUtils/include;./../PhysX/GeomUtils/src/contact;./../PhysX/GeomUtils/src/common;./../PhysX/GeomUtils/src/convex;./../PhysX/GeomUtils/src/distance;./../PhysX/GeomUtils/src/gjk;./../PhysX/GeomUtils/src/intersection;./../PhysX/GeomUtils/src/mesh;./../PhysX/GeomUtils/src/hf;./../PhysX/GeomUtils/src/Ice;./../PhysX/GeomUtils/src/pcm;./Graphics/include/win32/GL;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\..\ADOL-C\ADOL-C\src;.\..\ADOL-C\ADOL-C\include;.\..\ADOL-C\MSVisualStudio\v10\x64\nosparse;./../ADOL-C/ADOL-C/;./../ADOL-C/windows/nosparse;./../Bin;./../Include;./../ADOL-C/lib;./../ADOL-C/include;./../ADOL-C/bin;./../PhysX/foundation/include;./../PhysX/Common/src;./../PhysX/GeomUtils/src;./../PhysX/GeomUtils/headers;./../PhysX/GeomUtils/include;./../PhysX/GeomUtils/src/contact;./../PhysX/GeomUtils/src/common;./../PhysX/GeomUtils/src/convex;./../PhysX/GeomUtils/src/distance;./../PhysX/GeomUtils/src/gjk;./../PhysX/GeomUtils/src/intersection;./../PhysX/GeomUtils/src/mesh;./../PhysX/GeomUtils/src/hf;./../PhysX/GeomUtils/src/Ice;./../PhysX/GeomUtils/src/pcm;./Graphics/include/win32/GL;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;WIN64;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_ALLOW_MSC_VER_MISMATCH;_ALLOW_ITERATOR_DEBUG_LEVEL_MISMATCH;PHYSX_PROFILE_SDK;RENDER_SNIPPET;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ExceptionHandling>Sync</ExceptionHandling>
-      <WarningLevel>Level4</WarningLevel>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>
@@ -545,7 +545,7 @@
       <AdditionalOptions>/INCREMENTAL:NO /LIBPATH:../../../Lib/win64 PhysX3Common_x64.lib PhysX3_x64.lib PhysX3Cooking_x64.lib PhysX3CharacterKinematic_x64.lib PhysX3Extensions.lib PhysX3Vehicle.lib PhysXProfileSDK.lib PhysXVisualDebuggerSDK.lib PxTask.lib</AdditionalOptions>
       <AdditionalDependencies>Winmm.lib;OpenGL32.lib;glut32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)$(ProjectName).exe</OutputFile>
-      <AdditionalLibraryDirectories>./../ADOL-C/windows/nosparse;./../Bin/win64/;./../ADOL-C/lib/;./../ADOL-C/include;./../ADOL-C/bin;./../Common/lib/win64;./lib/win64;./Graphics/lib/win64/glut;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>./../ADOL-C/MSVisualStudio/v10/nosparse;./../Bin/win64/;./../ADOL-C/lib/;./../ADOL-C/include;./../ADOL-C/bin;./../Common/lib/win64;./lib/win64;./Graphics/lib/win64/glut;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ProgramDatabaseFile>$(OutDir)/$(ProjectName).exe.pdb</ProgramDatabaseFile>
       <SubSystem>Console</SubSystem>
       <ImportLibrary>$(OutDir)$(TargetName).lib</ImportLibrary>

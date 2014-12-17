@@ -105,7 +105,7 @@ Spacetime::computeGVector(void)
 	
 	// declaration of dependent and independent variables
 	// for use in ADOL-C derivative calculations
-	adouble *_X, *_dGdX;
+	//adouble *_X, *_dGdX;
 	//_X = new adouble[jointCount*DOF*2];
 	//_dGdX = new adouble[jointCount*DOF];
 
