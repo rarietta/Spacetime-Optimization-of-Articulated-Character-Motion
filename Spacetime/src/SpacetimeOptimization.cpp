@@ -47,6 +47,8 @@ Spacetime::debug(void)
 		cout << "eye test: \n" << eye << endl;
 		cout << "C = \n" << C << endl;
 	}
+
+	applyTorqueVector(T);
 }
 
 //======================================================================================================================//
@@ -82,46 +84,49 @@ PxReal SSDvector(std::vector<matrix<double>> A, std::vector<matrix<double>> B)
 void
 Spacetime::makeInitialGuess(void)
 {
-	saveState();
-	for (int i = 0; i < numTimeSteps; i++) 
-	{
+	//uSequence.clear();
+	//saveState();
+	//matrix<double> state = getState();
+
+	//for (int i = 0; i < numTimeSteps; i++) 
+	//{
 		// virtual work calculation yields gravitational torque vector
 		matrix<double> J = buildJacobian();
 		matrix<double> G = computeGVector();
-		G = -(~J*G);
+		matrix<double> T = ~J*G;
+		G = T;
 
 		// compute inverse mass matrix by altering rows of input torque
-		matrix<double> M_inv = computeInverseMassMatrix(G);
-		matrix<double> M(M_inv); M = (matrix<double>) M.Inv();
+		matrix<double> M_inv = computeInverseMassMatrix(T);
+		matrix<double> M(M_inv); M = M.Inv();
 
 		// compute C term of kinematics formula
-		matrix<double> C = computeCVector(G, M);
+		matrix<double> C = computeCVector(T, M);
 
-		double Kp = .0010;
-		double Kv = .0010;
+		double Kp = 15;
+		double Kv = 15;
 		matrix<double> theta = calculateAngularPosition();
 		matrix<double> thetad(state_d); thetad.SetSize(DOF*joints.size(), 1);
 		matrix<double> thetaDot = calculateAngularVelocity();
 		matrix<double> u = C + G + M*(Kp*(thetad - theta) - Kv*thetaDot);
+		//cout << T << endl;
 		uSequence.push_back(u);
-	}
-
-	for (int i = 0; i < numTimeSteps; i++)
-		cout << "u[" << i << "] = \n" << uSequence[i] << endl;
-
-	return;
+		applyTorqueVector(u);
+		gScene->simulate(deltaT);
+		gScene->fetchResults(true);
+	//}
 }
 
-matrix<double>
+void
 Spacetime::Optimize(void)
 {	
-	matrix<double> T;
-	return T;
+	// TEMPORARY
+	return;
 
 	//------------------------------------------------------------------------------------------------------------------//
 	// iteratively solve for optimal input torque sequence																//
 	//------------------------------------------------------------------------------------------------------------------//
-	/*
+
 	// save initial state
 	saveState();
 
@@ -152,18 +157,18 @@ Spacetime::Optimize(void)
 			// virtual work calculation yields gravitational torque vector
 			matrix<double> J = buildJacobian();
 			matrix<double> G = computeGVector();
-			matrix<double> T = ~J*F;
+			G = -(~J*G);
 
 			// compute inverse mass matrix by altering rows of input torque
-			matrix<double> M_inv = computeInverseMassMatrix(T);
+			matrix<double> M_inv = computeInverseMassMatrix(-G);
 			matrix<double> M(M_inv); M = (matrix<double>) M.Inv();
 
 			// compute C term of kinematics formula
-			matrix<double> C = computeCVector(T, M);
+			matrix<double> C = computeCVector(-G, M);
 			
 			// compute current state vector derivative with computed
 			// matrix values and the current input torque vector u
-			matrix<double> xDot = M_inv * (T + C + G);
+			matrix<double> xDot = M_inv * (uSequence[i] + C + G);
 			stateSequence.push_back(stateSequence[i] + xDot*deltaT);
 			stepPhysics();
 		}
@@ -182,7 +187,6 @@ Spacetime::Optimize(void)
 			costateSequence.insert(costateSequence.begin(), costateSequence.front()-deltaT*lambdaDot);
 		}
 
-
 		// 3) update u from constraint formula
 		std::vector<matrix<double>> new_uSequence;
 		for (int i = 0; i < numTimeSteps; i++)
@@ -191,13 +195,6 @@ Spacetime::Optimize(void)
 		uSequence = new_uSequence;
 
 	} while (uDiff > UDIFF_THRESHOLD);
-	
-	//------------------------------------------------------------------------------------------------------------------//
-	// compute optimal pose/position sequence from optimal u															//
-	//------------------------------------------------------------------------------------------------------------------//
 
-	// TODO
-	matrix<double> Opt(1,1);
-	return Opt;
-	*/
+	return;
 }

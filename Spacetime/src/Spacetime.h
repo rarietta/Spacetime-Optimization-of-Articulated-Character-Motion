@@ -19,7 +19,7 @@
 #include <vector>
 #include <adolc/adolc.h>
 
-#define T_DEBUG 1
+//#define T_DEBUG 1
 
 using namespace std;
 using namespace physx;
@@ -37,23 +37,26 @@ public:
 	// constructor
 	Spacetime(void);
 	Spacetime(matrix<double> startPose, matrix<double> endPose, PxU32 numTimeSteps);
-	matrix<double> state_0;
-	matrix<double> state_d;
-	std::vector<matrix<double>> uSequence;
-	PxU32 numTimeSteps;
-	double deltaT;
-	PxVec3 root;
+
+	// simulation variables
+	matrix<double> state_0;					// initial pose
+	matrix<double> state_d;					// desired pose
+	std::vector<matrix<double>> uSequence;	// sequence of input torque vectors
+	PxU32 numTimeSteps;						// number of time steps in simulation
+	double deltaT;							// length of each time step
+	PxVec3 root;							// position of root (static)
 
 	// Init functions (SpacetimeInit.cpp)
 	void initPhysics(void);
 
 	// Optimization functions (SpacetimeOptimization.cpp)
 	void makeInitialGuess(void);
-	matrix<double> Optimize(void);
+	void Optimize(void);
 	
 	// State functions (SpacetimeState.cpp)
 	void switchPause(void);
 	void setState(matrix<double> stateVector);
+	void restoreState(void);
 
 	// Kinematics functions (SpacetimeKinematics.cpp)
 	void stepPhysics(void);
@@ -100,7 +103,6 @@ private:
 
 	// State functions (SpacetimeState.cpp)
 	void saveState(void);
-	void restoreState(void);
 	matrix<double> getState(void);
 
 	// Kinematics functions (SpacetimeKinematics.cpp)
@@ -117,4 +119,7 @@ private:
 	matrix<double> compute_dLdu(PxU32 t);
 	matrix<double> compute_dfdx(PxU32 t);
 	matrix<double> compute_dfdu(PxU32 t);
+
+	// Math3D functions
+	PxVec3 QuaternionToEuler(PxQuat q);
 };

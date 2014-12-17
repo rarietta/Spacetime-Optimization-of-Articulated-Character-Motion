@@ -63,8 +63,9 @@ Spacetime::addDynamicActors(void)
 	// lamp base properties
 	base->setAngularDamping(0.75);
     base->setLinearVelocity(PxVec3(0,0,0)); 
-	base->setMass(PxReal(200));
+	base->setMass(PxReal(5000));
 	base->setName("base");
+	base->setRigidBodyFlag(PxRigidBodyFlag::eKINEMATIC, true);
 
 	// lamp base addition
 	gScene->addActor(*base);
@@ -246,16 +247,13 @@ Spacetime::addJoints(void)
 
 	// Create spherical joint at base
 	PxQuat base_quat1(PxPi/2.0f, PxVec3(0,0,1));
-	PxQuat base_quat2(PxPi/8.0f, PxVec3(0,1,0));
-	body0_transform = PxTransform(PxVec3(0,  0.5f, 0), base_quat1*base_quat2);
+	body0_transform = PxTransform(PxVec3(0,  0.5f, 0), base_quat1);
 	body1_transform = PxTransform(PxVec3(0, -10.0f, 0), base_quat1);
 	PxD6Joint* base_joint = PxD6JointCreate(*gPhysics, 
 		dynamic_actors[BASE], body0_transform, dynamic_actors[LEG1], body1_transform);
 	base_joint->setSwingLimit(PxJointLimitCone(PxPi/2, PxPi/2));
 	base_joint->setMotion(PxD6Axis::eSWING2, PxD6Motion::eLOCKED);
 	base_joint->setMotion(PxD6Axis::eSWING1, PxD6Motion::eLIMITED);
-	base_joint->setConstraintFlag(PxConstraintFlag::eREPORTING, true);
-	base_joint->setConstraintFlag(PxConstraintFlag::eVISUALIZATION, true);
 	joint_local_positions.push_back(PxVec3(0,-10,0));
 	joints.push_back((PxJoint*)base_joint);
 
@@ -264,9 +262,6 @@ Spacetime::addJoints(void)
 	body1_transform = PxTransform(PxVec3(0, -10.0, 0), PxQuat(-PxPi/2.0, PxVec3(1,0,0)));
 	PxRevoluteJoint* leg_joint = PxRevoluteJointCreate(*gPhysics, 
 		dynamic_actors[LEG1], body0_transform, dynamic_actors[LEG2], body1_transform);
-	leg_joint->setLimit(PxJointAngularLimitPair(3.0*PxPi/4.0, -1.0*PxPi/4.0));
-	leg_joint->setRevoluteJointFlag(PxRevoluteJointFlag::eLIMIT_ENABLED, true);
-	leg_joint->setConstraintFlag(PxConstraintFlag::eVISUALIZATION, true);
 	joint_local_positions.push_back(PxVec3(0,-10,0));
 	joints.push_back((PxJoint*)leg_joint);
 

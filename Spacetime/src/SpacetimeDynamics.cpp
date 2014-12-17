@@ -105,11 +105,11 @@ Spacetime::computeGVector(void)
 	
 	// declaration of dependent and independent variables
 	// for use in ADOL-C derivative calculations
-	//adouble *_X, *_dGdX;
+	adouble *_X, *_dGdX;
 	//_X = new adouble[jointCount*DOF*2];
 	//_dGdX = new adouble[jointCount*DOF];
 
-	//matrix<double> state = buildStateVector();
+	//matrix<double> state = getState();
 	//for (int i = 0; i < jointCount*DOF*2; i++)
 	//	_X[i] <<= state(i,1);
 
@@ -198,25 +198,17 @@ Spacetime::calculateAngularVelocity(void)
 matrix<double> 
 Spacetime::calculateAngularPosition(void) 
 {
-	// create matrix
-	matrix<double> angularPositionVector(DOF*joints.size(), 1);
-	
 	PxRigidActor *a[2];
+	matrix<double> angularPositionVector(DOF*joints.size(), 1);
 
-	// apply torque to joints
 	for (unsigned int i = 0; i < joints.size(); i++) {
-		PxReal thetaX; PxVec3 axisX;
-		PxReal thetaY; PxVec3 axisY;
-		PxReal thetaZ; PxVec3 axisZ;
 		joints[i]->getActors(a[PxJointActorIndex::eACTOR0], a[PxJointActorIndex::eACTOR1]);
 		PxRigidBody *body1 = (PxRigidBody *) a[PxJointActorIndex::eACTOR1];
 		PxTransform globalPose = body1->getGlobalPose();
-		globalPose.q.toRadiansAndUnitAxis(thetaX, axisX);
-		globalPose.q.toRadiansAndUnitAxis(thetaY, axisY);
-		globalPose.q.toRadiansAndUnitAxis(thetaZ, axisZ);
-		if (DOF > X) { angularPositionVector(i*DOF+X, 0) = thetaX; }
-		if (DOF > Y) { angularPositionVector(i*DOF+Y, 0) = thetaY; } // INCORRECT FOR DOF > 1
-		if (DOF > Z) { angularPositionVector(i*DOF+Z, 0) = thetaZ; } // INCORRECT FOR DOF > 1
+		PxVec3 theta = QuaternionToEuler(globalPose.q);
+		if (DOF > X) { angularPositionVector(i*DOF+X, 0) = theta[X]; }
+		if (DOF > Y) { angularPositionVector(i*DOF+Y, 0) = theta[Y]; }
+		if (DOF > Z) { angularPositionVector(i*DOF+Z, 0) = theta[Z]; }
 	}
 
 	return angularPositionVector;
@@ -233,11 +225,12 @@ Spacetime::computeInverseMassMatrix(matrix<double> T)
 	for (int i = 0; i < DOF*joints.size(); i++) {
 
 		// save state to restore after each calculation
+		// matrix<double> state = getState();
 		saveState();
 
 		// zero out current velocities to eliminate C term
-		for (int i = 0; i < dynamic_actors.size(); i++) {
-			PxRigidDynamic *actor = dynamic_actors[i];
+		for (int j = 0; j < dynamic_actors.size(); j++) {
+			PxRigidDynamic *actor = dynamic_actors[j];
 			actor->setAngularVelocity(PxVec3(0,0,0));
 			actor->setLinearVelocity(PxVec3(0,0,0));
 		}
@@ -250,13 +243,14 @@ Spacetime::computeInverseMassMatrix(matrix<double> T)
 		gScene->simulate(1.0f/60.0f);
 		gScene->fetchResults(true);
 		matrix<double> velocityAfter = calculateAngularVelocity();
-		matrix<double> angularAcceleration = (velocityAfter - velocityBefore) / (1.0/60.0);
+		matrix<double> angularAcceleration = (velocityAfter - velocityBefore) / (deltaT);
 
 		// save acceleration as column of inverse mass matrix
 		for (int j = 0; j < DOF*joints.size(); j++)
 			M_inv(j,i) = angularAcceleration(j,0);
 
 		// restore the state
+		// setState(state);
 		restoreState();
 	}
 	return M_inv;
@@ -272,14 +266,16 @@ Spacetime::computeCVector(matrix<double> T, matrix<double> M)
 	matrix<double> C(DOF*joints.size(), 1);
 
 	saveState();
+	//matrix<double> state = getState();
 	matrix<double> velocityBefore = calculateAngularVelocity();
 	applyTorqueVector(T);
-	gScene->simulate(1.0/60.0);
+	gScene->simulate(deltaT);
 	gScene->fetchResults(true);
 	matrix<double> velocityAfter = calculateAngularVelocity();
-	matrix<double> angularAcceleration = (velocityAfter - velocityBefore) / (1.0/60.0);
+	matrix<double> angularAcceleration = (velocityAfter - velocityBefore) / (deltaT);
 	C = M * angularAcceleration;
 	restoreState();
+	//setState(state);
 
 	return C;
 }
@@ -291,14 +287,12 @@ Spacetime::computeCVector(matrix<double> T, matrix<double> M)
 void 
 Spacetime::stepPhysics(void)
 {
-	// NOTE:
-	// Inverse Kinematics Formula
-	// ddTheta = M_inv * (T - C(Theta, dTheta) - G(Theta))
-
 	// do not simulate if the user has paused
 	if (pause) return;
 
+	//debug();
+
 	// simulate and return
-	gScene->simulate(1.0f/60.0f);
+	gScene->simulate(deltaT);
 	gScene->fetchResults(true);
 }

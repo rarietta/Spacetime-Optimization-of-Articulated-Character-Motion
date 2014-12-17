@@ -1,6 +1,14 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="checked|Win32">
+      <Configuration>checked</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="debug|Win32">
+      <Configuration>debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
     <ProjectConfiguration Include="debug|x64">
       <Configuration>debug</Configuration>
       <Platform>x64</Platform>
@@ -9,17 +17,34 @@
       <Configuration>checked</Configuration>
       <Platform>x64</Platform>
     </ProjectConfiguration>
+    <ProjectConfiguration Include="profile|Win32">
+      <Configuration>profile</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
     <ProjectConfiguration Include="profile|x64">
       <Configuration>profile</Configuration>
       <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="release|Win32">
+      <Configuration>release</Configuration>
+      <Platform>Win32</Platform>
     </ProjectConfiguration>
     <ProjectConfiguration Include="release|x64">
       <Configuration>release</Configuration>
       <Platform>x64</Platform>
     </ProjectConfiguration>
+    <ProjectConfiguration Include="Win32|Win32">
+      <Configuration>Win32</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Win32|x64">
+      <Configuration>Win32</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\CameraUtil.cpp" />
+    <ClCompile Include="src\Math3D.cpp" />
     <ClCompile Include="src\Spacetime.cpp" />
     <ClCompile Include="src\SpacetimeCleanup.cpp" />
     <ClCompile Include="src\SpacetimeDerivatives.cpp" />
@@ -48,13 +73,34 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='checked|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='checked|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='profile|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='profile|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <PlatformToolset>v100</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <PlatformToolset>v100</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Win32|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <PlatformToolset>v100</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Win32|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <PlatformToolset>v100</PlatformToolset>
   </PropertyGroup>
@@ -64,18 +110,44 @@
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='debug|x64'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='checked|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='checked|Win32'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='profile|x64'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='profile|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Win32|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Win32|Win32'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='debug|x64'">
     <OutDir>./../Bin/win64</OutDir>
     <IntDir>./x64/$(ProjectName)/debug\</IntDir>
+    <TargetExt>.exe</TargetExt>
+    <TargetName>$(ProjectName)DEBUG</TargetName>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules />
+    <CodeAnalysisRuleAssemblies />
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='debug|Win32'">
     <TargetExt>.exe</TargetExt>
     <TargetName>$(ProjectName)DEBUG</TargetName>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
@@ -93,7 +165,7 @@
       <BasicRuntimeChecks>UninitializedLocalUsageCheck</BasicRuntimeChecks>
       <AdditionalOptions>/MP</AdditionalOptions>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>./../Bin;./../Include;./../ADOL-C/include;./../ADOL-C/bin;./../PhysX/foundation/include;./../PhysX/Common/src;./../PhysX/GeomUtils/src;./../PhysX/GeomUtils/headers;./../PhysX/GeomUtils/include;./../PhysX/GeomUtils/src/contact;./../PhysX/GeomUtils/src/common;./../PhysX/GeomUtils/src/convex;./../PhysX/GeomUtils/src/distance;./../PhysX/GeomUtils/src/gjk;./../PhysX/GeomUtils/src/intersection;./../PhysX/GeomUtils/src/mesh;./../PhysX/GeomUtils/src/hf;./../PhysX/GeomUtils/src/Ice;./../PhysX/GeomUtils/src/pcm;./Graphics/include/win32/GL;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>./../ADOL-C/ADOL-C/;./../ADOL-C/windows/nosparse;./../Bin;./../Include;./../ADOL-C/lib;./../ADOL-C/include;./../ADOL-C/bin;./../PhysX/foundation/include;./../PhysX/Common/src;./../PhysX/GeomUtils/src;./../PhysX/GeomUtils/headers;./../PhysX/GeomUtils/include;./../PhysX/GeomUtils/src/contact;./../PhysX/GeomUtils/src/common;./../PhysX/GeomUtils/src/convex;./../PhysX/GeomUtils/src/distance;./../PhysX/GeomUtils/src/gjk;./../PhysX/GeomUtils/src/intersection;./../PhysX/GeomUtils/src/mesh;./../PhysX/GeomUtils/src/hf;./../PhysX/GeomUtils/src/Ice;./../PhysX/GeomUtils/src/pcm;./Graphics/include/win32/GL;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;WIN64;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_ALLOW_MSC_VER_MISMATCH;_ALLOW_ITERATOR_DEBUG_LEVEL_MISMATCH;PHYSX_PROFILE_SDK;RENDER_SNIPPET;_DEBUG;PX_DEBUG;PX_CHECKED;PX_SUPPORT_VISUAL_DEBUGGER;PX_NVTX;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ExceptionHandling>Sync</ExceptionHandling>
       <WarningLevel>Level4</WarningLevel>
@@ -107,7 +179,7 @@
       <AdditionalOptions>/LIBPATH:../../../Lib/win64 PhysX3CommonDEBUG_x64.lib PhysX3DEBUG_x64.lib PhysX3CookingDEBUG_x64.lib PhysX3CharacterKinematicDEBUG_x64.lib PhysX3ExtensionsDEBUG.lib PhysX3VehicleDEBUG.lib PhysXProfileSDKDEBUG.lib PhysXVisualDebuggerSDKDEBUG.lib PxTaskDEBUG.lib /DEBUG</AdditionalOptions>
       <AdditionalDependencies>Winmm.lib;OpenGL32.lib;glut32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)$(ProjectName)DEBUG.exe</OutputFile>
-      <AdditionalLibraryDirectories>./../Bin/win64/;./../ADOL-C/lib/;./../ADOL-C/bin;./../Common/lib/win64;./lib/win64;./Graphics/lib/win64/glut;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>./../ADOL-C/windows/nosparse;./../Bin/win64/;./../ADOL-C/lib/;./../ADOL-C/include;./../ADOL-C/bin;./../Common/lib/win64;./lib/win64;./Graphics/lib/win64/glut;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ProgramDatabaseFile>$(OutDir)/$(ProjectName)DEBUG.exe.pdb</ProgramDatabaseFile>
       <SubSystem>Console</SubSystem>
       <ImportLibrary>$(OutDir)$(TargetName).lib</ImportLibrary>
@@ -118,9 +190,49 @@
     <ProjectReference>
     </ProjectReference>
   </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='debug|Win32'">
+    <ClCompile>
+      <TreatWarningAsError>false</TreatWarningAsError>
+      <StringPooling>true</StringPooling>
+      <RuntimeTypeInfo>false</RuntimeTypeInfo>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <FloatingPointModel>Fast</FloatingPointModel>
+      <BasicRuntimeChecks>UninitializedLocalUsageCheck</BasicRuntimeChecks>
+      <AdditionalOptions>/MP</AdditionalOptions>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>./../ADOL-C/ADOL-C/;./../ADOL-C/windows/nosparse;./../Bin;./../Include;./../ADOL-C/lib;./../ADOL-C/include;./../ADOL-C/bin;./../PhysX/foundation/include;./../PhysX/Common/src;./../PhysX/GeomUtils/src;./../PhysX/GeomUtils/headers;./../PhysX/GeomUtils/include;./../PhysX/GeomUtils/src/contact;./../PhysX/GeomUtils/src/common;./../PhysX/GeomUtils/src/convex;./../PhysX/GeomUtils/src/distance;./../PhysX/GeomUtils/src/gjk;./../PhysX/GeomUtils/src/intersection;./../PhysX/GeomUtils/src/mesh;./../PhysX/GeomUtils/src/hf;./../PhysX/GeomUtils/src/Ice;./../PhysX/GeomUtils/src/pcm;./Graphics/include/win32/GL;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;WIN64;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_ALLOW_MSC_VER_MISMATCH;_ALLOW_ITERATOR_DEBUG_LEVEL_MISMATCH;PHYSX_PROFILE_SDK;RENDER_SNIPPET;_DEBUG;PX_DEBUG;PX_CHECKED;PX_SUPPORT_VISUAL_DEBUGGER;PX_NVTX;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <WarningLevel>Level4</WarningLevel>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>
+      </PrecompiledHeaderFile>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <AdditionalOptions>/LIBPATH:../../../Lib/win64 PhysX3CommonDEBUG_x64.lib PhysX3DEBUG_x64.lib PhysX3CookingDEBUG_x64.lib PhysX3CharacterKinematicDEBUG_x64.lib PhysX3ExtensionsDEBUG.lib PhysX3VehicleDEBUG.lib PhysXProfileSDKDEBUG.lib PhysXVisualDebuggerSDKDEBUG.lib PxTaskDEBUG.lib /DEBUG</AdditionalOptions>
+      <AdditionalDependencies>Winmm.lib;OpenGL32.lib;glut32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)$(ProjectName)DEBUG.exe</OutputFile>
+      <AdditionalLibraryDirectories>./../ADOL-C/windows/nosparse;./../Bin/win64/;./../ADOL-C/lib/;./../ADOL-C/include;./../ADOL-C/bin;./../Common/lib/win64;./lib/win64;./Graphics/lib/win64/glut;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <ProgramDatabaseFile>$(OutDir)/$(ProjectName)DEBUG.exe.pdb</ProgramDatabaseFile>
+      <SubSystem>Console</SubSystem>
+      <ImportLibrary>$(OutDir)$(TargetName).lib</ImportLibrary>
+    </Link>
+    <ResourceCompile />
+    <ProjectReference />
+  </ItemDefinitionGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='checked|x64'">
     <OutDir>./../Bin/win64</OutDir>
     <IntDir>./x64/$(ProjectName)/checked\</IntDir>
+    <TargetExt>.exe</TargetExt>
+    <TargetName>$(ProjectName)CHECKED</TargetName>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules />
+    <CodeAnalysisRuleAssemblies />
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='checked|Win32'">
     <TargetExt>.exe</TargetExt>
     <TargetName>$(ProjectName)CHECKED</TargetName>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
@@ -137,7 +249,7 @@
       <FloatingPointModel>Fast</FloatingPointModel>
       <AdditionalOptions>/MP</AdditionalOptions>
       <Optimization>Full</Optimization>
-      <AdditionalIncludeDirectories>./../Bin;./../Include;./../ADOL-C/include;./../ADOL-C/bin;./../PhysX/foundation/include;./../PhysX/Common/src;./../PhysX/GeomUtils/src;./../PhysX/GeomUtils/headers;./../PhysX/GeomUtils/include;./../PhysX/GeomUtils/src/contact;./../PhysX/GeomUtils/src/common;./../PhysX/GeomUtils/src/convex;./../PhysX/GeomUtils/src/distance;./../PhysX/GeomUtils/src/gjk;./../PhysX/GeomUtils/src/intersection;./../PhysX/GeomUtils/src/mesh;./../PhysX/GeomUtils/src/hf;./../PhysX/GeomUtils/src/Ice;./../PhysX/GeomUtils/src/pcm;./Graphics/include/win32/GL;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>./../ADOL-C/ADOL-C/;./../ADOL-C/windows/nosparse;./../Bin;./../Include;./../ADOL-C/lib;./../ADOL-C/include;./../ADOL-C/bin;./../PhysX/foundation/include;./../PhysX/Common/src;./../PhysX/GeomUtils/src;./../PhysX/GeomUtils/headers;./../PhysX/GeomUtils/include;./../PhysX/GeomUtils/src/contact;./../PhysX/GeomUtils/src/common;./../PhysX/GeomUtils/src/convex;./../PhysX/GeomUtils/src/distance;./../PhysX/GeomUtils/src/gjk;./../PhysX/GeomUtils/src/intersection;./../PhysX/GeomUtils/src/mesh;./../PhysX/GeomUtils/src/hf;./../PhysX/GeomUtils/src/Ice;./../PhysX/GeomUtils/src/pcm;./Graphics/include/win32/GL;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;WIN64;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_ALLOW_MSC_VER_MISMATCH;_ALLOW_ITERATOR_DEBUG_LEVEL_MISMATCH;PHYSX_PROFILE_SDK;RENDER_SNIPPET;NDEBUG;PX_CHECKED;PX_SUPPORT_VISUAL_DEBUGGER;PX_NVTX;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ExceptionHandling>Sync</ExceptionHandling>
       <WarningLevel>Level4</WarningLevel>
@@ -150,7 +262,7 @@
       <AdditionalOptions>/LIBPATH:../../../Lib/win64 PhysX3CommonCHECKED_x64.lib PhysX3CHECKED_x64.lib PhysX3CookingCHECKED_x64.lib PhysX3CharacterKinematicCHECKED_x64.lib PhysX3ExtensionsCHECKED.lib PhysX3VehicleCHECKED.lib PhysXProfileSDKCHECKED.lib PhysXVisualDebuggerSDKCHECKED.lib PxTaskCHECKED.lib</AdditionalOptions>
       <AdditionalDependencies>Winmm.lib;OpenGL32.lib;glut32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)$(ProjectName)CHECKED.exe</OutputFile>
-      <AdditionalLibraryDirectories>./../Bin/win64/;./../ADOL-C/lib/;./../ADOL-C/bin;./../Common/lib/win64;./lib/win64;./Graphics/lib/win64/glut;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>./../ADOL-C/windows/nosparse;./../Bin/win64/;./../ADOL-C/lib/;./../ADOL-C/include;./../ADOL-C/bin;./../Common/lib/win64;./lib/win64;./Graphics/lib/win64/glut;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ProgramDatabaseFile>$(OutDir)/$(ProjectName)CHECKED.exe.pdb</ProgramDatabaseFile>
       <SubSystem>Console</SubSystem>
       <ImportLibrary>$(OutDir)$(TargetName).lib</ImportLibrary>
@@ -161,9 +273,47 @@
     <ProjectReference>
     </ProjectReference>
   </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='checked|Win32'">
+    <ClCompile>
+      <TreatWarningAsError>false</TreatWarningAsError>
+      <StringPooling>true</StringPooling>
+      <RuntimeTypeInfo>false</RuntimeTypeInfo>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <FloatingPointModel>Fast</FloatingPointModel>
+      <AdditionalOptions>/MP</AdditionalOptions>
+      <Optimization>Full</Optimization>
+      <AdditionalIncludeDirectories>./../ADOL-C/ADOL-C/;./../ADOL-C/windows/nosparse;./../Bin;./../Include;./../ADOL-C/lib;./../ADOL-C/include;./../ADOL-C/bin;./../PhysX/foundation/include;./../PhysX/Common/src;./../PhysX/GeomUtils/src;./../PhysX/GeomUtils/headers;./../PhysX/GeomUtils/include;./../PhysX/GeomUtils/src/contact;./../PhysX/GeomUtils/src/common;./../PhysX/GeomUtils/src/convex;./../PhysX/GeomUtils/src/distance;./../PhysX/GeomUtils/src/gjk;./../PhysX/GeomUtils/src/intersection;./../PhysX/GeomUtils/src/mesh;./../PhysX/GeomUtils/src/hf;./../PhysX/GeomUtils/src/Ice;./../PhysX/GeomUtils/src/pcm;./Graphics/include/win32/GL;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;WIN64;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_ALLOW_MSC_VER_MISMATCH;_ALLOW_ITERATOR_DEBUG_LEVEL_MISMATCH;PHYSX_PROFILE_SDK;RENDER_SNIPPET;NDEBUG;PX_CHECKED;PX_SUPPORT_VISUAL_DEBUGGER;PX_NVTX;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <WarningLevel>Level4</WarningLevel>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>
+      </PrecompiledHeaderFile>
+    </ClCompile>
+    <Link>
+      <AdditionalOptions>/LIBPATH:../../../Lib/win64 PhysX3CommonCHECKED_x64.lib PhysX3CHECKED_x64.lib PhysX3CookingCHECKED_x64.lib PhysX3CharacterKinematicCHECKED_x64.lib PhysX3ExtensionsCHECKED.lib PhysX3VehicleCHECKED.lib PhysXProfileSDKCHECKED.lib PhysXVisualDebuggerSDKCHECKED.lib PxTaskCHECKED.lib</AdditionalOptions>
+      <AdditionalDependencies>Winmm.lib;OpenGL32.lib;glut32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)$(ProjectName)CHECKED.exe</OutputFile>
+      <AdditionalLibraryDirectories>./../ADOL-C/windows/nosparse;./../Bin/win64/;./../ADOL-C/lib/;./../ADOL-C/include;./../ADOL-C/bin;./../Common/lib/win64;./lib/win64;./Graphics/lib/win64/glut;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <ProgramDatabaseFile>$(OutDir)/$(ProjectName)CHECKED.exe.pdb</ProgramDatabaseFile>
+      <SubSystem>Console</SubSystem>
+      <ImportLibrary>$(OutDir)$(TargetName).lib</ImportLibrary>
+    </Link>
+    <ResourceCompile />
+    <ProjectReference />
+  </ItemDefinitionGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='profile|x64'">
     <OutDir>./../Bin/win64</OutDir>
     <IntDir>./x64/$(ProjectName)/profile\</IntDir>
+    <TargetExt>.exe</TargetExt>
+    <TargetName>$(ProjectName)PROFILE</TargetName>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules />
+    <CodeAnalysisRuleAssemblies />
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='profile|Win32'">
     <TargetExt>.exe</TargetExt>
     <TargetName>$(ProjectName)PROFILE</TargetName>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
@@ -180,7 +330,7 @@
       <FloatingPointModel>Fast</FloatingPointModel>
       <AdditionalOptions>/MP</AdditionalOptions>
       <Optimization>Full</Optimization>
-      <AdditionalIncludeDirectories>./../Bin;./../Include;./../ADOL-C/include;./../ADOL-C/bin;./../PhysX/foundation/include;./../PhysX/Common/src;./../PhysX/GeomUtils/src;./../PhysX/GeomUtils/headers;./../PhysX/GeomUtils/include;./../PhysX/GeomUtils/src/contact;./../PhysX/GeomUtils/src/common;./../PhysX/GeomUtils/src/convex;./../PhysX/GeomUtils/src/distance;./../PhysX/GeomUtils/src/gjk;./../PhysX/GeomUtils/src/intersection;./../PhysX/GeomUtils/src/mesh;./../PhysX/GeomUtils/src/hf;./../PhysX/GeomUtils/src/Ice;./../PhysX/GeomUtils/src/pcm;./Graphics/include/win32/GL;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>./../ADOL-C/ADOL-C/;./../ADOL-C/windows/nosparse;./../Bin;./../Include;./../ADOL-C/lib;./../ADOL-C/include;./../ADOL-C/bin;./../PhysX/foundation/include;./../PhysX/Common/src;./../PhysX/GeomUtils/src;./../PhysX/GeomUtils/headers;./../PhysX/GeomUtils/include;./../PhysX/GeomUtils/src/contact;./../PhysX/GeomUtils/src/common;./../PhysX/GeomUtils/src/convex;./../PhysX/GeomUtils/src/distance;./../PhysX/GeomUtils/src/gjk;./../PhysX/GeomUtils/src/intersection;./../PhysX/GeomUtils/src/mesh;./../PhysX/GeomUtils/src/hf;./../PhysX/GeomUtils/src/Ice;./../PhysX/GeomUtils/src/pcm;./Graphics/include/win32/GL;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;WIN64;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_ALLOW_MSC_VER_MISMATCH;_ALLOW_ITERATOR_DEBUG_LEVEL_MISMATCH;PHYSX_PROFILE_SDK;RENDER_SNIPPET;NDEBUG;PX_PROFILE;PX_SUPPORT_VISUAL_DEBUGGER;PX_NVTX;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ExceptionHandling>Sync</ExceptionHandling>
       <WarningLevel>Level4</WarningLevel>
@@ -193,7 +343,7 @@
       <AdditionalOptions>/INCREMENTAL:NO /LIBPATH:../../../Lib/win64 PhysX3CommonPROFILE_x64.lib PhysX3PROFILE_x64.lib PhysX3CookingPROFILE_x64.lib PhysX3CharacterKinematicPROFILE_x64.lib PhysX3ExtensionsPROFILE.lib PhysX3VehiclePROFILE.lib PhysXProfileSDKPROFILE.lib PhysXVisualDebuggerSDKPROFILE.lib PxTaskPROFILE.lib /DEBUG</AdditionalOptions>
       <AdditionalDependencies>Winmm.lib;OpenGL32.lib;glut32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)$(ProjectName)PROFILE.exe</OutputFile>
-      <AdditionalLibraryDirectories>./../Bin/win64/;./../ADOL-C/lib/;./../ADOL-C/bin;./../Common/lib/win64;./lib/win64;./Graphics/lib/win64/glut;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>./../ADOL-C/windows/nosparse;./../Bin/win64/;./../ADOL-C/lib/;./../ADOL-C/include;./../ADOL-C/bin;./../Common/lib/win64;./lib/win64;./Graphics/lib/win64/glut;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ProgramDatabaseFile>$(OutDir)/$(ProjectName)PROFILE.exe.pdb</ProgramDatabaseFile>
       <SubSystem>Console</SubSystem>
       <ImportLibrary>$(OutDir)$(TargetName).lib</ImportLibrary>
@@ -204,9 +354,71 @@
     <ProjectReference>
     </ProjectReference>
   </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='profile|Win32'">
+    <ClCompile>
+      <TreatWarningAsError>false</TreatWarningAsError>
+      <StringPooling>true</StringPooling>
+      <RuntimeTypeInfo>false</RuntimeTypeInfo>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <FloatingPointModel>Fast</FloatingPointModel>
+      <AdditionalOptions>/MP</AdditionalOptions>
+      <Optimization>Full</Optimization>
+      <AdditionalIncludeDirectories>./../ADOL-C/ADOL-C/;./../ADOL-C/windows/nosparse;./../Bin;./../Include;./../ADOL-C/lib;./../ADOL-C/include;./../ADOL-C/bin;./../PhysX/foundation/include;./../PhysX/Common/src;./../PhysX/GeomUtils/src;./../PhysX/GeomUtils/headers;./../PhysX/GeomUtils/include;./../PhysX/GeomUtils/src/contact;./../PhysX/GeomUtils/src/common;./../PhysX/GeomUtils/src/convex;./../PhysX/GeomUtils/src/distance;./../PhysX/GeomUtils/src/gjk;./../PhysX/GeomUtils/src/intersection;./../PhysX/GeomUtils/src/mesh;./../PhysX/GeomUtils/src/hf;./../PhysX/GeomUtils/src/Ice;./../PhysX/GeomUtils/src/pcm;./Graphics/include/win32/GL;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;WIN64;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_ALLOW_MSC_VER_MISMATCH;_ALLOW_ITERATOR_DEBUG_LEVEL_MISMATCH;PHYSX_PROFILE_SDK;RENDER_SNIPPET;NDEBUG;PX_PROFILE;PX_SUPPORT_VISUAL_DEBUGGER;PX_NVTX;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <WarningLevel>Level4</WarningLevel>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>
+      </PrecompiledHeaderFile>
+    </ClCompile>
+    <Link>
+      <AdditionalOptions>/INCREMENTAL:NO /LIBPATH:../../../Lib/win64 PhysX3CommonPROFILE_x64.lib PhysX3PROFILE_x64.lib PhysX3CookingPROFILE_x64.lib PhysX3CharacterKinematicPROFILE_x64.lib PhysX3ExtensionsPROFILE.lib PhysX3VehiclePROFILE.lib PhysXProfileSDKPROFILE.lib PhysXVisualDebuggerSDKPROFILE.lib PxTaskPROFILE.lib /DEBUG</AdditionalOptions>
+      <AdditionalDependencies>Winmm.lib;OpenGL32.lib;glut32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)$(ProjectName)PROFILE.exe</OutputFile>
+      <AdditionalLibraryDirectories>./../ADOL-C/windows/nosparse;./../Bin/win64/;./../ADOL-C/lib/;./../ADOL-C/include;./../ADOL-C/bin;./../Common/lib/win64;./lib/win64;./Graphics/lib/win64/glut;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <ProgramDatabaseFile>$(OutDir)/$(ProjectName)PROFILE.exe.pdb</ProgramDatabaseFile>
+      <SubSystem>Console</SubSystem>
+      <ImportLibrary>$(OutDir)$(TargetName).lib</ImportLibrary>
+    </Link>
+    <ResourceCompile />
+    <ProjectReference />
+  </ItemDefinitionGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='release|x64'">
     <OutDir>./../Bin/win64/</OutDir>
     <IntDir>./x64/$(ProjectName)/release\</IntDir>
+    <TargetExt>.exe</TargetExt>
+    <TargetName>$(ProjectName)</TargetName>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules />
+    <CodeAnalysisRuleAssemblies />
+    <LibraryPath>$(VCInstallDir)lib\amd64;$(VCInstallDir)atlmfc\lib\amd64;$(WindowsSdkDir)lib\x64;</LibraryPath>
+    <ExecutablePath>$(VCInstallDir)bin\x86_amd64;$(VCInstallDir)bin;$(WindowsSdkDir)bin\NETFX 4.0 Tools;$(WindowsSdkDir)bin;$(VSInstallDir)Common7\Tools\bin;$(VSInstallDir)Common7\tools;$(VSInstallDir)Common7\ide;$(ProgramFiles)\HTML Help Workshop;$(FrameworkSDKDir)\bin;$(FrameworkSDKDir)\lib\win64;$(MSBuildToolsPath32);$(FxCopDir);$(PATH);$(ProjectDir)\..\Bin\win64\;</ExecutablePath>
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='release|Win32'">
+    <TargetExt>.exe</TargetExt>
+    <TargetName>$(ProjectName)</TargetName>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules />
+    <CodeAnalysisRuleAssemblies />
+    <LibraryPath>$(VCInstallDir)lib\amd64;$(VCInstallDir)atlmfc\lib\amd64;$(WindowsSdkDir)lib\x64;</LibraryPath>
+    <ExecutablePath>$(VCInstallDir)bin\x86_amd64;$(VCInstallDir)bin;$(WindowsSdkDir)bin\NETFX 4.0 Tools;$(WindowsSdkDir)bin;$(VSInstallDir)Common7\Tools\bin;$(VSInstallDir)Common7\tools;$(VSInstallDir)Common7\ide;$(ProgramFiles)\HTML Help Workshop;$(FrameworkSDKDir)\bin;$(FrameworkSDKDir)\lib\win64;$(MSBuildToolsPath32);$(FxCopDir);$(PATH);$(ProjectDir)\..\Bin\win64\;</ExecutablePath>
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Win32|x64'">
+    <OutDir>./../Bin/win64/</OutDir>
+    <IntDir>./x64/$(ProjectName)/release\</IntDir>
+    <TargetExt>.exe</TargetExt>
+    <TargetName>$(ProjectName)</TargetName>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules />
+    <CodeAnalysisRuleAssemblies />
+    <LibraryPath>$(VCInstallDir)lib\amd64;$(VCInstallDir)atlmfc\lib\amd64;$(WindowsSdkDir)lib\x64;</LibraryPath>
+    <ExecutablePath>$(VCInstallDir)bin\x86_amd64;$(VCInstallDir)bin;$(WindowsSdkDir)bin\NETFX 4.0 Tools;$(WindowsSdkDir)bin;$(VSInstallDir)Common7\Tools\bin;$(VSInstallDir)Common7\tools;$(VSInstallDir)Common7\ide;$(ProgramFiles)\HTML Help Workshop;$(FrameworkSDKDir)\bin;$(FrameworkSDKDir)\lib\win64;$(MSBuildToolsPath32);$(FxCopDir);$(PATH);$(ProjectDir)\..\Bin\win64\;</ExecutablePath>
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Win32|Win32'">
     <TargetExt>.exe</TargetExt>
     <TargetName>$(ProjectName)</TargetName>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
@@ -225,7 +437,7 @@
       <FloatingPointModel>Fast</FloatingPointModel>
       <AdditionalOptions>/MP</AdditionalOptions>
       <Optimization>Full</Optimization>
-      <AdditionalIncludeDirectories>./../Bin;./../Include;./../ADOL-C/lib;./../ADOL-C/include;./../ADOL-C/bin;./../PhysX/foundation/include;./../PhysX/Common/src;./../PhysX/GeomUtils/src;./../PhysX/GeomUtils/headers;./../PhysX/GeomUtils/include;./../PhysX/GeomUtils/src/contact;./../PhysX/GeomUtils/src/common;./../PhysX/GeomUtils/src/convex;./../PhysX/GeomUtils/src/distance;./../PhysX/GeomUtils/src/gjk;./../PhysX/GeomUtils/src/intersection;./../PhysX/GeomUtils/src/mesh;./../PhysX/GeomUtils/src/hf;./../PhysX/GeomUtils/src/Ice;./../PhysX/GeomUtils/src/pcm;./Graphics/include/win32/GL;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>./../ADOL-C/ADOL-C/;./../ADOL-C/windows/nosparse;./../Bin;./../Include;./../ADOL-C/lib;./../ADOL-C/include;./../ADOL-C/bin;./../PhysX/foundation/include;./../PhysX/Common/src;./../PhysX/GeomUtils/src;./../PhysX/GeomUtils/headers;./../PhysX/GeomUtils/include;./../PhysX/GeomUtils/src/contact;./../PhysX/GeomUtils/src/common;./../PhysX/GeomUtils/src/convex;./../PhysX/GeomUtils/src/distance;./../PhysX/GeomUtils/src/gjk;./../PhysX/GeomUtils/src/intersection;./../PhysX/GeomUtils/src/mesh;./../PhysX/GeomUtils/src/hf;./../PhysX/GeomUtils/src/Ice;./../PhysX/GeomUtils/src/pcm;./Graphics/include/win32/GL;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;WIN64;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_ALLOW_MSC_VER_MISMATCH;_ALLOW_ITERATOR_DEBUG_LEVEL_MISMATCH;PHYSX_PROFILE_SDK;RENDER_SNIPPET;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ExceptionHandling>Sync</ExceptionHandling>
       <WarningLevel>Level4</WarningLevel>
@@ -238,7 +450,7 @@
       <AdditionalOptions>/INCREMENTAL:NO /LIBPATH:../../../Lib/win64 PhysX3Common_x64.lib PhysX3_x64.lib PhysX3Cooking_x64.lib PhysX3CharacterKinematic_x64.lib PhysX3Extensions.lib PhysX3Vehicle.lib PhysXProfileSDK.lib PhysXVisualDebuggerSDK.lib PxTask.lib</AdditionalOptions>
       <AdditionalDependencies>Winmm.lib;OpenGL32.lib;glut32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)$(ProjectName).exe</OutputFile>
-      <AdditionalLibraryDirectories>./../Bin/win64/;./../ADOL-C/lib/;./../ADOL-C/include;./../ADOL-C/bin;./../Common/lib/win64;./lib/win64;./Graphics/lib/win64/glut;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>./../ADOL-C/windows/nosparse;./../Bin/win64/;./../ADOL-C/lib/;./../ADOL-C/include;./../ADOL-C/bin;./../Common/lib/win64;./lib/win64;./Graphics/lib/win64/glut;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ProgramDatabaseFile>$(OutDir)/$(ProjectName).exe.pdb</ProgramDatabaseFile>
       <SubSystem>Console</SubSystem>
       <ImportLibrary>$(OutDir)$(TargetName).lib</ImportLibrary>
@@ -248,6 +460,98 @@
     </ResourceCompile>
     <ProjectReference>
     </ProjectReference>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='release|Win32'">
+    <ClCompile>
+      <TreatWarningAsError>false</TreatWarningAsError>
+      <StringPooling>true</StringPooling>
+      <RuntimeTypeInfo>false</RuntimeTypeInfo>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <FloatingPointModel>Fast</FloatingPointModel>
+      <AdditionalOptions>/MP</AdditionalOptions>
+      <Optimization>Full</Optimization>
+      <AdditionalIncludeDirectories>./../ADOL-C/ADOL-C/;./../ADOL-C/windows/nosparse;./../Bin;./../Include;./../ADOL-C/lib;./../ADOL-C/include;./../ADOL-C/bin;./../PhysX/foundation/include;./../PhysX/Common/src;./../PhysX/GeomUtils/src;./../PhysX/GeomUtils/headers;./../PhysX/GeomUtils/include;./../PhysX/GeomUtils/src/contact;./../PhysX/GeomUtils/src/common;./../PhysX/GeomUtils/src/convex;./../PhysX/GeomUtils/src/distance;./../PhysX/GeomUtils/src/gjk;./../PhysX/GeomUtils/src/intersection;./../PhysX/GeomUtils/src/mesh;./../PhysX/GeomUtils/src/hf;./../PhysX/GeomUtils/src/Ice;./../PhysX/GeomUtils/src/pcm;./Graphics/include/win32/GL;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;WIN64;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_ALLOW_MSC_VER_MISMATCH;_ALLOW_ITERATOR_DEBUG_LEVEL_MISMATCH;PHYSX_PROFILE_SDK;RENDER_SNIPPET;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <WarningLevel>Level4</WarningLevel>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>
+      </PrecompiledHeaderFile>
+    </ClCompile>
+    <Link>
+      <AdditionalOptions>/INCREMENTAL:NO /LIBPATH:../../../Lib/win64 PhysX3Common_x64.lib PhysX3_x64.lib PhysX3Cooking_x64.lib PhysX3CharacterKinematic_x64.lib PhysX3Extensions.lib PhysX3Vehicle.lib PhysXProfileSDK.lib PhysXVisualDebuggerSDK.lib PxTask.lib</AdditionalOptions>
+      <AdditionalDependencies>Winmm.lib;OpenGL32.lib;glut32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)$(ProjectName).exe</OutputFile>
+      <AdditionalLibraryDirectories>./../ADOL-C/windows/nosparse;./../Bin/win64/;./../ADOL-C/lib/;./../ADOL-C/include;./../ADOL-C/bin;./../Common/lib/win64;./lib/win64;./Graphics/lib/win64/glut;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <ProgramDatabaseFile>$(OutDir)/$(ProjectName).exe.pdb</ProgramDatabaseFile>
+      <SubSystem>Console</SubSystem>
+      <ImportLibrary>$(OutDir)$(TargetName).lib</ImportLibrary>
+      <TargetMachine>MachineX64</TargetMachine>
+    </Link>
+    <ResourceCompile />
+    <ProjectReference />
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Win32|x64'">
+    <ClCompile>
+      <TreatWarningAsError>false</TreatWarningAsError>
+      <StringPooling>true</StringPooling>
+      <RuntimeTypeInfo>false</RuntimeTypeInfo>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <FloatingPointModel>Fast</FloatingPointModel>
+      <AdditionalOptions>/MP</AdditionalOptions>
+      <Optimization>Full</Optimization>
+      <AdditionalIncludeDirectories>./../ADOL-C/ADOL-C/;./../ADOL-C/windows/nosparse;./../Bin;./../Include;./../ADOL-C/lib;./../ADOL-C/include;./../ADOL-C/bin;./../PhysX/foundation/include;./../PhysX/Common/src;./../PhysX/GeomUtils/src;./../PhysX/GeomUtils/headers;./../PhysX/GeomUtils/include;./../PhysX/GeomUtils/src/contact;./../PhysX/GeomUtils/src/common;./../PhysX/GeomUtils/src/convex;./../PhysX/GeomUtils/src/distance;./../PhysX/GeomUtils/src/gjk;./../PhysX/GeomUtils/src/intersection;./../PhysX/GeomUtils/src/mesh;./../PhysX/GeomUtils/src/hf;./../PhysX/GeomUtils/src/Ice;./../PhysX/GeomUtils/src/pcm;./Graphics/include/win32/GL;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;WIN64;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_ALLOW_MSC_VER_MISMATCH;_ALLOW_ITERATOR_DEBUG_LEVEL_MISMATCH;PHYSX_PROFILE_SDK;RENDER_SNIPPET;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <WarningLevel>Level4</WarningLevel>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>
+      </PrecompiledHeaderFile>
+    </ClCompile>
+    <Link>
+      <AdditionalOptions>/INCREMENTAL:NO /LIBPATH:../../../Lib/win64 PhysX3Common_x64.lib PhysX3_x64.lib PhysX3Cooking_x64.lib PhysX3CharacterKinematic_x64.lib PhysX3Extensions.lib PhysX3Vehicle.lib PhysXProfileSDK.lib PhysXVisualDebuggerSDK.lib PxTask.lib</AdditionalOptions>
+      <AdditionalDependencies>Winmm.lib;OpenGL32.lib;glut32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)$(ProjectName).exe</OutputFile>
+      <AdditionalLibraryDirectories>./../ADOL-C/windows/nosparse;./../Bin/win64/;./../ADOL-C/lib/;./../ADOL-C/include;./../ADOL-C/bin;./../Common/lib/win64;./lib/win64;./Graphics/lib/win64/glut;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <ProgramDatabaseFile>$(OutDir)/$(ProjectName).exe.pdb</ProgramDatabaseFile>
+      <SubSystem>Console</SubSystem>
+      <ImportLibrary>$(OutDir)$(TargetName).lib</ImportLibrary>
+      <TargetMachine>MachineX64</TargetMachine>
+    </Link>
+    <ResourceCompile />
+    <ProjectReference />
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Win32|Win32'">
+    <ClCompile>
+      <TreatWarningAsError>false</TreatWarningAsError>
+      <StringPooling>true</StringPooling>
+      <RuntimeTypeInfo>false</RuntimeTypeInfo>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <FloatingPointModel>Fast</FloatingPointModel>
+      <AdditionalOptions>/MP</AdditionalOptions>
+      <Optimization>Full</Optimization>
+      <AdditionalIncludeDirectories>./../ADOL-C/ADOL-C/;./../ADOL-C/windows/nosparse;./../Bin;./../Include;./../ADOL-C/lib;./../ADOL-C/include;./../ADOL-C/bin;./../PhysX/foundation/include;./../PhysX/Common/src;./../PhysX/GeomUtils/src;./../PhysX/GeomUtils/headers;./../PhysX/GeomUtils/include;./../PhysX/GeomUtils/src/contact;./../PhysX/GeomUtils/src/common;./../PhysX/GeomUtils/src/convex;./../PhysX/GeomUtils/src/distance;./../PhysX/GeomUtils/src/gjk;./../PhysX/GeomUtils/src/intersection;./../PhysX/GeomUtils/src/mesh;./../PhysX/GeomUtils/src/hf;./../PhysX/GeomUtils/src/Ice;./../PhysX/GeomUtils/src/pcm;./Graphics/include/win32/GL;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;WIN64;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_ALLOW_MSC_VER_MISMATCH;_ALLOW_ITERATOR_DEBUG_LEVEL_MISMATCH;PHYSX_PROFILE_SDK;RENDER_SNIPPET;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <WarningLevel>Level4</WarningLevel>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>
+      </PrecompiledHeaderFile>
+    </ClCompile>
+    <Link>
+      <AdditionalOptions>/INCREMENTAL:NO /LIBPATH:../../../Lib/win64 PhysX3Common_x64.lib PhysX3_x64.lib PhysX3Cooking_x64.lib PhysX3CharacterKinematic_x64.lib PhysX3Extensions.lib PhysX3Vehicle.lib PhysXProfileSDK.lib PhysXVisualDebuggerSDK.lib PxTask.lib</AdditionalOptions>
+      <AdditionalDependencies>Winmm.lib;OpenGL32.lib;glut32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)$(ProjectName).exe</OutputFile>
+      <AdditionalLibraryDirectories>./../ADOL-C/windows/nosparse;./../Bin/win64/;./../ADOL-C/lib/;./../ADOL-C/include;./../ADOL-C/bin;./../Common/lib/win64;./lib/win64;./Graphics/lib/win64/glut;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <ProgramDatabaseFile>$(OutDir)/$(ProjectName).exe.pdb</ProgramDatabaseFile>
+      <SubSystem>Console</SubSystem>
+      <ImportLibrary>$(OutDir)$(TargetName).lib</ImportLibrary>
+    </Link>
+    <ResourceCompile />
+    <ProjectReference />
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

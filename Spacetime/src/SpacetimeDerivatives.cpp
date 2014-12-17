@@ -161,7 +161,7 @@ Spacetime::compute_dfdx(PxU32 t)
 	dMInv_dX.push_back(dMinvdomega2);
 
 	//----------------------------------------------------------------------------------------------//
-	// Perform calculation of df/dx = dMInv_dX*(u+C+G) - Minv*(dC_dx+dG_dx);						//
+	// Perform calculation of df2/dx = dMInv_dX*(u+C+G) - Minv*(dC_dx+dG_dx);						//
 	//----------------------------------------------------------------------------------------------//
 
 	matrix<double> u(joints.size(), 1);
@@ -188,10 +188,31 @@ Spacetime::compute_dfdx(PxU32 t)
 			term2(i,j) = column_i(i,0);
 		}
 	}
+	matrix<double> dfdx_lower = term1 - term2;
 
-	matrix<double> dfdx = term1 - term2;
+	//----------------------------------------------------------------------------------------------//
+	//																								//
+	// dfdx = |df1/dx| = |        0         |         I          |									//
+	//		  |df2/dx|	 | dMInv_dX*(u+C+G) - Minv*(dC_dx+dG_dx) |									//
+	//																								//
+	//----------------------------------------------------------------------------------------------//
+
+	matrix<double> dfdx(DOF*joints.size()*2, DOF*joints.size()*2);
+	for (int i = 0; i < DOF*joints.size(); i++) {
+		for (int j = 0; j < DOF*joints.size(); j++) {
+			dfdx(i,j) = 0;
+			if (i == j) dfdx(i,j+DOF*joints.size()) = 1;
+			else		dfdx(i,j+DOF*joints.size()) = 0;
+		}
+	} for (int i = DOF*joints.size(); i < DOF*joints.size()*2; i++) {
+		for (int j = 0; j < DOF*joints.size()*2; j++) {
+			dfdx(i,j) = dfdx_lower(i-DOF*joints.size(), j);
+		}
+	}
+	
 	return dfdx;
 	*/
+
 	matrix<double> dfdx(1,1);
 	return dfdx;
 }
