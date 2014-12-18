@@ -45,104 +45,77 @@ void idleCallback()
 	glutPostRedisplay();
 }
 
+//==================================================================================================//
+// Main render function																				//
+//	Includes logic for making initial guess and optimizing input torque solution					//
+//	Renders sequence after each iteration of the solver												//
+//==================================================================================================//
+
 void renderCallback()
 {
 	static int iteration = 0;
-	render_system->setState(render_system->state_0);
-	
+
+	//----------------------------------------------------------------------------------------------//
+	// compute and render initial guess of torque input sequence									//
+	// via PD controller defined in Spacetime::makeInitialGuess()									//
+	//----------------------------------------------------------------------------------------------//
+
 	render_system->uSequence.clear();
-	for (int i = 0; i < render_system->numTimeSteps; i++)
+	render_system->setState(render_system->state_0);
+	for (int t = 0; t < render_system->numTimeSteps; t++)
 	{
+		// compute next torque vector of initial guess
 		render_system->makeInitialGuess();
 		RenderUtil::startRender(sCamera->getEye(), sCamera->getDir());
 	
+		// render timestep using computed input torque vector
 		PxScene* scene;
 		PxGetPhysics().getScenes(&scene,1);
-		PxU32 nbActors = scene->getNbActors(PxActorTypeSelectionFlag::eRIGID_DYNAMIC | PxActorTypeSelectionFlag::eRIGID_STATIC);
-		if(nbActors)
-		{
+		PxU32 nbActors = scene->getNbActors(PxActorTypeSelectionFlag::eRIGID_DYNAMIC);
+		if(nbActors) {
 			std::vector<PxRigidActor*> actors(nbActors);
-			scene->getActors(PxActorTypeSelectionFlag::eRIGID_DYNAMIC | PxActorTypeSelectionFlag::eRIGID_STATIC, (PxActor**)&actors[0], nbActors);
-			for (PxU32 i = 0; i < nbActors; i++) {
-				PxVec3 color;
-				if		(actors[i]->getName() == "base") color = PxVec3(1.0,0.0,0.0);
-				else if (actors[i]->getName() == "leg1") color = PxVec3(0.0,1.0,0.0);
-				else if (actors[i]->getName() == "leg2") color = PxVec3(0.0,0.0,1.0);
-				else if (actors[i]->getName() == "bulb") color = PxVec3(0.0,1.0,1.0);
-				else									 color = PxVec3(0.3,0.3,0.3);
-				RenderUtil::renderActors(&actors[i], 1, true, color);
-			}
-		}
-
-		const PxRenderBuffer& rb = scene->getRenderBuffer();
-		for(PxU32 i = 0; i < rb.getNbLines(); i++)
-		{
-			const PxDebugLine& line = rb.getLines()[i];
-			glLineWidth(2.5);
-			float b = (PxU8)((line.color0>>16) & 0xff);
-			float g = (PxU8)((line.color0>>8)  & 0xff);
-			float r = (PxU8)((line.color0)     & 0xff);
-			glColor3f(r, g, b);
-			glBegin(GL_LINES);
-			glVertex3f(line.pos0.x, line.pos0.y, line.pos0.z);
-			glVertex3f(line.pos1.x, line.pos1.y, line.pos1.z);
-			glEnd();
+			scene->getActors(PxActorTypeSelectionFlag::eRIGID_DYNAMIC, 
+							 (PxActor**)&actors[0], nbActors);
+			for (PxU32 i = 0; i < nbActors; i++)
+				RenderUtil::renderActors(&actors[i], 1, true, PxVec3(0.3,0.3,0.3));
 		}
 		
-		char* label = "Iteration #";
-		char buffer[10]; itoa(iteration, buffer, 10);
-		char* result = new char[strlen(label)+strlen(buffer)];
-		sprintf(result,"Initial Guess");
+		// label iteration
+		char* result = "Initial Guess";
 		glRasterPos2i(20,-25);
 		for(int i = 0; i < strlen(result); i++)
 			glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, result[i]);
 
+		// finish rendering
 		RenderUtil::finishRender();
 	}
+	
+	//----------------------------------------------------------------------------------------------//
+	// Compute and render next iteration of optimized solution via numerical iterative				//
+	// solver method involving state vector X and costate vector lambda								//
+	//----------------------------------------------------------------------------------------------//
 
-	while (true) 
-	{
+	double uDiff = std::numeric_limits<double>::infinity();
+	do {
 		iteration++;
 		render_system->setState(render_system->state_0);
-		render_system->Optimize();
-		for (int i = 0; i < render_system->numTimeSteps; i++)
+		uDiff = render_system->IterateOptimization();
+		for (int t = 0; t < render_system->numTimeSteps; t++)
 		{
-			render_system->applyTorqueVector(render_system->uSequence[i]);
+			render_system->applyTorqueVector(render_system->uSequence[t]);
 			render_system->stepPhysics();
 
 			RenderUtil::startRender(sCamera->getEye(), sCamera->getDir());
 	
 			PxScene* scene;
 			PxGetPhysics().getScenes(&scene,1);
-			PxU32 nbActors = scene->getNbActors(PxActorTypeSelectionFlag::eRIGID_DYNAMIC | PxActorTypeSelectionFlag::eRIGID_STATIC);
-			if(nbActors)
-			{
+			PxU32 nbActors = scene->getNbActors(PxActorTypeSelectionFlag::eRIGID_DYNAMIC);
+			if(nbActors) {
 				std::vector<PxRigidActor*> actors(nbActors);
-				scene->getActors(PxActorTypeSelectionFlag::eRIGID_DYNAMIC | PxActorTypeSelectionFlag::eRIGID_STATIC, (PxActor**)&actors[0], nbActors);
-				for (PxU32 i = 0; i < nbActors; i++) {
-					PxVec3 color;
-					if		(actors[i]->getName() == "base") color = PxVec3(1.0,0.0,0.0);
-					else if (actors[i]->getName() == "leg1") color = PxVec3(0.0,1.0,0.0);
-					else if (actors[i]->getName() == "leg2") color = PxVec3(0.0,0.0,1.0);
-					else if (actors[i]->getName() == "bulb") color = PxVec3(0.0,1.0,1.0);
-					else									 color = PxVec3(0.3,0.3,0.3);
-					RenderUtil::renderActors(&actors[i], 1, true, color);
-				}
-			}
-
-			const PxRenderBuffer& rb = scene->getRenderBuffer();
-			for(PxU32 i = 0; i < rb.getNbLines(); i++)
-			{
-				const PxDebugLine& line = rb.getLines()[i];
-				glLineWidth(2.5);
-				float b = (PxU8)((line.color0>>16) & 0xff);
-				float g = (PxU8)((line.color0>>8)  & 0xff);
-				float r = (PxU8)((line.color0)     & 0xff);
-				glColor3f(r, g, b);
-				glBegin(GL_LINES);
-				glVertex3f(line.pos0.x, line.pos0.y, line.pos0.z);
-				glVertex3f(line.pos1.x, line.pos1.y, line.pos1.z);
-				glEnd();
+				scene->getActors(PxActorTypeSelectionFlag::eRIGID_DYNAMIC, 
+								 (PxActor**)&actors[0], nbActors);
+				for (PxU32 i = 0; i < nbActors; i++)
+					RenderUtil::renderActors(&actors[i], 1, true, PxVec3(0.3,0.3,0.3));
 			}
 		
 			char* label = "Iteration #";
@@ -155,7 +128,7 @@ void renderCallback()
 
 			RenderUtil::finishRender();
 		}
-	}
+	} while (uDiff >= render_system->uThreshold);
 }
 
 void exitCallback(void)
@@ -167,7 +140,7 @@ void exitCallback(void)
 void renderLoop(Spacetime *sys)
 {
 	render_system = sys;
-	sCamera = new RenderUtil::Camera(PxVec3(35.0f, 35.0f, 35.0f), PxVec3(-35.0f,-35.0f,-35.0f));
+	sCamera = new RenderUtil::Camera(PxVec3(35.0f, 50.0f, 35.0f), PxVec3(-35.0f,-35.0f,-35.0f));
 
 	RenderUtil::setupDefaultWindow("Spacetime Optimization Example");
 	RenderUtil::setupDefaultRenderState();

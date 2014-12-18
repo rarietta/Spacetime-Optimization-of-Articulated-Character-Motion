@@ -9,47 +9,8 @@
 //======================================================================================================================//
 
 #include "Spacetime.h"
-#define UDIFF_THRESHOLD 0.01
 
-//======================================================================================================================//
-// Debug																												//
-//======================================================================================================================//
-void
-Spacetime::debug(void)
-{
-	//------------------------------------------------------------------------------------------------------------------//
-	// compute M, C, G terms from kinematics equation																	//
-	// also compute derivatives of M, C, G terms with ADOL-C															//
-	//------------------------------------------------------------------------------------------------------------------//
-
-	// virtual work calculation yields gravitational torque vector
-	matrix<double> J = buildJacobian();
-	matrix<double> G = computeGVector();
-	matrix<double> T = ~J*G;
-
-	// compute inverse mass matrix by altering rows of input torque
-	matrix<double> M_inv = computeInverseMassMatrix(T);
-	matrix<double> M(M_inv); M = (matrix<double>) M.Inv();
-	matrix<double> eye = M_inv * M;
-	
-	// compute C term of kinematics formula
-	matrix<double> C = computeCVector(T, M);
-
-	if (!pause) {
-		cout << "-----------------------------------------------------------------------------------------------" << endl;
-		cout << "time = " << gScene->getTimestamp() << endl;
-		cout << endl;
-		cout << "J = \n" << J << endl;
-		cout << "G = \n" << G << endl;
-		cout << "T = \n" << T << endl;
-		cout << "M_inv = \n" << M_inv << endl;
-		cout << "M = \n" << M << endl;
-		cout << "eye test: \n" << eye << endl;
-		cout << "C = \n" << C << endl;
-	}
-
-	applyTorqueVector(T);
-}
+bool ANALYTICAL = true;
 
 //======================================================================================================================//
 // Define global variables for spacetime optimization																	//
@@ -84,117 +45,113 @@ PxReal SSDvector(std::vector<matrix<double>> A, std::vector<matrix<double>> B)
 void
 Spacetime::makeInitialGuess(void)
 {
-	//uSequence.clear();
-	//saveState();
-	//matrix<double> state = getState();
+	// virtual work calculation yields gravitational torque vector
+	matrix<double> G = computeGVector();
 
-	//for (int i = 0; i < numTimeSteps; i++) 
-	//{
-		// virtual work calculation yields gravitational torque vector
-		matrix<double> J = buildJacobian();
-		matrix<double> G = computeGVector();
-		matrix<double> T = ~J*G;
-		G = T;
+	// compute inverse mass matrix by altering rows of input torque
+	matrix<double> M_inv = computeInverseMassMatrix(G);
+	matrix<double> M(M_inv); M = M.Inv();
 
-		// compute inverse mass matrix by altering rows of input torque
-		matrix<double> M_inv = computeInverseMassMatrix(T);
-		matrix<double> M(M_inv); M = M.Inv();
+	// compute C term of kinematics formula
+	matrix<double> C = computeCVector(G, M);
 
-		// compute C term of kinematics formula
-		matrix<double> C = computeCVector(T, M);
-
-		double Kp = 15;
-		double Kv = 15;
-		matrix<double> theta = calculateAngularPosition();
-		matrix<double> thetad(state_d); thetad.SetSize(DOF*joints.size(), 1);
-		matrix<double> thetaDot = calculateAngularVelocity();
-		matrix<double> u = C + G + M*(Kp*(thetad - theta) - Kv*thetaDot);
-		//cout << T << endl;
-		uSequence.push_back(u);
-		applyTorqueVector(u);
-		gScene->simulate(deltaT);
-		gScene->fetchResults(true);
-	//}
+	// compute torque with PD controller
+	double Kp = 1.5, Kv = 1.5;
+	matrix<double> theta = calculateAngularPosition();
+	matrix<double> thetad(state_d); thetad.SetSize(DOF*joints.size(), 1);
+	matrix<double> thetaDot = calculateAngularVelocity();
+	matrix<double> u = C + G + M*(Kp*(thetad - theta) - Kv*thetaDot);
+	uSequence.push_back(u);
+	applyTorqueVector(u);
+	stepPhysics();
 }
 
-void
-Spacetime::Optimize(void)
+//------------------------------------------------------------------------------------------------------------------//
+// perform one iteration of the numerical solver used to compute the optimal input torque sequence					//
+//------------------------------------------------------------------------------------------------------------------//
+
+double
+Spacetime::IterateOptimization(void)
 {	
-	// TEMPORARY
-	return;
-
-	//------------------------------------------------------------------------------------------------------------------//
-	// iteratively solve for optimal input torque sequence																//
-	//------------------------------------------------------------------------------------------------------------------//
-
 	// save initial state
 	saveState();
-
-	PxU32 jointCount = gScene->getNbConstraints();
-	std::vector<matrix<double>> GSequence;
-	std::vector<matrix<double>> CSequence;
-	std::vector<matrix<double>> MSequence;
-	std::vector<matrix<double>> M_invSequence;
-	std::vector<matrix<double>> stateSequence;
-	std::vector<matrix<double>> costateSequence;
-
 	PxReal uDiff;
-	do 
-	{
-		// clear the state and costate sequences from the last solver iteration
-		GSequence.clear();
-		CSequence.clear();
-		MSequence.clear();
-		M_invSequence.clear();
-		stateSequence.clear();
-		costateSequence.clear();
 
-		// 1) solve for the state sequence given the current u vector sequence
-		saveState();
-		stateSequence.push_back(state_0);
-		for (int i = 0; i < numTimeSteps-1; i++) 
-		{	
-			// virtual work calculation yields gravitational torque vector
-			matrix<double> J = buildJacobian();
-			matrix<double> G = computeGVector();
-			G = -(~J*G);
+	// clear the state and costate sequences from the last solver iteration
+	GSequence.clear();
+	CSequence.clear();
+	MSequence.clear();
+	MInvSequence.clear();
+	stateSequence.clear();
 
-			// compute inverse mass matrix by altering rows of input torque
-			matrix<double> M_inv = computeInverseMassMatrix(-G);
-			matrix<double> M(M_inv); M = (matrix<double>) M.Inv();
+	//----------------------------------------------------------------------------------------------//
+	// 1) solve for the state sequence given the current u vector sequence							//
+	//----------------------------------------------------------------------------------------------//
 
-			// compute C term of kinematics formula
-			matrix<double> C = computeCVector(-G, M);
+	setState(state_0);
+	stateSequence.push_back(state_0);
+	for (int t = 1; t <= numTimeSteps; t++) 
+	{	
+		// virtual work calculation yields gravitational torque vector
+		matrix<double> G = computeGVector();
+
+		// compute inverse mass matrix by altering rows of input torque
+		matrix<double> MInv = computeInverseMassMatrix(G);
+		matrix<double> M(MInv); M = (matrix<double>) M.Inv();
+
+		// compute C term of kinematics formula
+		matrix<double> C = computeCVector(G, M);
 			
-			// compute current state vector derivative with computed
-			// matrix values and the current input torque vector u
-			matrix<double> xDot = M_inv * (uSequence[i] + C + G);
-			stateSequence.push_back(stateSequence[i] + xDot*deltaT);
-			stepPhysics();
+		// store computed state matrices
+		GSequence.push_back(G);
+		CSequence.push_back(C);
+		MSequence.push_back(M);
+		MInvSequence.push_back(MInv);
+		stateSequence.push_back(getState());
+		//cout << "state[" << t << "] = \n" << getState() << endl;
+
+		// apply computed input torque vector u and simulate
+		applyTorqueVector(uSequence[t-1]);
+		stepPhysics();
+	}
+
+	//----------------------------------------------------------------------------------------------//
+	// 2) simulate lagrangian costate sequence backwards from final state using x, u				//
+	//----------------------------------------------------------------------------------------------//
+	
+	costateSequence.clear();
+	matrix<double> lambda_n = state_d - stateSequence[numTimeSteps-1];
+	cout << "stateSequence[numTimeSteps-1] = \n" << stateSequence[numTimeSteps-1] << endl;
+	cout << "state_d = \n" << state_d << endl;
+	cout << "state_d - stateSequence[numTimeSteps-1] = \n" << state_d - stateSequence[numTimeSteps-1] << endl;
+	costateSequence.push_back(lambda_n);
+	for (int t = 0; t < numTimeSteps; t++) 
+	{
+		matrix<double> dfdx= compute_dfdx_analytical(numTimeSteps-t-1); 
+		matrix<double> lambdaDot;
+		if (ANALYTICAL) {
+			lambdaDot = (~costateSequence[t])*dfdx;
+			lambdaDot = ~lambdaDot;
+			cout << "lambda[" << numTimeSteps-t-1 << "] = " << costateSequence[t] << endl;
+			cout << "lambdaDot[" << numTimeSteps-t-1 << "] = " << lambdaDot << endl;
+		} else { 
+			lambdaDot = -(~costateSequence[t])*dfdx;
+			lambdaDot = ~lambdaDot;
 		}
-		restoreState();
+		costateSequence.push_back(costateSequence[t] - deltaT*lambdaDot);
+	} std::reverse(costateSequence.begin(), costateSequence.end());
 
-		// 2) simulate lagrangian costate sequence backwards from final state using x, u
-		// TODO: initialize lambda vector at end state
-		matrix<double> lambda_n;
-		costateSequence.insert(costateSequence.begin(), lambda_n);
-		for (int i = numTimeSteps-1; i > 0; i--) 
-		{
-			// lambdaDot = -dL/dX + transpose(lambda)*df/dX
-			matrix<double> dLdx = compute_dLdx(i);
-			matrix<double> dfdx = compute_dfdx(i);
-			matrix<double> lambdaDot = -dLdx + ~costateSequence.front()*dfdx;
-			costateSequence.insert(costateSequence.begin(), costateSequence.front()-deltaT*lambdaDot);
-		}
+	//----------------------------------------------------------------------------------------------//
+	// 3) update u from constraint formula															//
+	//----------------------------------------------------------------------------------------------//
 
-		// 3) update u from constraint formula
-		std::vector<matrix<double>> new_uSequence;
-		for (int i = 0; i < numTimeSteps; i++)
-			new_uSequence.push_back(~costateSequence[i]*M_invSequence[i]);
-		uDiff = SSDvector(uSequence, new_uSequence);
-		uSequence = new_uSequence;
+	std::vector<matrix<double>> new_uSequence;
+	for (int t = 0; t < numTimeSteps; t++)
+		new_uSequence.push_back(-1.0 * ~(~costateSequence[t]*compute_dfdu_analytical(t)));
+	uDiff = SSDvector(uSequence, new_uSequence);
+	cout << "uDiff = " << uDiff << endl;
+		
+	uSequence = new_uSequence;
 
-	} while (uDiff > UDIFF_THRESHOLD);
-
-	return;
+	return uDiff;
 }

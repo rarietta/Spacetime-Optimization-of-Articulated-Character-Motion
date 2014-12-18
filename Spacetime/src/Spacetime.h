@@ -17,6 +17,7 @@
 #include <assert.h>
 #include <ctype.h>
 #include <vector>
+#include <algorithm>
 #include <adolc/adolc.h>
 
 //#define T_DEBUG 1
@@ -45,13 +46,14 @@ public:
 	PxU32 numTimeSteps;						// number of time steps in simulation
 	double deltaT;							// length of each time step
 	PxVec3 root;							// position of root (static)
+	double uThreshold;
 
 	// Init functions (SpacetimeInit.cpp)
 	void initPhysics(void);
 
 	// Optimization functions (SpacetimeOptimization.cpp)
 	void makeInitialGuess(void);
-	void Optimize(void);
+	double IterateOptimization(void);
 	
 	// State functions (SpacetimeState.cpp)
 	void switchPause(void);
@@ -106,19 +108,45 @@ private:
 	matrix<double> getState(void);
 
 	// Kinematics functions (SpacetimeKinematics.cpp)
-	void debug(void);
 	matrix<double> buildJacobian(void);
 	matrix<double> computeGVector(void);
 	matrix<double> calculateAngularVelocity(void);
 	matrix<double> calculateAngularPosition(void);
-	matrix<double> computeInverseMassMatrix(matrix<double> T);
-	matrix<double> computeCVector(matrix<double> T, matrix<double> M);
+	matrix<double> computeInverseMassMatrix(matrix<double> G);
+	matrix<double> computeCVector(matrix<double> G, matrix<double> M);
 
-	// Partial derivative functions (SpacetimeDerivatives.cpp)
+	// Optimization sequences
+	std::vector<matrix<double>> GSequence;
+	std::vector<matrix<double>> CSequence;
+	std::vector<matrix<double>> MSequence;
+	std::vector<matrix<double>> MInvSequence;
+	std::vector<matrix<double>> stateSequence;
+	std::vector<matrix<double>> costateSequence;
+
+	// Computational derivative functions (SpacetimeDerivatives.cpp)
 	matrix<double> compute_dLdx(PxU32 t);
 	matrix<double> compute_dLdu(PxU32 t);
 	matrix<double> compute_dfdx(PxU32 t);
 	matrix<double> compute_dfdu(PxU32 t);
+
+	// Analytical derivative functions (SpacetimeAnalytical.cpp)
+	// only valid as ADOL-C alternative for 2 joint system
+	matrix<double> compute_dLdx_analytical(PxU32 t);
+	matrix<double> compute_dLdu_analytical(PxU32 t);
+	matrix<double> compute_dfdx_analytical(PxU32 t);
+	matrix<double> compute_dfdu_analytical(PxU32 t);
+	matrix<double> compute_dG_dtheta1_analytical(PxU32 t);
+	matrix<double> compute_dG_dtheta2_analytical(PxU32 t);
+	matrix<double> compute_dG_dthetaDot1_analytical(PxU32 t);
+	matrix<double> compute_dG_dthetaDot2_analytical(PxU32 t);
+	matrix<double> compute_dC_dtheta1_analytical(PxU32 t);
+	matrix<double> compute_dC_dtheta2_analytical(PxU32 t);
+	matrix<double> compute_dC_dthetaDot1_analytical(PxU32 t);
+	matrix<double> compute_dC_dthetaDot2_analytical(PxU32 t);
+	matrix<double> compute_dMInv_dtheta1_analytical(PxU32 t);
+	matrix<double> compute_dMInv_dtheta2_analytical(PxU32 t);
+	matrix<double> compute_dMInv_dthetaDot1_analytical(PxU32 t);
+	matrix<double> compute_dMInv_dthetaDot2_analytical(PxU32 t);
 
 	// Math3D functions
 	PxVec3 QuaternionToEuler(PxQuat q);

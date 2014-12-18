@@ -20,6 +20,5 @@ extern void renderLoop(Spacetime *sys);
 
 void main(int, char**) {
 	Spacetime *render_system = new Spacetime();
-	render_system->makeInitialGuess();
 	renderLoop(render_system);
 }

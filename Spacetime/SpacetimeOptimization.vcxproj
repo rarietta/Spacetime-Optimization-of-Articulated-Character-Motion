@@ -46,6 +46,7 @@
     <ClCompile Include="src\CameraUtil.cpp" />
     <ClCompile Include="src\Math3D.cpp" />
     <ClCompile Include="src\Spacetime.cpp" />
+    <ClCompile Include="src\SpacetimeAnalytical.cpp" />
     <ClCompile Include="src\SpacetimeCleanup.cpp" />
     <ClCompile Include="src\SpacetimeDerivatives.cpp" />
     <ClCompile Include="src\SpacetimeDynamics.cpp" />
@@ -448,9 +449,9 @@
     </ClCompile>
     <Link>
       <AdditionalOptions>/INCREMENTAL:NO /LIBPATH:../../../Lib/win64 PhysX3Common_x64.lib PhysX3_x64.lib PhysX3Cooking_x64.lib PhysX3CharacterKinematic_x64.lib PhysX3Extensions.lib PhysX3Vehicle.lib PhysXProfileSDK.lib PhysXVisualDebuggerSDK.lib PxTask.lib</AdditionalOptions>
-      <AdditionalDependencies>Winmm.lib;OpenGL32.lib;glut32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>adolc.lib;Winmm.lib;OpenGL32.lib;glut32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)$(ProjectName).exe</OutputFile>
-      <AdditionalLibraryDirectories>.\..\ADOL-C\MSVisualStudio\v10\nosparse;.\..\ADOL-C\MSVisualStudio\v10\x64\nosparse;./../Bin/win64/;./../ADOL-C/lib/;./../ADOL-C/include;./../ADOL-C/bin;./../Common/lib/win64;./lib/win64;./Graphics/lib/win64/glut;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>./../ADOL-C/MSVisualStudio/v10/x64/nosparse;./../Common/lib/win64;./lib/win64;./Graphics/lib/win64/glut;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ProgramDatabaseFile>$(OutDir)/$(ProjectName).exe.pdb</ProgramDatabaseFile>
       <SubSystem>Console</SubSystem>
       <ImportLibrary>$(OutDir)$(TargetName).lib</ImportLibrary>

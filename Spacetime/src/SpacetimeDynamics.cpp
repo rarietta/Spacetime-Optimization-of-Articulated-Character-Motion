@@ -10,6 +10,8 @@
 
 #include "Spacetime.h"
 
+#define R3 3
+	
 //======================================================================================================================//
 // Build the Jacobian matrix for the system at the current timestep														//
 //======================================================================================================================//
@@ -50,7 +52,7 @@ Spacetime::buildJacobian(void)
 		}
 	}
 
-	matrix<double> J(jointCount*3, jointCount*DOF);
+	matrix<double> J(R3*jointCount, DOF*jointCount);
 	for (PxU32 i = 0; i < jointCount; i++)
 	{
 		// get joint axes a_x, a_y, a_z
@@ -66,17 +68,17 @@ Spacetime::buildJacobian(void)
 				if (j < i) {
 					// if the current body is unaffected by the joint
 					// the values in the row of the J_i matrix are 0
-					J(j*3+X, i*DOF+n) = 0.0;
-					J(j*3+Y, i*DOF+n) = 0.0;
-					J(j*3+Z, i*DOF+n) = 0.0;
+					J(R3*j+X, i*DOF+n) = 0.0;
+					J(R3*j+Y, i*DOF+n) = 0.0;
+					J(R3*j+Z, i*DOF+n) = 0.0;
 				} else {
 					// populate matrix with 3-vector cross product 
 					// of joint's n-th axis of rotation and r_cm_j
 					// (vector from the joint to the j-th center of mass)
 					vec3 cross_product = axis_n.Cross(R(j,i));
-					J(j*3+X, i*DOF+n) = cross_product[X];
-					J(j*3+Y, i*DOF+n) = cross_product[Y];
-					J(j*3+Z, i*DOF+n) = cross_product[Z];
+					J(R3*j+X, i*DOF+n) = cross_product[X];
+					J(R3*j+Y, i*DOF+n) = cross_product[Y];
+					J(R3*j+Z, i*DOF+n) = cross_product[Z];
 				}
 			}
 		}
@@ -100,44 +102,18 @@ Spacetime::computeGVector(void)
 	PxConstraint** jointBuffer = new PxConstraint*[jointCount];
 	gScene->getConstraints(jointBuffer, jointCount);
 	
-	//short int tag = 0;
-	//trace_on(tag);
-	
-	// declaration of dependent and independent variables
-	// for use in ADOL-C derivative calculations
-	//adouble *_X, *_dGdX;
-	//_X = new adouble[jointCount*DOF*2];
-	//_dGdX = new adouble[jointCount*DOF];
-
-	//matrix<double> state = getState();
-	//for (int i = 0; i < jointCount*DOF*2; i++)
-	//	_X[i] <<= state(i,1);
-
-	matrix<double> G(3*jointCount, 1);
+	matrix<double> G(R3*jointCount, 1);
 	for (PxU32 i = 0; i < jointCount; i++) {
 		jointBuffer[i]->getActors(a[0], a[1]);
 		PxRigidBody *body1 = (PxRigidBody *) a[1];
 		PxVec3 gravity = gScene->getGravity();
 		PxReal mass = body1->getMass();
-		//_dGdX[i*DOF+X] = (mass * gravity).x;
-		//_dGdX[i*DOF+Y] = (mass * gravity).y;
-		//_dGdX[i*DOF+Z] = (mass * gravity).z;
-		G(i*3+X, 0) = mass * gravity[X];
-		G(i*3+Y, 0) = mass * gravity[Y];
-		G(i*3+Z, 0) = mass * gravity[Z];
+		G(R3*i+X, 0) = mass * gravity[X];
+		G(R3*i+Y, 0) = mass * gravity[Y];
+		G(R3*i+Z, 0) = mass * gravity[Z];
 	}
-
-	//for (int i = 0; i < jointCount*DOF; i++)
-	//	_dGdX[i] >>= G(i,1);
-
 	delete(jointBuffer);
-	//delete(_dGdX);
-	//delete(_X);
-
-	//trace_off();
-
-	//cout << "G = \n" << G << endl;
-	return G;
+	return ~buildJacobian()*G;
 }
 
 //======================================================================================================================//
@@ -177,12 +153,14 @@ Spacetime::applyTorqueVector(matrix<double> T)
 matrix<double> 
 Spacetime::calculateAngularVelocity(void) 
 {
-	// create matrix
+	PxRigidActor *a[2];
 	matrix<double> angularVelocityVector(DOF*joints.size(), 1);
 
-	// apply torque to joints
-	for (unsigned int i = 0; i < joints.size(); i++) {
-		PxVec3 angularVelocity = joints[i]->getRelativeAngularVelocity();
+	// find global angular velocity of each joints child body
+	for (int i = 0; i < joints.size(); i++) {
+		joints[i]->getActors(a[PxJointActorIndex::eACTOR0], a[PxJointActorIndex::eACTOR1]);
+		PxRigidBody *body1 = (PxRigidBody *) a[PxJointActorIndex::eACTOR1];
+		PxVec3 angularVelocity = body1->getAngularVelocity();
 		if (DOF > X) { angularVelocityVector(i*DOF+X, 0) = angularVelocity[X]; }
 		if (DOF > Y) { angularVelocityVector(i*DOF+Y, 0) = angularVelocity[Y]; }
 		if (DOF > Z) { angularVelocityVector(i*DOF+Z, 0) = angularVelocity[Z]; }
@@ -219,13 +197,12 @@ Spacetime::calculateAngularPosition(void)
 //======================================================================================================================//
 
 matrix<double> 
-Spacetime::computeInverseMassMatrix(matrix<double> T)
+Spacetime::computeInverseMassMatrix(matrix<double> G)
 {
 	matrix<double> M_inv(DOF*joints.size(), DOF*joints.size());
 	for (int i = 0; i < DOF*joints.size(); i++) {
 
 		// save state to restore after each calculation
-		// matrix<double> state = getState();
 		saveState();
 
 		// zero out current velocities to eliminate C term
@@ -237,11 +214,10 @@ Spacetime::computeInverseMassMatrix(matrix<double> T)
 
 		// solve for acceleration with modified input torque
 		matrix<double> velocityBefore = calculateAngularVelocity();
-		matrix<double> T_new(T);
-		T_new(i, 0) += 1.0;
-		applyTorqueVector(T_new);
-		gScene->simulate(1.0f/60.0f);
-		gScene->fetchResults(true);
+		matrix<double> G_new(G);
+		G_new(i, 0) += 1.0;
+		applyTorqueVector(G_new);
+		stepPhysics();
 		matrix<double> velocityAfter = calculateAngularVelocity();
 		matrix<double> angularAcceleration = (velocityAfter - velocityBefore) / (deltaT);
 
@@ -250,7 +226,6 @@ Spacetime::computeInverseMassMatrix(matrix<double> T)
 			M_inv(j,i) = angularAcceleration(j,0);
 
 		// restore the state
-		// setState(state);
 		restoreState();
 	}
 	return M_inv;
@@ -261,21 +236,18 @@ Spacetime::computeInverseMassMatrix(matrix<double> T)
 //======================================================================================================================//
 
 matrix<double> 
-Spacetime::computeCVector(matrix<double> T, matrix<double> M)
+Spacetime::computeCVector(matrix<double> G, matrix<double> M)
 {
 	matrix<double> C(DOF*joints.size(), 1);
 
 	saveState();
-	//matrix<double> state = getState();
 	matrix<double> velocityBefore = calculateAngularVelocity();
-	applyTorqueVector(T);
-	gScene->simulate(deltaT);
-	gScene->fetchResults(true);
+	applyTorqueVector(G);
+	stepPhysics();
 	matrix<double> velocityAfter = calculateAngularVelocity();
 	matrix<double> angularAcceleration = (velocityAfter - velocityBefore) / (deltaT);
 	C = M * angularAcceleration;
 	restoreState();
-	//setState(state);
 
 	return C;
 }
@@ -287,11 +259,6 @@ Spacetime::computeCVector(matrix<double> T, matrix<double> M)
 void 
 Spacetime::stepPhysics(void)
 {
-	// do not simulate if the user has paused
-	if (pause) return;
-
-	//debug();
-
 	// simulate and return
 	gScene->simulate(deltaT);
 	gScene->fetchResults(true);

@@ -65,6 +65,7 @@ Spacetime::setState(matrix<double> stateVector) {
 		if (DOF > Z) { angularVelocity[Z] = stateVector(joints.size()*DOF + (i-1)*DOF+Z,0); }
 		else		 { angularVelocity[Z] = 0.0; }
 		current->setAngularVelocity(angularVelocity);
+		current->setLinearVelocity(PxVec3(0,0,0));
 	}
 }
 
@@ -76,7 +77,7 @@ Spacetime::getState(void) {
 	for (int i = 0; i < joints.size()*DOF; i++)
 		state(i,0) = theta(i,0);
 	for (int i = 0; i < joints.size()*DOF; i++)
-		state(i+joints.size()*DOF,0) = theta(i,0);
+		state(i+joints.size()*DOF,0) = thetaDot(i,0);
 	return state;
 }
 
