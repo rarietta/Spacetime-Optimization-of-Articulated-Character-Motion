@@ -9,86 +9,54 @@
 #include "Spacetime.h"
 
 //======================================================================================================================//
+// Global variables utilized by partial derivative calculations															//
+//======================================================================================================================//
+
+// system dependent variables
+double g, m1, m2, lc1, lc2, l1, l2;
+
+// state dependent variables
+matrix<double> state;
+double theta1, theta2;
+double thetaDot1, thetaDot2;
+
+//======================================================================================================================//
 // Analytic G derivatives																								//
 //======================================================================================================================//
 
 matrix<double> 
 Spacetime::compute_dG_dtheta1_analytic(PxU32 t) 
 {
-	// system dependent variables
-	double g   = gScene->getGravity().y;
-	double m1  = dynamic_actors[1]->getMass();
-	double m2  = dynamic_actors[2]->getMass();
-	double lc1 = joint_local_positions[0].magnitude();
-	double lc2 = joint_local_positions[1].magnitude();
-	double l1  = 2.0 * joint_local_positions[0].magnitude();
-	double l2  = 2.0 * joint_local_positions[1].magnitude();
-
-	// state dependent variables
-	matrix<double> state = stateSequence[t];
-	double theta1 = state(0,0) + PxPi/2.0f;
-	double theta2 = state(1,0) + PxPi/2.0f - theta1;
-	double thetaDot1 = state(2,0);
-	double thetaDot2 = state(3,0);
-
-	// compute values
 	matrix<double> dG_dtheta1(2,1);
 	dG_dtheta1(0,0) = -(m1*g*lc1*sin(theta1)) - (m2*g*lc2*sin(theta1)*cos(theta2)) - (m2*g*lc2*cos(theta1)*sin(theta2)) - (m2*g*l1*sin(theta1));
 	dG_dtheta1(1,0) = -(m2*g*lc2*sin(theta1)*cos(theta2)) - (m2*g*lc2*cos(theta1)*sin(theta2));
-	
-	// return analytic derivative
 	return dG_dtheta1;
 }
 
 matrix<double>  
 Spacetime::compute_dG_dtheta2_analytic(PxU32 t) 
 {
-	// system dependent variables
-	double g   = gScene->getGravity().y;
-	double m1  = dynamic_actors[1]->getMass();
-	double m2  = dynamic_actors[2]->getMass();
-	double lc1 = joint_local_positions[0].magnitude();
-	double lc2 = joint_local_positions[1].magnitude();
-	double l1  = 2.0 * joint_local_positions[0].magnitude();
-	double l2  = 2.0 * joint_local_positions[1].magnitude();
-
-	// state dependent variables
-	matrix<double> state = stateSequence[t];
-	double theta1 = state(0,0) + PxPi/2.0f;
-	double theta2 = state(1,0) + PxPi/2.0f - theta1;
-	double thetaDot1 = state(2,0);
-	double thetaDot2 = state(3,0);
-
-	// compute values
 	matrix<double> dG_dtheta2(2,1);
 	dG_dtheta2(0,0) = -(m2*g*lc2*cos(theta1)*sin(theta2)) - (m2*g*lc2*sin(theta1)*cos(theta2));
 	dG_dtheta2(1,0) = -(m2*g*lc2*cos(theta1)*sin(theta2)) - (m2*g*lc2*sin(theta1)*cos(theta2));
-	
-	// return analytic derivative
 	return dG_dtheta2;
 }
 
 matrix<double>  
 Spacetime::compute_dG_dthetaDot1_analytic(PxU32 t) 
 {
-	// compute values
 	matrix<double> dG_dthetaDot1(2,1);
 	dG_dthetaDot1(0,0) = 0.0;
 	dG_dthetaDot1(1,0) = 0.0;
-	
-	// return analytic derivative
 	return dG_dthetaDot1;
 }
 
 matrix<double>  
 Spacetime::compute_dG_dthetaDot2_analytic(PxU32 t) 
 {
-	// compute values
 	matrix<double> dG_dthetaDot2(2,1);
 	dG_dthetaDot2(0,0) = 0.0;
 	dG_dthetaDot2(1,0) = 0.0;
-	
-	// return analytic derivative
 	return dG_dthetaDot2;
 }
 
@@ -99,96 +67,36 @@ Spacetime::compute_dG_dthetaDot2_analytic(PxU32 t)
 matrix<double>  
 Spacetime::compute_dC_dtheta1_analytic(PxU32 t) 
 {
-	// compute values
 	matrix<double> dC_dtheta1(2,1);
 	dC_dtheta1(0,0) = 0.0;
 	dC_dtheta1(1,0) = 0.0;
-	
-	// return analytic derivative
 	return dC_dtheta1;
 }
 
 matrix<double>  
 Spacetime::compute_dC_dtheta2_analytic(PxU32 t) 
 {
-	// system dependent variables
-	double g   = gScene->getGravity().y;
-	double m1  = dynamic_actors[1]->getMass();
-	double m2  = dynamic_actors[2]->getMass();
-	double lc1 = joint_local_positions[0].magnitude();
-	double lc2 = joint_local_positions[1].magnitude();
-	double l1  = 2.0 * joint_local_positions[0].magnitude();
-	double l2  = 2.0 * joint_local_positions[1].magnitude();
-
-	// state dependent variables
-	matrix<double> state = stateSequence[t];
-	double theta1 = state(0,0) + PxPi/2.0f;
-	double theta2 = state(1,0) + PxPi/2.0f - theta1;
-	double thetaDot1 = state(2,0);
-	double thetaDot2 = state(3,0);
-
-	// compute values
 	matrix<double> dC_dtheta2(2,1);
 	dC_dtheta2(0,0) = -(m2*l1*lc2*cos(theta2)*thetaDot2*thetaDot2) - 2*(m2*l1*lc2*cos(theta2)*thetaDot1*thetaDot2);
 	dC_dtheta2(1,0) = m2*l1*lc2*cos(theta2)*thetaDot1*thetaDot1;
-	
-	// return analytic derivative
 	return dC_dtheta2;
 }
 
 matrix<double>  
 Spacetime::compute_dC_dthetaDot1_analytic(PxU32 t) 
 {
-	// system dependent variables
-	double g   = gScene->getGravity().y;
-	double m1  = dynamic_actors[1]->getMass();
-	double m2  = dynamic_actors[2]->getMass();
-	double lc1 = joint_local_positions[0].magnitude();
-	double lc2 = joint_local_positions[1].magnitude();
-	double l1  = 2.0 * joint_local_positions[0].magnitude();
-	double l2  = 2.0 * joint_local_positions[1].magnitude();
-
-	// state dependent variables
-	matrix<double> state = stateSequence[t];
-	double theta1 = state(0,0) + PxPi/2.0f;
-	double theta2 = state(1,0) + PxPi/2.0f - theta1;
-	double thetaDot1 = state(2,0);
-	double thetaDot2 = state(3,0);
-
-	// compute values
 	matrix<double> dC_dthetaDot1(2,1);
 	dC_dthetaDot1(0,0) = -2*m2*l1*lc2*sin(theta2)*thetaDot2;
 	dC_dthetaDot1(1,0) =  2*m2*l1*lc2*sin(theta2)*thetaDot1;
-	
-	// return analytic 
 	return dC_dthetaDot1;
 }
 
 matrix<double>  
 Spacetime::compute_dC_dthetaDot2_analytic(PxU32 t) 
 {
-	// system dependent variables
-	double g   = gScene->getGravity().y;
-	double m1  = dynamic_actors[1]->getMass();
-	double m2  = dynamic_actors[2]->getMass();
-	double lc1 = joint_local_positions[0].magnitude();
-	double lc2 = joint_local_positions[1].magnitude();
-	double l1  = 2.0 * joint_local_positions[0].magnitude();
-	double l2  = 2.0 * joint_local_positions[1].magnitude();
-
-	// state dependent variables
-	matrix<double> state = stateSequence[t];
-	double theta1 = state(0,0) + PxPi/2.0f;
-	double theta2 = state(1,0) + PxPi/2.0f - theta1;
-	double thetaDot1 = state(2,0);
-	double thetaDot2 = state(3,0);
-
-	// compute values
 	matrix<double> dC_dthetaDot2(2,1);
 	dC_dthetaDot2(0,0) = -2*(m2*l1*lc2*sin(theta2)*thetaDot2) - 2*(m2*l1*lc2*sin(theta2)*thetaDot1);
 	dC_dthetaDot2(1,0) =  0;
-	
-	// return analytic derivative
 	return dC_dthetaDot2;
 }
 
@@ -199,64 +107,36 @@ Spacetime::compute_dC_dthetaDot2_analytic(PxU32 t)
 matrix<double>  
 Spacetime::compute_dMInv_dtheta1_analytic(PxU32 t) 
 {
-	// compute values
 	matrix<double> dMInv_dtheta1(2,2);
 	dMInv_dtheta1(0,0) = 0.0; dMInv_dtheta1(0,1) = 0.0;
 	dMInv_dtheta1(1,0) = 0.0; dMInv_dtheta1(1,1) = 0.0;
-	
-	// return analytic derivative
 	return dMInv_dtheta1;
 }
 
 matrix<double>  
 Spacetime::compute_dMInv_dtheta2_analytic(PxU32 t) 
 {
-	// system dependent variables
-	double g   = gScene->getGravity().y;
-	double m1  = dynamic_actors[1]->getMass();
-	double m2  = dynamic_actors[2]->getMass();
-	double lc1 = joint_local_positions[0].magnitude();
-	double lc2 = joint_local_positions[1].magnitude();
-	double l1  = 2.0 * joint_local_positions[0].magnitude();
-	double l2  = 2.0 * joint_local_positions[1].magnitude();
-
-	// state dependent variables
-	matrix<double> state = stateSequence[t];
-	double theta1 = state(0,0) + PxPi/2.0f;
-	double theta2 = state(1,0) + PxPi/2.0f - theta1;
-	double thetaDot1 = state(2,0);
-	double thetaDot2 = state(3,0);
-
-	// compute values
 	matrix<double> dM_dtheta2(2,2);
 	dM_dtheta2(0,0) = -2*(m2*l1*lc2*sin(theta2)); dM_dtheta2(0,1) = -(m2*l1*lc2*sin(theta2));
 	dM_dtheta2(1,0) =   -(m2*l1*lc2*sin(theta2)); dM_dtheta2(1,1) = 0.0;
-	
-	// return analytic derivative
 	return -MInvSequence[t] * dM_dtheta2 * MInvSequence[t];
 }
 
 matrix<double>  
 Spacetime::compute_dMInv_dthetaDot1_analytic(PxU32 t) 
 {
-	// compute values
 	matrix<double> dMInv_dthetaDot1(2,2);
 	dMInv_dthetaDot1(0,0) = 0.0; dMInv_dthetaDot1(0,1) = 0.0;
 	dMInv_dthetaDot1(1,0) = 0.0; dMInv_dthetaDot1(1,1) = 0.0;
-	
-	// return analytic derivative
 	return dMInv_dthetaDot1;
 }
 
 matrix<double>  
 Spacetime::compute_dMInv_dthetaDot2_analytic(PxU32 t) 
 {
-	// compute values
 	matrix<double> dMInv_dthetaDot2(2,2);
 	dMInv_dthetaDot2(0,0) = 0.0; dMInv_dthetaDot2(0,1) = 0.0;
 	dMInv_dthetaDot2(1,0) = 0.0; dMInv_dthetaDot2(1,1) = 0.0;
-	
-	// return analytic derivative
 	return dMInv_dthetaDot2;
 }
 
@@ -307,6 +187,26 @@ Spacetime::compute_dfdu_analytic(PxU32 t)
 matrix<double> 
 Spacetime::compute_dfdx_analytic(PxU32 t)
 {	
+	//----------------------------------------------------------------------------------------------//
+	// Set necessary variables for computation of partial derivatives								//
+	//----------------------------------------------------------------------------------------------//
+
+	// system dependent variables
+	g   = gScene->getGravity().y;
+	m1  = dynamic_actors[1]->getMass();
+	m2  = dynamic_actors[2]->getMass();
+	lc1 = joint_local_positions[0].magnitude();
+	lc2 = joint_local_positions[1].magnitude();
+	l1  = 2.0 * joint_local_positions[0].magnitude();
+	l2  = 2.0 * joint_local_positions[1].magnitude();
+
+	// state dependent variables
+	state = stateSequence[t];
+	theta1 = state(0,0) + PxPi/2.0f;
+	theta2 = state(1,0) + PxPi/2.0f - theta1;
+	thetaDot1 = state(2,0);
+	thetaDot2 = state(3,0);
+
 	//----------------------------------------------------------------------------------------------//
 	// compute dG_dX, the derivative of the gravitational torque matrix w.r.t. to the state vector	//
 	// and build full 3D derivative matrix from partials											//

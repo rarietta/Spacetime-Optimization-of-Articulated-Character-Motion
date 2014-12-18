@@ -71,9 +71,11 @@ Spacetime::IterateOptimization(void)
 	// solve forward for the state sequence given the current u vector sequence						//
 	//----------------------------------------------------------------------------------------------//
 
-	stateSequence.push_back(state_0);
 	for (int t = 0; t < numTimeSteps; t++) 
 	{	
+		// store current state
+		stateSequence.push_back(getState());
+
 		// system dependent variables
 		PxReal g   = gScene->getGravity().y;
 		PxReal m1  = dynamic_actors[1]->getMass();
@@ -118,7 +120,6 @@ Spacetime::IterateOptimization(void)
 		// apply computed input torque vector u and simulate one step
 		applyTorqueVector(uSequence[t]);
 		stepPhysics();
-		stateSequence.push_back(getState());
 	}
 
 	//----------------------------------------------------------------------------------------------//
@@ -130,7 +131,7 @@ Spacetime::IterateOptimization(void)
 	costateSequence.push_back(lambda_N);
 	for (int t = 0; t < numTimeSteps; t++) {
 		if (ANALYTIC) dfdx = compute_dfdx_analytic(numTimeSteps-t-1); 
-		else			dfdx = compute_dfdx_numeric (numTimeSteps-t-1);
+		else		  dfdx = compute_dfdx_numeric (numTimeSteps-t-1);
 		matrix<double> lambdaDot = ~((~costateSequence[t])*dfdx);
 		costateSequence.push_back(costateSequence[t] - deltaT*lambdaDot);
 	} std::reverse(costateSequence.begin(), costateSequence.end());
@@ -142,7 +143,7 @@ Spacetime::IterateOptimization(void)
 	std::vector<matrix<double>> new_uSequence;
 	for (int t = 0; t < numTimeSteps; t++) {
 		if (ANALYTIC) new_uSequence.push_back(-1.0 * ~(~costateSequence[t]*compute_dfdu_analytic(t)));
-		else			new_uSequence.push_back(-1.0 * ~(~costateSequence[t]*compute_dfdu_numeric(t)));
+		else		  new_uSequence.push_back(-1.0 * ~(~costateSequence[t]*compute_dfdu_numeric(t)));
 	} PxReal uDiff = SSDvector(uSequence, new_uSequence);
 	uSequence.clear(); uSequence = new_uSequence;
 	return uDiff;
