@@ -19,41 +19,27 @@
 matrix<double> 
 Spacetime::buildJacobian(void)
 {
-	// get all joints in scene
-	PxRigidActor *a1[2], *a2[2];
-	PxU32 jointCount = gScene->getNbConstraints();
-	PxConstraint** jointBuffer1 = new PxConstraint*[jointCount];
-	PxConstraint** jointBuffer2 = new PxConstraint*[jointCount];
-	gScene->getConstraints(jointBuffer1, jointCount);
-	gScene->getConstraints(jointBuffer2, jointCount);
-		
 	// calculate arm lengths r
-	matrix<vec3> R(jointCount, jointCount);
-	for (PxU32 i = 0; i < jointCount; i++) {
-		for (PxU32 j = 0; j < jointCount; j++)
+	matrix<vec3> R(joints.size(), joints.size());
+	for (PxU32 j = 0; j < joints.size(); j++) {
+		for (PxU32 i = j; i < joints.size(); i++)
 		{
-			if (i >= j) {
-				// get global position of center of mass
-				jointBuffer1[i]->getActors(a1[0], a1[1]);
-				PxRigidBody *body1 = (PxRigidBody *) a1[1];
-				PxTransform xform1 = body1->getGlobalPose();
-				PxVec3 global_com = xform1.transform(PxVec3(0,0,0));//body1->getCMassLocalPose().p);
+			// get global position of center of mass
+			PxTransform xform1 = dynamic_actors[i+1]->getGlobalPose();
+			PxVec3 global_com = xform1.transform(PxVec3(0,0,0));
 
-				// get global position of joint
-				jointBuffer2[j]->getActors(a2[0], a2[1]);
-				PxRigidBody *body2 = (PxRigidBody *) a2[1];
-				PxTransform xform2 = body2->getGlobalPose();
-				PxVec3 global_jnt = xform2.transform(joint_local_positions[j]);
+			// get global position of joint
+			PxTransform xform2 = dynamic_actors[j+1]->getGlobalPose();
+			PxVec3 global_jnt = xform2.transform(joint_local_positions[j]);
 
-				// get global difference vector r
-				PxVec3 diff = global_com - global_jnt;
-				R(i,j) = vec3(diff.x, diff.y, diff.z);
-			}
+			// get global difference vector r
+			PxVec3 diff = global_com - global_jnt;
+			R(i,j) = vec3(diff.x, diff.y, diff.z);
 		}
 	}
 
-	matrix<double> J(R3*jointCount, DOF*jointCount);
-	for (PxU32 i = 0; i < jointCount; i++)
+	matrix<double> J(R3*joints.size(), DOF*joints.size());
+	for (PxU32 i = 0; i < joints.size(); i++)
 	{
 		// get joint axes a_x, a_y, a_z
 		std::vector<vec3> axes;
@@ -64,7 +50,7 @@ Spacetime::buildJacobian(void)
 		// build individual J_i matrix of size jointCount*DOF x DOF
 		for (int n = 0; n < DOF; n++) {
 			vec3 axis_n = axes[n];
-			for (PxU32 j = 0; j < jointCount; j++) {
+			for (PxU32 j = 0; j < joints.size(); j++) {
 				if (j < i) {
 					// if the current body is unaffected by the joint
 					// the values in the row of the J_i matrix are 0
@@ -83,9 +69,6 @@ Spacetime::buildJacobian(void)
 			}
 		}
 	}
-
-	delete(jointBuffer1);
-	delete(jointBuffer2);
 	return J;
 }
 
@@ -96,24 +79,16 @@ Spacetime::buildJacobian(void)
 matrix<double> 
 Spacetime::computeGVector(void)
 {
-	// get all joints in scene
-	PxRigidActor *a[2];
-	PxU32 jointCount = gScene->getNbConstraints();
-	PxConstraint** jointBuffer = new PxConstraint*[jointCount];
-	gScene->getConstraints(jointBuffer, jointCount);
-	
-	matrix<double> G(R3*jointCount, 1);
-	for (PxU32 i = 0; i < jointCount; i++) {
-		jointBuffer[i]->getActors(a[0], a[1]);
-		PxRigidBody *body1 = (PxRigidBody *) a[1];
+	matrix<double> G(R3*joints.size(), 1);
+	for (PxU32 i = 0; i < joints.size(); i++) {
 		PxVec3 gravity = gScene->getGravity();
-		PxReal mass = body1->getMass();
+		PxReal mass = dynamic_actors[i+1]->getMass();
 		G(R3*i+X, 0) = mass * gravity[X];
 		G(R3*i+Y, 0) = mass * gravity[Y];
 		G(R3*i+Z, 0) = mass * gravity[Z];
 	}
-	delete(jointBuffer);
-	return ~buildJacobian()*G;
+	matrix<double> J = buildJacobian();
+	return ~J*G;
 }
 
 //======================================================================================================================//
@@ -123,27 +98,14 @@ Spacetime::computeGVector(void)
 void 
 Spacetime::applyTorqueVector(matrix<double> T)
 {
-	// get all joints in scene
-	PxRigidActor *a[2];
-	PxU32 jointCount = gScene->getNbConstraints();
-	PxConstraint** jointBuffer = new PxConstraint*[jointCount];
-	gScene->getConstraints(jointBuffer, jointCount);
-
-	// apply torque to joints
-	for (unsigned int i = 0; i < jointCount; i++) {
-		jointBuffer[i]->getActors(a[PxJointActorIndex::eACTOR0], a[PxJointActorIndex::eACTOR1]);
-		PxRigidBody *body0 = (PxRigidBody *) a[PxJointActorIndex::eACTOR0];
-		PxRigidBody *body1 = (PxRigidBody *) a[PxJointActorIndex::eACTOR1];
+	for (unsigned int i = 0; i < joints.size(); i++) {
 		PxVec3 torque_i;
 		if (DOF > X) { torque_i[X] = T(i*DOF+X,0); } else { torque_i[X] = 0.0f; }
 		if (DOF > Y) { torque_i[Y] = T(i*DOF+Y,0); } else { torque_i[Y] = 0.0f; }
 		if (DOF > Z) { torque_i[Z] = T(i*DOF+Z,0); } else { torque_i[Z] = 0.0f; }
-		body0->addTorque( 1.0127 * torque_i);
-		body1->addTorque(-1.0127 * torque_i);
+		dynamic_actors[ i ]->addTorque( 1.0127 * torque_i);
+		dynamic_actors[i+1]->addTorque(-1.0127 * torque_i);
 	}
-
-	// free memory
-	delete(jointBuffer);
 }
 
 //======================================================================================================================//
@@ -153,19 +115,13 @@ Spacetime::applyTorqueVector(matrix<double> T)
 matrix<double> 
 Spacetime::calculateAngularVelocity(void) 
 {
-	PxRigidActor *a[2];
 	matrix<double> angularVelocityVector(DOF*joints.size(), 1);
-
-	// find global angular velocity of each joints child body
 	for (int i = 0; i < joints.size(); i++) {
-		joints[i]->getActors(a[PxJointActorIndex::eACTOR0], a[PxJointActorIndex::eACTOR1]);
-		PxRigidBody *body1 = (PxRigidBody *) a[PxJointActorIndex::eACTOR1];
-		PxVec3 angularVelocity = body1->getAngularVelocity();
+		PxVec3 angularVelocity = dynamic_actors[i+1]->getAngularVelocity();
 		if (DOF > X) { angularVelocityVector(i*DOF+X, 0) = angularVelocity[X]; }
 		if (DOF > Y) { angularVelocityVector(i*DOF+Y, 0) = angularVelocity[Y]; }
 		if (DOF > Z) { angularVelocityVector(i*DOF+Z, 0) = angularVelocity[Z]; }
 	}
-
 	return angularVelocityVector;
 }
 
@@ -176,19 +132,13 @@ Spacetime::calculateAngularVelocity(void)
 matrix<double> 
 Spacetime::calculateAngularPosition(void) 
 {
-	PxRigidActor *a[2];
 	matrix<double> angularPositionVector(DOF*joints.size(), 1);
-
 	for (unsigned int i = 0; i < joints.size(); i++) {
-		joints[i]->getActors(a[PxJointActorIndex::eACTOR0], a[PxJointActorIndex::eACTOR1]);
-		PxRigidBody *body1 = (PxRigidBody *) a[PxJointActorIndex::eACTOR1];
-		PxTransform globalPose = body1->getGlobalPose();
-		PxVec3 theta = QuaternionToEuler(globalPose.q);
+		PxVec3 theta = QuaternionToEuler(dynamic_actors[i+1]->getGlobalPose().q);
 		if (DOF > X) { angularPositionVector(i*DOF+X, 0) = theta[X]; }
 		if (DOF > Y) { angularPositionVector(i*DOF+Y, 0) = theta[Y]; }
 		if (DOF > Z) { angularPositionVector(i*DOF+Z, 0) = theta[Z]; }
 	}
-
 	return angularPositionVector;
 }
 
@@ -197,9 +147,9 @@ Spacetime::calculateAngularPosition(void)
 //======================================================================================================================//
 
 matrix<double> 
-Spacetime::computeInverseMassMatrix(matrix<double> G)
+Spacetime::computeMInv(matrix<double> G)
 {
-	matrix<double> M_inv(DOF*joints.size(), DOF*joints.size());
+	matrix<double> MInv(DOF*joints.size(), DOF*joints.size());
 	for (int i = 0; i < DOF*joints.size(); i++) {
 
 		// save state to restore after each calculation
@@ -219,16 +169,16 @@ Spacetime::computeInverseMassMatrix(matrix<double> G)
 		applyTorqueVector(G_new);
 		stepPhysics();
 		matrix<double> velocityAfter = calculateAngularVelocity();
-		matrix<double> angularAcceleration = (velocityAfter - velocityBefore) / (deltaT);
+		matrix<double> angularAcceleration = (velocityAfter - velocityBefore) / deltaT;
 
 		// save acceleration as column of inverse mass matrix
 		for (int j = 0; j < DOF*joints.size(); j++)
-			M_inv(j,i) = angularAcceleration(j,0);
+			MInv(j,i) = angularAcceleration(j,0);
 
 		// restore the state
 		restoreState();
 	}
-	return M_inv;
+	return MInv;
 }
 
 //======================================================================================================================//
@@ -246,6 +196,8 @@ Spacetime::computeCVector(matrix<double> G, matrix<double> M)
 	stepPhysics();
 	matrix<double> velocityAfter = calculateAngularVelocity();
 	matrix<double> angularAcceleration = (velocityAfter - velocityBefore) / (deltaT);
+	cout << "velocityBefore = \n" << velocityBefore << endl;
+	cout << "velocityAfter = \n" << velocityAfter << endl;
 	C = M * angularAcceleration;
 	restoreState();
 

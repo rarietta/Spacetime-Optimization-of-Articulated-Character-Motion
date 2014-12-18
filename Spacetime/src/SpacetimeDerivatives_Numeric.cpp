@@ -9,158 +9,158 @@
 #include "Spacetime.h"
 
 //======================================================================================================================//
-// numerical G derivatives																								//
+// numeric G derivatives																								//
 //======================================================================================================================//
 
 matrix<double> 
-Spacetime::compute_dG_dtheta1_numerical(PxU32 t) 
+Spacetime::compute_dG_dtheta1_numeric(PxU32 t) 
 {
 	// TODO 
 
 	// compute values
 	matrix<double> dG_dtheta1(2,1);
 	
-	// return numerical derivative
+	// return numeric derivative
 	return dG_dtheta1;
 }
 
 matrix<double>  
-Spacetime::compute_dG_dtheta2_numerical(PxU32 t) 
+Spacetime::compute_dG_dtheta2_numeric(PxU32 t) 
 {
 	// TODO 
 
 	// compute values
 	matrix<double> dG_dtheta2(2,1);
 	
-	// return numerical derivative
+	// return numeric derivative
 	return dG_dtheta2;
 }
 
 matrix<double>  
-Spacetime::compute_dG_dthetaDot1_numerical(PxU32 t) 
+Spacetime::compute_dG_dthetaDot1_numeric(PxU32 t) 
 {
 	// TODO 
 
 	// compute values
 	matrix<double> dG_dthetaDot1(2,1);
 	
-	// return numerical derivative
+	// return numeric derivative
 	return dG_dthetaDot1;
 }
 
 matrix<double>  
-Spacetime::compute_dG_dthetaDot2_numerical(PxU32 t) 
+Spacetime::compute_dG_dthetaDot2_numeric(PxU32 t) 
 {
 	// TODO 
 
 	// compute values
 	matrix<double> dG_dthetaDot2(2,1);
 	
-	// return numerical derivative
+	// return numeric derivative
 	return dG_dthetaDot2;
 }
 
 //======================================================================================================================//
-// numerical C derivatives																								//
+// numeric C derivatives																								//
 //======================================================================================================================//
 
 matrix<double>  
-Spacetime::compute_dC_dtheta1_numerical(PxU32 t) 
+Spacetime::compute_dC_dtheta1_numeric(PxU32 t) 
 {
 	// TODO 
 
 	// compute values
 	matrix<double> dC_dtheta1(2,1);
 	
-	// return numerical derivative
+	// return numeric derivative
 	return dC_dtheta1;
 }
 
 matrix<double>  
-Spacetime::compute_dC_dtheta2_numerical(PxU32 t) 
+Spacetime::compute_dC_dtheta2_numeric(PxU32 t) 
 {
 	// TODO 
 
 	// compute values
 	matrix<double> dC_dtheta2(2,1);
 	
-	// return numerical derivative
+	// return numeric derivative
 	return dC_dtheta2;
 }
 
 matrix<double>  
-Spacetime::compute_dC_dthetaDot1_numerical(PxU32 t) 
+Spacetime::compute_dC_dthetaDot1_numeric(PxU32 t) 
 {
 	// TODO 
 
 	// compute values
 	matrix<double> dC_dthetaDot1(2,1);
 	
-	// return numerical 
+	// return numeric 
 	return dC_dthetaDot1;
 }
 
 matrix<double>  
-Spacetime::compute_dC_dthetaDot2_numerical(PxU32 t) 
+Spacetime::compute_dC_dthetaDot2_numeric(PxU32 t) 
 {
 	// TODO 
 
 	// compute values
 	matrix<double> dC_dthetaDot2(2,1);
 
-	// return numerical derivative
+	// return numeric derivative
 	return dC_dthetaDot2;
 }
 
 //======================================================================================================================//
-// numerical MInv derivatives																								//
+// numeric MInv derivatives																								//
 //======================================================================================================================//
 
 matrix<double>  
-Spacetime::compute_dMInv_dtheta1_numerical(PxU32 t) 
+Spacetime::compute_dMInv_dtheta1_numeric(PxU32 t) 
 {
 	// TODO 
 
 	// compute values
 	matrix<double> dMInv_dtheta1(2,2);
 	
-	// return numerical derivative
+	// return numeric derivative
 	return dMInv_dtheta1;
 }
 
 matrix<double>  
-Spacetime::compute_dMInv_dtheta2_numerical(PxU32 t) 
+Spacetime::compute_dMInv_dtheta2_numeric(PxU32 t) 
 {
 	// TODO 
 
 	// compute values
 	matrix<double> dM_dtheta2(2,2);
 	
-	// return numerical derivative
+	// return numeric derivative
 	return -MInvSequence[t] * dM_dtheta2 * MInvSequence[t];
 }
 
 matrix<double>  
-Spacetime::compute_dMInv_dthetaDot1_numerical(PxU32 t) 
+Spacetime::compute_dMInv_dthetaDot1_numeric(PxU32 t) 
 {
 	// TODO 
 
 	// compute values
 	matrix<double> dMInv_dthetaDot1(2,2);
 	
-	// return numerical derivative
+	// return numeric derivative
 	return dMInv_dthetaDot1;
 }
 
 matrix<double>  
-Spacetime::compute_dMInv_dthetaDot2_numerical(PxU32 t) 
+Spacetime::compute_dMInv_dthetaDot2_numeric(PxU32 t) 
 {
 	// TODO 
 
 	// compute values
 	matrix<double> dMInv_dthetaDot2(2,2);
 	
-	// return numerical derivative
+	// return numeric derivative
 	return dMInv_dthetaDot2;
 }
 
@@ -169,7 +169,7 @@ Spacetime::compute_dMInv_dthetaDot2_numerical(PxU32 t)
 //======================================================================================================================//
 
 matrix<double> 
-Spacetime::compute_dLdx_numerical(PxU32 t)
+Spacetime::compute_dLdx_numeric(PxU32 t)
 {
 	// REPLACE WITH ADOL-C?
 	matrix<double> dLdx(DOF*joints.size(), 1);
@@ -183,7 +183,7 @@ Spacetime::compute_dLdx_numerical(PxU32 t)
 //======================================================================================================================//
 
 matrix<double> 
-Spacetime::compute_dLdu_numerical(PxU32 t)
+Spacetime::compute_dLdu_numeric(PxU32 t)
 {
 	// REPLACE WITH ADOL-C?
 	return uSequence[t];
@@ -194,18 +194,18 @@ Spacetime::compute_dLdu_numerical(PxU32 t)
 //======================================================================================================================//
 
 matrix<double> 
-Spacetime::compute_dfdx_numerical(PxU32 t)
+Spacetime::compute_dfdx_numeric(PxU32 t)
 {
 	//----------------------------------------------------------------------------------------------//
 	// compute dG_dX, the derivative of the gravitational torque matrix w.r.t. to the state vector	//
 	// and build full 3D derivative matrix from partials											//
 	//----------------------------------------------------------------------------------------------//
 	
-	// compute gradients numerically
-	matrix<double> dG_dtheta1    = compute_dG_dtheta1_numerical(t);
-	matrix<double> dG_dtheta2    = compute_dG_dtheta2_numerical(t);
-	matrix<double> dG_dthetaDot1 = compute_dG_dthetaDot1_numerical(t);
-	matrix<double> dG_dthetaDot2 = compute_dG_dthetaDot2_numerical(t);
+	// compute gradients numericly
+	matrix<double> dG_dtheta1    = compute_dG_dtheta1_numeric(t);
+	matrix<double> dG_dtheta2    = compute_dG_dtheta2_numeric(t);
+	matrix<double> dG_dthetaDot1 = compute_dG_dthetaDot1_numeric(t);
+	matrix<double> dG_dthetaDot2 = compute_dG_dthetaDot2_numeric(t);
 
 	std::vector<matrix<double>> dG_dX;
 	dG_dX.push_back(dG_dtheta1);
@@ -218,11 +218,11 @@ Spacetime::compute_dfdx_numerical(PxU32 t)
 	// and build full 3D derivative matrix from partials											//
 	//----------------------------------------------------------------------------------------------//
 	
-	// compute gradients numerically
-	matrix<double> dC_dtheta1    = compute_dC_dtheta1_numerical(t);
-	matrix<double> dC_dtheta2    = compute_dC_dtheta2_numerical(t);
-	matrix<double> dC_dthetaDot1 = compute_dC_dthetaDot1_numerical(t);
-	matrix<double> dC_dthetaDot2 = compute_dC_dthetaDot2_numerical(t);
+	// compute gradients numericly
+	matrix<double> dC_dtheta1    = compute_dC_dtheta1_numeric(t);
+	matrix<double> dC_dtheta2    = compute_dC_dtheta2_numeric(t);
+	matrix<double> dC_dthetaDot1 = compute_dC_dthetaDot1_numeric(t);
+	matrix<double> dC_dthetaDot2 = compute_dC_dthetaDot2_numeric(t);
 
 	std::vector<matrix<double>> dC_dX;
 	dC_dX.push_back(dC_dtheta1);
@@ -235,11 +235,11 @@ Spacetime::compute_dfdx_numerical(PxU32 t)
 	// and build full 3D derivative matrix from partials											//
 	//----------------------------------------------------------------------------------------------//
 	
-	// compute gradients numerically
-	matrix<double> dMInv_dtheta1    = compute_dMInv_dtheta1_numerical(t);
-	matrix<double> dMInv_dtheta2    = compute_dMInv_dtheta2_numerical(t);
-	matrix<double> dMInv_dthetaDot1 = compute_dMInv_dthetaDot1_numerical(t);
-	matrix<double> dMInv_dthetaDot2 = compute_dMInv_dthetaDot2_numerical(t);
+	// compute gradients numericly
+	matrix<double> dMInv_dtheta1    = compute_dMInv_dtheta1_numeric(t);
+	matrix<double> dMInv_dtheta2    = compute_dMInv_dtheta2_numeric(t);
+	matrix<double> dMInv_dthetaDot1 = compute_dMInv_dthetaDot1_numeric(t);
+	matrix<double> dMInv_dthetaDot2 = compute_dMInv_dthetaDot2_numeric(t);
 
 	std::vector<matrix<double>> dMInv_dX;
 	dMInv_dX.push_back(dMInv_dtheta1);
@@ -443,7 +443,7 @@ Spacetime::compute_dfdx_numerical(PxU32 t)
 //======================================================================================================================//
 
 matrix<double> 
-Spacetime::compute_dfdu_numerical(PxU32 t)
+Spacetime::compute_dfdu_numeric(PxU32 t)
 {
 	// REPLACE WITH ADOL-C?
 	matrix<double> u = uSequence[t];

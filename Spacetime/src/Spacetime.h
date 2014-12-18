@@ -112,7 +112,7 @@ private:
 	matrix<double> computeGVector(void);
 	matrix<double> calculateAngularVelocity(void);
 	matrix<double> calculateAngularPosition(void);
-	matrix<double> computeInverseMassMatrix(matrix<double> G);
+	matrix<double> computeMInv(matrix<double> G);
 	matrix<double> computeCVector(matrix<double> G, matrix<double> M);
 
 	// Optimization sequences
@@ -123,43 +123,43 @@ private:
 	std::vector<matrix<double>> stateSequence;
 	std::vector<matrix<double>> costateSequence;
 
-	// Numerical derivative functions (SpacetimeDerivatives.cpp)
+	// Numeric derivative functions (SpacetimeDerivatives.cpp)
 	// Utilizes ADOL-C library
-	matrix<double> compute_dLdx_numerical(PxU32 t);
-	matrix<double> compute_dLdu_numerical(PxU32 t);
-	matrix<double> compute_dfdx_numerical(PxU32 t);
-	matrix<double> compute_dfdu_numerical(PxU32 t);
-	matrix<double> compute_dG_dtheta1_numerical(PxU32 t);
-	matrix<double> compute_dG_dtheta2_numerical(PxU32 t);
-	matrix<double> compute_dG_dthetaDot1_numerical(PxU32 t);
-	matrix<double> compute_dG_dthetaDot2_numerical(PxU32 t);
-	matrix<double> compute_dC_dtheta1_numerical(PxU32 t);
-	matrix<double> compute_dC_dtheta2_numerical(PxU32 t);
-	matrix<double> compute_dC_dthetaDot1_numerical(PxU32 t);
-	matrix<double> compute_dC_dthetaDot2_numerical(PxU32 t);
-	matrix<double> compute_dMInv_dtheta1_numerical(PxU32 t);
-	matrix<double> compute_dMInv_dtheta2_numerical(PxU32 t);
-	matrix<double> compute_dMInv_dthetaDot1_numerical(PxU32 t);
-	matrix<double> compute_dMInv_dthetaDot2_numerical(PxU32 t);
+	matrix<double> compute_dLdx_numeric(PxU32 t);
+	matrix<double> compute_dLdu_numeric(PxU32 t);
+	matrix<double> compute_dfdx_numeric(PxU32 t);
+	matrix<double> compute_dfdu_numeric(PxU32 t);
+	matrix<double> compute_dG_dtheta1_numeric(PxU32 t);
+	matrix<double> compute_dG_dtheta2_numeric(PxU32 t);
+	matrix<double> compute_dG_dthetaDot1_numeric(PxU32 t);
+	matrix<double> compute_dG_dthetaDot2_numeric(PxU32 t);
+	matrix<double> compute_dC_dtheta1_numeric(PxU32 t);
+	matrix<double> compute_dC_dtheta2_numeric(PxU32 t);
+	matrix<double> compute_dC_dthetaDot1_numeric(PxU32 t);
+	matrix<double> compute_dC_dthetaDot2_numeric(PxU32 t);
+	matrix<double> compute_dMInv_dtheta1_numeric(PxU32 t);
+	matrix<double> compute_dMInv_dtheta2_numeric(PxU32 t);
+	matrix<double> compute_dMInv_dthetaDot1_numeric(PxU32 t);
+	matrix<double> compute_dMInv_dthetaDot2_numeric(PxU32 t);
 
-	// Analytical derivative functions (SpacetimeAnalytical.cpp)
+	// Analytic derivative functions (SpacetimeAnalytic.cpp)
 	// Only valid as ADOL-C alternative for 2 joint system
-	matrix<double> compute_dLdx_analytical(PxU32 t);
-	matrix<double> compute_dLdu_analytical(PxU32 t);
-	matrix<double> compute_dfdx_analytical(PxU32 t);
-	matrix<double> compute_dfdu_analytical(PxU32 t);
-	matrix<double> compute_dG_dtheta1_analytical(PxU32 t);
-	matrix<double> compute_dG_dtheta2_analytical(PxU32 t);
-	matrix<double> compute_dG_dthetaDot1_analytical(PxU32 t);
-	matrix<double> compute_dG_dthetaDot2_analytical(PxU32 t);
-	matrix<double> compute_dC_dtheta1_analytical(PxU32 t);
-	matrix<double> compute_dC_dtheta2_analytical(PxU32 t);
-	matrix<double> compute_dC_dthetaDot1_analytical(PxU32 t);
-	matrix<double> compute_dC_dthetaDot2_analytical(PxU32 t);
-	matrix<double> compute_dMInv_dtheta1_analytical(PxU32 t);
-	matrix<double> compute_dMInv_dtheta2_analytical(PxU32 t);
-	matrix<double> compute_dMInv_dthetaDot1_analytical(PxU32 t);
-	matrix<double> compute_dMInv_dthetaDot2_analytical(PxU32 t);
+	matrix<double> compute_dLdx_analytic(PxU32 t);
+	matrix<double> compute_dLdu_analytic(PxU32 t);
+	matrix<double> compute_dfdx_analytic(PxU32 t);
+	matrix<double> compute_dfdu_analytic(PxU32 t);
+	matrix<double> compute_dG_dtheta1_analytic(PxU32 t);
+	matrix<double> compute_dG_dtheta2_analytic(PxU32 t);
+	matrix<double> compute_dG_dthetaDot1_analytic(PxU32 t);
+	matrix<double> compute_dG_dthetaDot2_analytic(PxU32 t);
+	matrix<double> compute_dC_dtheta1_analytic(PxU32 t);
+	matrix<double> compute_dC_dtheta2_analytic(PxU32 t);
+	matrix<double> compute_dC_dthetaDot1_analytic(PxU32 t);
+	matrix<double> compute_dC_dthetaDot2_analytic(PxU32 t);
+	matrix<double> compute_dMInv_dtheta1_analytic(PxU32 t);
+	matrix<double> compute_dMInv_dtheta2_analytic(PxU32 t);
+	matrix<double> compute_dMInv_dthetaDot1_analytic(PxU32 t);
+	matrix<double> compute_dMInv_dthetaDot2_analytic(PxU32 t);
 
 	// Math3D functions
 	PxVec3 QuaternionToEuler(PxQuat q);

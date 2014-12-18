@@ -22,9 +22,9 @@ Spacetime::Spacetime(void)
 	gFoundation = NULL;
 	gDispatcher = NULL;
 	gConnection	= NULL;
-	deltaT = 1.0f / 60.0f;
+	deltaT = 1.0f / 600.0f;
 
-	numTimeSteps = 1600;
+	numTimeSteps = 10000;
 	uThreshold = 0.01;
 
 	initPhysics();

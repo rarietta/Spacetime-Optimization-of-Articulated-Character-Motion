@@ -46,14 +46,48 @@ void idleCallback()
 }
 
 //==================================================================================================//
-// Main render function																				//
+// Utitility for rendering all bodies in the scene													//
+//==================================================================================================//
+
+void renderScene(int iteration) {
+	RenderUtil::startRender(sCamera->getEye(), sCamera->getDir());
+	
+	PxScene* scene;
+	PxGetPhysics().getScenes(&scene,1);
+	PxU32 nbActors = scene->getNbActors(PxActorTypeSelectionFlag::eRIGID_DYNAMIC);
+	if(nbActors) {
+		std::vector<PxRigidActor*> actors(nbActors);
+		scene->getActors(PxActorTypeSelectionFlag::eRIGID_DYNAMIC, 
+							(PxActor**)&actors[0], nbActors);
+		for (PxU32 i = 0; i < nbActors; i++)
+			RenderUtil::renderActors(&actors[i], 1, true, PxVec3(0.3,0.3,0.3));
+	}		
+	if (iteration == 0) {
+		char* result = "Initial Guess";
+		glRasterPos2i(20,-25);
+		for(int i = 0; i < strlen(result); i++)
+			glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, result[i]);
+	} else {
+		char* label = "Iteration #";
+		char buffer[10]; itoa(iteration, buffer, 10);
+		char* result = new char[strlen(label)+strlen(buffer)];
+		sprintf(result,"%s%s",label,buffer);
+		glRasterPos2i(20,-25);
+		for(int i = 0; i < strlen(result); i++)
+			glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, result[i]);
+	}
+	RenderUtil::finishRender();
+}
+
+//==================================================================================================//
+// Main optimization function																		//
 //	Includes logic for making initial guess and optimizing input torque solution					//
 //	Renders sequence after each iteration of the solver												//
 //==================================================================================================//
 
 void renderCallback()
 {
-	static int iteration = 0;
+	int iteration = 0;
 
 	//----------------------------------------------------------------------------------------------//
 	// compute and render initial guess of torque input sequence									//
@@ -62,80 +96,42 @@ void renderCallback()
 
 	render_system->uSequence.clear();
 	render_system->setState(render_system->state_0);
-	for (int t = 0; t < render_system->numTimeSteps; t++)
-	{
-		// compute next torque vector of initial guess
+	for (int t = 0; t < render_system->numTimeSteps; t++) {
 		render_system->makeInitialGuess();
-		RenderUtil::startRender(sCamera->getEye(), sCamera->getDir());
-	
-		// render timestep using computed input torque vector
-		PxScene* scene;
-		PxGetPhysics().getScenes(&scene,1);
-		PxU32 nbActors = scene->getNbActors(PxActorTypeSelectionFlag::eRIGID_DYNAMIC);
-		if(nbActors) {
-			std::vector<PxRigidActor*> actors(nbActors);
-			scene->getActors(PxActorTypeSelectionFlag::eRIGID_DYNAMIC, 
-							 (PxActor**)&actors[0], nbActors);
-			for (PxU32 i = 0; i < nbActors; i++)
-				RenderUtil::renderActors(&actors[i], 1, true, PxVec3(0.3,0.3,0.3));
-		}
-		
-		// label iteration
-		char* result = "Initial Guess";
-		glRasterPos2i(20,-25);
-		for(int i = 0; i < strlen(result); i++)
-			glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, result[i]);
-
-		// finish rendering
-		RenderUtil::finishRender();
+		renderScene(iteration);
 	}
 	
 	//----------------------------------------------------------------------------------------------//
-	// Compute and render next iteration of optimized solution via numerical iterative				//
+	// Compute and render next iteration of optimized solution via numeric iterative				//
 	// solver method involving state vector X and costate vector lambda								//
 	//----------------------------------------------------------------------------------------------//
 
 	double uDiff = std::numeric_limits<double>::infinity();
 	do {
 		iteration++;
-		render_system->setState(render_system->state_0);
 		uDiff = render_system->IterateOptimization();
-		for (int t = 0; t < render_system->numTimeSteps; t++)
-		{
+		render_system->setState(render_system->state_0);
+		for (int t = 0; t < render_system->numTimeSteps; t++) {
 			render_system->applyTorqueVector(render_system->uSequence[t]);
 			render_system->stepPhysics();
-
-			RenderUtil::startRender(sCamera->getEye(), sCamera->getDir());
-	
-			PxScene* scene;
-			PxGetPhysics().getScenes(&scene,1);
-			PxU32 nbActors = scene->getNbActors(PxActorTypeSelectionFlag::eRIGID_DYNAMIC);
-			if(nbActors) {
-				std::vector<PxRigidActor*> actors(nbActors);
-				scene->getActors(PxActorTypeSelectionFlag::eRIGID_DYNAMIC, 
-								 (PxActor**)&actors[0], nbActors);
-				for (PxU32 i = 0; i < nbActors; i++)
-					RenderUtil::renderActors(&actors[i], 1, true, PxVec3(0.3,0.3,0.3));
-			}
-		
-			char* label = "Iteration #";
-			char buffer[10]; itoa(iteration, buffer, 10);
-			char* result = new char[strlen(label)+strlen(buffer)];
-			sprintf(result,"%s%s",label,buffer);
-			glRasterPos2i(20,-25);
-			for(int i = 0; i < strlen(result); i++)
-				glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, result[i]);
-
-			RenderUtil::finishRender();
+			renderScene(iteration);
 		}
 	} while (uDiff >= render_system->uThreshold);
 }
+
+//==================================================================================================//
+// Terminate the simulation																			//
+//==================================================================================================//
 
 void exitCallback(void)
 {
 	delete sCamera;
 	render_system->cleanupPhysics();
 }
+
+//==================================================================================================//
+// Necessary setup of void callback functions														//
+//==================================================================================================//
 
 void renderLoop(Spacetime *sys)
 {
@@ -154,6 +150,5 @@ void renderLoop(Spacetime *sys)
 
 	atexit(exitCallback);
 
-	//render_system->initPhysics();
 	glutMainLoop();
 }

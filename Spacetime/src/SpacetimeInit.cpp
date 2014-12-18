@@ -92,7 +92,7 @@ Spacetime::addDynamicActors(void)
 	// first leg properties
     leg1->setAngularDamping(0.75);
     leg1->setLinearVelocity(PxVec3(0,0,0));
-	leg1->setMass(10.0f);
+	leg1->setMass(0.10f);
 	leg1->setName("leg1");
 
 	// first leg addition
@@ -118,7 +118,7 @@ Spacetime::addDynamicActors(void)
 
 	// second leg properties
 	leg2->setAngularDamping(0.75);
-	leg2->setMass(10);
+	leg2->setMass(0.10f);
 	leg2->setName("leg2");
 
 	// second leg addition
