@@ -123,14 +123,27 @@ private:
 	std::vector<matrix<double>> stateSequence;
 	std::vector<matrix<double>> costateSequence;
 
-	// Computational derivative functions (SpacetimeDerivatives.cpp)
-	matrix<double> compute_dLdx(PxU32 t);
-	matrix<double> compute_dLdu(PxU32 t);
-	matrix<double> compute_dfdx(PxU32 t);
-	matrix<double> compute_dfdu(PxU32 t);
+	// Numerical derivative functions (SpacetimeDerivatives.cpp)
+	// Utilizes ADOL-C library
+	matrix<double> compute_dLdx_numerical(PxU32 t);
+	matrix<double> compute_dLdu_numerical(PxU32 t);
+	matrix<double> compute_dfdx_numerical(PxU32 t);
+	matrix<double> compute_dfdu_numerical(PxU32 t);
+	matrix<double> compute_dG_dtheta1_numerical(PxU32 t);
+	matrix<double> compute_dG_dtheta2_numerical(PxU32 t);
+	matrix<double> compute_dG_dthetaDot1_numerical(PxU32 t);
+	matrix<double> compute_dG_dthetaDot2_numerical(PxU32 t);
+	matrix<double> compute_dC_dtheta1_numerical(PxU32 t);
+	matrix<double> compute_dC_dtheta2_numerical(PxU32 t);
+	matrix<double> compute_dC_dthetaDot1_numerical(PxU32 t);
+	matrix<double> compute_dC_dthetaDot2_numerical(PxU32 t);
+	matrix<double> compute_dMInv_dtheta1_numerical(PxU32 t);
+	matrix<double> compute_dMInv_dtheta2_numerical(PxU32 t);
+	matrix<double> compute_dMInv_dthetaDot1_numerical(PxU32 t);
+	matrix<double> compute_dMInv_dthetaDot2_numerical(PxU32 t);
 
 	// Analytical derivative functions (SpacetimeAnalytical.cpp)
-	// only valid as ADOL-C alternative for 2 joint system
+	// Only valid as ADOL-C alternative for 2 joint system
 	matrix<double> compute_dLdx_analytical(PxU32 t);
 	matrix<double> compute_dLdu_analytical(PxU32 t);
 	matrix<double> compute_dfdx_analytical(PxU32 t);
@@ -150,4 +163,6 @@ private:
 
 	// Math3D functions
 	PxVec3 QuaternionToEuler(PxQuat q);
+	PxReal SSDmatrix(matrix<double> A, matrix<double> B);
+	PxReal SSDvector(std::vector<matrix<double>> A, std::vector<matrix<double>> B);
 };

@@ -1,58 +1,32 @@
-//======================================================================================================================//
-// SpacetimeOptimization.cpp																							//
-// (c) Ricky Arietta 2014																								//
-// CIS 599 Masters Independent Study																					//
-// University of Pennsylvania																							//
-// Computer Graphics and Gaming Technology Program																		//
-//																														//
-// This code...																											//
-//======================================================================================================================//
+//==================================================================================================//
+//																									//
+// SpacetimeOptimization.cpp																		//
+// (c) Ricky Arietta 2014																			//
+// CIS 599 Masters Independent Study																//
+// University of Pennsylvania																		//
+// Computer Graphics and Gaming Technology Program													//
+//																									//
+//==================================================================================================//
 
 #include "Spacetime.h"
-
 bool ANALYTICAL = true;
 
-//======================================================================================================================//
-// Define global variables for spacetime optimization																	//
-//======================================================================================================================//
-
-//#define T_DEBUG 1  // comment this to suppress textual debugging output
-//#define V_DEBUG 1  // comment this to suppress visual  debugging output
-
-PxReal SSDmatrix(matrix<double> A, matrix<double> B)
-{
-	PxReal SSD = 0;
-	for (int i = 0; i < A.RowNo(); i++) {
-		for (int j = 0; j < A.ColNo(); j++) {
-			SSD += (A(i,j)-B(i,j))*(A(i,j)-B(i,j));
-		}
-	}
-	return SSD;
-}
-
-PxReal SSDvector(std::vector<matrix<double>> A, std::vector<matrix<double>> B)
-{
-	PxReal SSD = 0;
-	for (int i = 0; i < A.size(); i++)
-		SSD += SSDmatrix(A[i], B[i]);
-	return SSD;
-}
-
-//======================================================================================================================//
-// Main optimization calculation loop																					//
-//======================================================================================================================//
+//==================================================================================================//
+// Function:																						//
+//		Estimate input torque vector sequence before optimization using simple PD controller		//
+// Returns:																							//
+//		Void, input torque sequence is stored in spacetime instance									//
+// Called from:																						//
+//		Currently called from render loop															//
+//==================================================================================================//
 
 void
 Spacetime::makeInitialGuess(void)
 {
-	// virtual work calculation yields gravitational torque vector
+	// compute G, C, M, and MInv state matrices
 	matrix<double> G = computeGVector();
-
-	// compute inverse mass matrix by altering rows of input torque
-	matrix<double> M_inv = computeInverseMassMatrix(G);
-	matrix<double> M(M_inv); M = M.Inv();
-
-	// compute C term of kinematics formula
+	matrix<double> MInv = computeInverseMassMatrix(G);
+	matrix<double> M = !MInv;
 	matrix<double> C = computeCVector(G, M);
 
 	// compute torque with PD controller
@@ -66,92 +40,77 @@ Spacetime::makeInitialGuess(void)
 	stepPhysics();
 }
 
-//------------------------------------------------------------------------------------------------------------------//
-// perform one iteration of the numerical solver used to compute the optimal input torque sequence					//
-//------------------------------------------------------------------------------------------------------------------//
+//==================================================================================================//
+// Function:																						//
+//		Perform one iteration of the numerical solver used to compute the							// 
+//		optimal input torque sequence																//
+// Returns:																							//
+//		SSD between newly computed input torque vector sequence and									// 
+//		previously computed sequence for use in convergence calculations							//
+// Called from:																						//
+//		Currently called from render loop															//
+//==================================================================================================//
 
 double
 Spacetime::IterateOptimization(void)
 {	
-	// save initial state
-	saveState();
-	PxReal uDiff;
+	//----------------------------------------------------------------------------------------------//
+	// clear the state and costate sequences from the last solver iteration							//
+	//----------------------------------------------------------------------------------------------//
 
-	// clear the state and costate sequences from the last solver iteration
 	GSequence.clear();
 	CSequence.clear();
 	MSequence.clear();
 	MInvSequence.clear();
 	stateSequence.clear();
+	costateSequence.clear();
 
 	//----------------------------------------------------------------------------------------------//
-	// 1) solve for the state sequence given the current u vector sequence							//
+	// solve forward for the state sequence given the current u vector sequence						//
 	//----------------------------------------------------------------------------------------------//
 
 	setState(state_0);
 	stateSequence.push_back(state_0);
 	for (int t = 1; t <= numTimeSteps; t++) 
 	{	
-		// virtual work calculation yields gravitational torque vector
+		// compute and store G, C, M, and MInv state matrices
 		matrix<double> G = computeGVector();
-
-		// compute inverse mass matrix by altering rows of input torque
 		matrix<double> MInv = computeInverseMassMatrix(G);
-		matrix<double> M(MInv); M = (matrix<double>) M.Inv();
-
-		// compute C term of kinematics formula
+		matrix<double> M = !MInv;
 		matrix<double> C = computeCVector(G, M);
-			
-		// store computed state matrices
 		GSequence.push_back(G);
 		CSequence.push_back(C);
 		MSequence.push_back(M);
 		MInvSequence.push_back(MInv);
 		stateSequence.push_back(getState());
-		//cout << "state[" << t << "] = \n" << getState() << endl;
 
-		// apply computed input torque vector u and simulate
+		// apply computed input torque vector u and simulate one step
 		applyTorqueVector(uSequence[t-1]);
 		stepPhysics();
 	}
 
 	//----------------------------------------------------------------------------------------------//
-	// 2) simulate lagrangian costate sequence backwards from final state using x, u				//
+	// simulate lagrangian costate sequence backwards from final state using x, u					//
 	//----------------------------------------------------------------------------------------------//
 	
-	costateSequence.clear();
-	matrix<double> lambda_n = state_d - stateSequence[numTimeSteps-1];
-	cout << "stateSequence[numTimeSteps-1] = \n" << stateSequence[numTimeSteps-1] << endl;
-	cout << "state_d = \n" << state_d << endl;
-	cout << "state_d - stateSequence[numTimeSteps-1] = \n" << state_d - stateSequence[numTimeSteps-1] << endl;
-	costateSequence.push_back(lambda_n);
-	for (int t = 0; t < numTimeSteps; t++) 
-	{
-		matrix<double> dfdx= compute_dfdx_analytical(numTimeSteps-t-1); 
-		matrix<double> lambdaDot;
-		if (ANALYTICAL) {
-			lambdaDot = (~costateSequence[t])*dfdx;
-			lambdaDot = ~lambdaDot;
-			cout << "lambda[" << numTimeSteps-t-1 << "] = " << costateSequence[t] << endl;
-			cout << "lambdaDot[" << numTimeSteps-t-1 << "] = " << lambdaDot << endl;
-		} else { 
-			lambdaDot = -(~costateSequence[t])*dfdx;
-			lambdaDot = ~lambdaDot;
-		}
+	matrix<double> lambda_N = state_d - stateSequence[numTimeSteps-1];
+	costateSequence.push_back(lambda_N);
+	for (int t = 0; t < numTimeSteps; t++) {
+		matrix<double> dfdx;
+		if (ANALYTICAL) dfdx = compute_dfdx_analytical(numTimeSteps-t-1); 
+		else			dfdx = compute_dfdx(numTimeSteps-t-1);
+		matrix<double> lambdaDot = ~((~costateSequence[t])*dfdx);
 		costateSequence.push_back(costateSequence[t] - deltaT*lambdaDot);
 	} std::reverse(costateSequence.begin(), costateSequence.end());
 
 	//----------------------------------------------------------------------------------------------//
-	// 3) update u from constraint formula															//
+	// update u from constraint formula																//
 	//----------------------------------------------------------------------------------------------//
-
+	
 	std::vector<matrix<double>> new_uSequence;
 	for (int t = 0; t < numTimeSteps; t++)
 		new_uSequence.push_back(-1.0 * ~(~costateSequence[t]*compute_dfdu_analytical(t)));
-	uDiff = SSDvector(uSequence, new_uSequence);
-	cout << "uDiff = " << uDiff << endl;
-		
+	PxReal uDiff = SSDvector(uSequence, new_uSequence);
 	uSequence = new_uSequence;
-
 	return uDiff;
 }

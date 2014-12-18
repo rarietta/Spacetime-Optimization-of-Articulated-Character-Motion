@@ -1,5 +1,9 @@
 #include "Spacetime.h"
 
+//==================================================================================================//
+// Convert Physx quaternions to individual Euler Angles												//
+//==================================================================================================//
+
 PxVec3
 Spacetime::QuaternionToEuler(PxQuat q)
 {
@@ -33,4 +37,30 @@ Spacetime::QuaternionToEuler(PxQuat q)
 	}
 
 	return PxVec3(bank, heading, attitude);
+}
+
+
+//======================================================================================================================//
+// Math utility functions for u input torque vector convergence															//
+//======================================================================================================================//
+
+PxReal 
+Spacetime::SSDmatrix(matrix<double> A, matrix<double> B)
+{
+	PxReal SSD = 0;
+	for (int i = 0; i < A.RowNo(); i++) {
+		for (int j = 0; j < A.ColNo(); j++) {
+			SSD += (A(i,j)-B(i,j))*(A(i,j)-B(i,j));
+		}
+	}
+	return SSD;
+}
+
+PxReal 
+Spacetime::SSDvector(std::vector<matrix<double>> A, std::vector<matrix<double>> B)
+{
+	PxReal SSD = 0;
+	for (int i = 0; i < A.size(); i++)
+		SSD += SSDmatrix(A[i], B[i]);
+	return SSD;
 }

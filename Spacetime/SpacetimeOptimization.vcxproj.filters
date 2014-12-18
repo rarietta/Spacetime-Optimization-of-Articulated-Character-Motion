@@ -13,6 +13,12 @@
     <Filter Include="Source Files\Render Utilities">
       <UniqueIdentifier>{0aab5205-c538-490f-96bf-dc2e98327a1b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Render Utilities">
+      <UniqueIdentifier>{dba0de70-49c8-44df-9aac-4739f19133cd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Math Utilities">
+      <UniqueIdentifier>{a96ccd25-46ca-44dd-a9a3-e2c84e69f0ab}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\SpacetimeOptimization.cpp">
@@ -48,34 +54,34 @@
     <ClCompile Include="src\SpacetimeDynamics.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\SpacetimeDerivatives.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\Math3D.cpp">
       <Filter>Source Files\Math Utilities</Filter>
     </ClCompile>
-    <ClCompile Include="src\SpacetimeAnalytical.cpp">
+    <ClCompile Include="src\SpacetimeDerivatives_Numerical.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SpacetimeDerivatives_Analytical.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\CameraUtil.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\RenderUtil.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\SvzAlgebra.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\SvzMatrix.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\Spacetime.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\CameraUtil.h">
+      <Filter>Header Files\Render Utilities</Filter>
+    </ClInclude>
     <ClInclude Include="src\Render.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\RenderUtil.h">
+      <Filter>Header Files\Render Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="src\SvzMatrix.h">
+      <Filter>Header Files\Math Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="src\SvzAlgebra.h">
+      <Filter>Header Files\Math Utilities</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
