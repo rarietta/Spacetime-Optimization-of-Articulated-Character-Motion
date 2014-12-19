@@ -25,7 +25,7 @@ Spacetime::Spacetime(void)
 	deltaT = 1.0f / 600.0f;
 
 	numTimeSteps = 10000;
-	uThreshold = 0.01;
+	uThreshold = 10;
 
 	initPhysics();
 

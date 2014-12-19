@@ -62,12 +62,13 @@ public:
 
 	// Kinematics functions (SpacetimeKinematics.cpp)
 	void stepPhysics(void);
+	void stepPhysics(matrix<double> MInv, matrix<double> u, matrix<double> C, matrix<double> G);
 	void applyTorqueVector(matrix<double> T);
 
 	// Cleanup functions (SpacetimeCleanup.cpp)
 	void cleanupPhysics(void);
 
-private:
+//private:
 	
 	// is the program running?
 	bool pause;

@@ -24,7 +24,7 @@ bool ANALYTIC = true;
 void
 Spacetime::makeInitialGuess(void)
 {
-	// compute G, C, M, and MInv state matrices
+	/// compute G, C, M, and MInv state matrices
 	matrix<double> G = computeGVector();
 	matrix<double> MInv = computeMInv(G);
 	matrix<double> M = !MInv;
@@ -43,7 +43,7 @@ Spacetime::makeInitialGuess(void)
 
 //==================================================================================================//
 // Function:																						//
-//		Perform one iteration of the numeric solver used to compute the							// 
+//		Perform one iteration of the numeric solver used to compute the								// 
 //		optimal input torque sequence																//
 // Returns:																							//
 //		SSD between newly computed input torque vector sequence and									// 
@@ -76,42 +76,11 @@ Spacetime::IterateOptimization(void)
 		// store current state
 		stateSequence.push_back(getState());
 
-		// system dependent variables
-		PxReal g   = gScene->getGravity().y;
-		PxReal m1  = dynamic_actors[1]->getMass();
-		PxReal m2  = dynamic_actors[2]->getMass();
-		PxReal lc1 = joint_local_positions[0].magnitude();
-		PxReal lc2 = joint_local_positions[1].magnitude();
-		PxReal l1  = 2.0 * joint_local_positions[0].magnitude();
-		PxReal l2  = 2.0 * joint_local_positions[1].magnitude();
-		PxReal I1 = (1.0/12.0)*m1*l1*l1;
-		PxReal I2 = (1.0/12.0)*m2*l2*l2;
-
-		// state dependent variables
-		matrix<double> state = getState();
-		PxReal theta1 = state(0,0) + PxPi/2.0f;
-		PxReal theta2 = state(1,0) + PxPi/2.0f - theta1;
-		PxReal thetaDot1 = state(2,0);
-		PxReal thetaDot2 = state(3,0);
-
 		// compute and store G, C, M, and MInv state matrices
-		matrix<double> G = computeGVector();					// THIS MATCHES THE ANALYTIC METHOD - GOOD
-			
-		//matrix<double> MInv = computeMInv(G);					// THIS DOES NOT MATCH THE ANALYTIC METHOD
-		//matrix<double> M = !MInv;								// THIS DOES NOT MATCH THE ANALYTIC METHOD
-		matrix<double> M(2,2);
-		M(0,0) = m1*lc1*lc1 + I1 + m2*(l1*l1 + lc2*lc2 + 2*l1*lc2*cos(theta2)) + I2;
-		M(0,1) = m2*(lc2*lc2 + l1*lc2*cos(theta2)) + I2;
-		M(1,0) = m2*(lc2*lc2 + l1*lc2*cos(theta2)) + I2;
-		M(1,1) = m2*lc2*lc2 + I2;
-		matrix<double> MInv = !M;
-
-		//matrix<double> C = computeCVector(G, M);				// THIS DOES NOT MATCH THE ANALYTIC METHOD
-		double h = m2*l1*lc2*sin(theta2);
-		matrix<double> C(2,1);
-		C(0,0) = -h*thetaDot2*thetaDot2 - 2*h*thetaDot1*thetaDot2;
-		C(1,0) = h*thetaDot1*thetaDot1;
-
+		matrix<double> G = computeGVector();					
+		matrix<double> MInv = computeMInv(G);		// THIS DOES NOT MATCH THE ANALYTIC METHOD
+		matrix<double> M = !MInv;					// THIS DOES NOT MATCH THE ANALYTIC METHOD
+		matrix<double> C = computeCVector(G, M);	// THIS DOES NOT MATCH THE ANALYTIC METHOD
 		GSequence.push_back(G);
 		CSequence.push_back(C);
 		MSequence.push_back(M);
@@ -126,13 +95,17 @@ Spacetime::IterateOptimization(void)
 	// simulate lagrangian costate sequence backwards from final state using x, u					//
 	//----------------------------------------------------------------------------------------------//
 	
-	matrix<double> dfdx;
+	matrix<double> lambdaDot, dfdx, dLdx;
 	matrix<double> lambda_N = state_d - stateSequence[numTimeSteps-1];
 	costateSequence.push_back(lambda_N);
 	for (int t = 0; t < numTimeSteps; t++) {
-		if (ANALYTIC) dfdx = compute_dfdx_analytic(numTimeSteps-t-1); 
-		else		  dfdx = compute_dfdx_numeric (numTimeSteps-t-1);
-		matrix<double> lambdaDot = ~((~costateSequence[t])*dfdx);
+		if (ANALYTIC) {
+			dLdx = compute_dLdx_analytic(t);
+			dfdx = compute_dfdx_analytic(numTimeSteps-t-1); 
+		} else {
+			dLdx = compute_dLdx_numeric(t);
+			dfdx = compute_dfdx_numeric(numTimeSteps-t-1);
+		} lambdaDot = ~(-dLdx + (~costateSequence[t])*dfdx);
 		costateSequence.push_back(costateSequence[t] - deltaT*lambdaDot);
 	} std::reverse(costateSequence.begin(), costateSequence.end());
 
@@ -140,10 +113,12 @@ Spacetime::IterateOptimization(void)
 	// update u from constraint formula																//
 	//----------------------------------------------------------------------------------------------//
 	
+	matrix<double> dfdu;
 	std::vector<matrix<double>> new_uSequence;
 	for (int t = 0; t < numTimeSteps; t++) {
-		if (ANALYTIC) new_uSequence.push_back(-1.0 * ~(~costateSequence[t]*compute_dfdu_analytic(t)));
-		else		  new_uSequence.push_back(-1.0 * ~(~costateSequence[t]*compute_dfdu_numeric(t)));
+		if (ANALYTIC) dfdu = compute_dfdu_analytic(t);
+		else		  dfdu = compute_dfdu_numeric(t);
+		new_uSequence.push_back(~(~costateSequence[t]*dfdu));
 	} PxReal uDiff = SSDvector(uSequence, new_uSequence);
 	uSequence.clear(); uSequence = new_uSequence;
 	return uDiff;

@@ -154,14 +154,14 @@ Spacetime::computeMInv(matrix<double> G)
 
 		// save state to restore after each calculation
 		saveState();
-
+		
 		// zero out current velocities to eliminate C term
 		for (int j = 0; j < dynamic_actors.size(); j++) {
 			PxRigidDynamic *actor = dynamic_actors[j];
 			actor->setAngularVelocity(PxVec3(0,0,0));
 			actor->setLinearVelocity(PxVec3(0,0,0));
 		}
-
+		
 		// solve for acceleration with modified input torque
 		matrix<double> velocityBefore = calculateAngularVelocity();
 		matrix<double> G_new(G);
@@ -196,8 +196,6 @@ Spacetime::computeCVector(matrix<double> G, matrix<double> M)
 	stepPhysics();
 	matrix<double> velocityAfter = calculateAngularVelocity();
 	matrix<double> angularAcceleration = (velocityAfter - velocityBefore) / (deltaT);
-	cout << "velocityBefore = \n" << velocityBefore << endl;
-	cout << "velocityAfter = \n" << velocityAfter << endl;
 	C = M * angularAcceleration;
 	restoreState();
 
@@ -214,4 +212,24 @@ Spacetime::stepPhysics(void)
 	// simulate and return
 	gScene->simulate(deltaT);
 	gScene->fetchResults(true);
+}
+
+
+void 
+Spacetime::stepPhysics(matrix<double> MInv, matrix<double> u, matrix<double> C, matrix<double> G)
+{
+	matrix<double> state = getState();
+	matrix<double> stateDot(4,1);
+	matrix<double> thetaDot(2,1); thetaDot(0,0) = state(2,0); thetaDot(1,0) = state(3,0);
+	matrix<double> thetaDotDot = MInv * (u - C - G);
+	stateDot(0,0) = thetaDot(0,0);
+	stateDot(1,0) = thetaDot(1,0);
+	stateDot(2,0) = thetaDotDot(0,0);
+	stateDot(3,0) = thetaDotDot(1,0);
+	setState(state + stateDot*deltaT);
+
+	for (int i = 0; i < dynamic_actors.size(); i++) {
+		dynamic_actors[i]->setLinearVelocity(PxVec3(0,0,0));
+	}
+
 }

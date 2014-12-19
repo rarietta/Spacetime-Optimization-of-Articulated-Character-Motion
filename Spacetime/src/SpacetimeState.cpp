@@ -70,7 +70,8 @@ Spacetime::setState(matrix<double> stateVector) {
 }
 
 matrix<double>
-Spacetime::getState(void) {
+Spacetime::getState(void) 
+{
 	matrix<double> state(joints.size()*DOF*2,1);
 	matrix<double> theta = calculateAngularPosition();
 	matrix<double> thetaDot = calculateAngularVelocity();

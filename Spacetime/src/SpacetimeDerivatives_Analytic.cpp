@@ -21,15 +21,15 @@ double theta1, theta2;
 double thetaDot1, thetaDot2;
 
 //======================================================================================================================//
-// Analytic G derivatives																								//
+// Analytic G partial derivatives																						//
 //======================================================================================================================//
 
 matrix<double> 
 Spacetime::compute_dG_dtheta1_analytic(PxU32 t) 
 {
 	matrix<double> dG_dtheta1(2,1);
-	dG_dtheta1(0,0) = -(m1*g*lc1*sin(theta1)) - (m2*g*lc2*sin(theta1)*cos(theta2)) - (m2*g*lc2*cos(theta1)*sin(theta2)) - (m2*g*l1*sin(theta1));
-	dG_dtheta1(1,0) = -(m2*g*lc2*sin(theta1)*cos(theta2)) - (m2*g*lc2*cos(theta1)*sin(theta2));
+	dG_dtheta1(0,0) = m1*g*lc1*(-sin(theta1)) + m2*g*lc2*(-sin(theta1)*cos(theta2) - cos(theta1)*sin(theta2)) + m2*g*l1*(-sin(theta1));
+	dG_dtheta1(1,0) = m2*g*lc2*(-sin(theta1)*cos(theta2) - cos(theta1)*sin(theta2));
 	return dG_dtheta1;
 }
 
@@ -37,8 +37,8 @@ matrix<double>
 Spacetime::compute_dG_dtheta2_analytic(PxU32 t) 
 {
 	matrix<double> dG_dtheta2(2,1);
-	dG_dtheta2(0,0) = -(m2*g*lc2*cos(theta1)*sin(theta2)) - (m2*g*lc2*sin(theta1)*cos(theta2));
-	dG_dtheta2(1,0) = -(m2*g*lc2*cos(theta1)*sin(theta2)) - (m2*g*lc2*sin(theta1)*cos(theta2));
+	dG_dtheta2(0,0) = m2*g*lc2 * (cos(theta1)*-sin(theta2) - sin(theta1)*cos(theta2));
+	dG_dtheta2(1,0) = m2*g*lc2 * (cos(theta1)*-sin(theta2) - sin(theta1)*cos(theta2));
 	return dG_dtheta2;
 }
 
@@ -61,7 +61,7 @@ Spacetime::compute_dG_dthetaDot2_analytic(PxU32 t)
 }
 
 //======================================================================================================================//
-// Analytic C derivatives																								//
+// Analytic C partial derivatives																						//
 //======================================================================================================================//
 
 matrix<double>  
@@ -77,8 +77,8 @@ matrix<double>
 Spacetime::compute_dC_dtheta2_analytic(PxU32 t) 
 {
 	matrix<double> dC_dtheta2(2,1);
-	dC_dtheta2(0,0) = -(m2*l1*lc2*cos(theta2)*thetaDot2*thetaDot2) - 2*(m2*l1*lc2*cos(theta2)*thetaDot1*thetaDot2);
-	dC_dtheta2(1,0) = m2*l1*lc2*cos(theta2)*thetaDot1*thetaDot1;
+	dC_dtheta2(0,0) = -(-m2*l1*lc2 * (cos(theta2)*thetaDot2*thetaDot2 - 2*cos(theta2)*thetaDot1*thetaDot2));
+	dC_dtheta2(1,0) =  m2*l1*lc2 *  cos(theta2)*thetaDot1*thetaDot1;
 	return dC_dtheta2;
 }
 
@@ -86,7 +86,7 @@ matrix<double>
 Spacetime::compute_dC_dthetaDot1_analytic(PxU32 t) 
 {
 	matrix<double> dC_dthetaDot1(2,1);
-	dC_dthetaDot1(0,0) = -2*m2*l1*lc2*sin(theta2)*thetaDot2;
+	dC_dthetaDot1(0,0) = -(-2*m2*l1*lc2*sin(theta2)*thetaDot2);
 	dC_dthetaDot1(1,0) =  2*m2*l1*lc2*sin(theta2)*thetaDot1;
 	return dC_dthetaDot1;
 }
@@ -95,13 +95,13 @@ matrix<double>
 Spacetime::compute_dC_dthetaDot2_analytic(PxU32 t) 
 {
 	matrix<double> dC_dthetaDot2(2,1);
-	dC_dthetaDot2(0,0) = -2*(m2*l1*lc2*sin(theta2)*thetaDot2) - 2*(m2*l1*lc2*sin(theta2)*thetaDot1);
+	dC_dthetaDot2(0,0) = -(-2*m2*l1*lc2*sin(theta2) * (thetaDot2 - thetaDot1));
 	dC_dthetaDot2(1,0) =  0;
 	return dC_dthetaDot2;
 }
 
 //======================================================================================================================//
-// Analytic MInv derivatives																								//
+// Analytic MInv partial derivatives																					//
 //======================================================================================================================//
 
 matrix<double>  
@@ -147,7 +147,7 @@ Spacetime::compute_dMInv_dthetaDot2_analytic(PxU32 t)
 matrix<double> 
 Spacetime::compute_dLdu_analytic(PxU32 t)
 {
-	return uSequence[t];
+	return ~uSequence[t];
 }
 
 //======================================================================================================================//
@@ -157,9 +157,9 @@ Spacetime::compute_dLdu_analytic(PxU32 t)
 matrix<double> 
 Spacetime::compute_dLdx_analytic(PxU32 t)
 {
-	matrix<double> dLdx(DOF*joints.size(), 1);
-	for (int i = 0; i < DOF*joints.size(); i++)
-		dLdx(i,0) = 0.0;
+	matrix<double> dLdx(1, DOF*joints.size()*2);
+	for (int i = 0; i < DOF*joints.size()*2; i++)
+		dLdx(0,i) = 0.0;
 	return dLdx;
 }
 
@@ -170,7 +170,7 @@ Spacetime::compute_dLdx_analytic(PxU32 t)
 matrix<double> 
 Spacetime::compute_dfdu_analytic(PxU32 t)
 {
-	matrix<double> MInv = MSequence[t];
+	matrix<double> MInv = MInvSequence[t];
 	matrix<double> dfdu(DOF*joints.size()*2, DOF*joints.size());
 	for (int i = 0; i < DOF*joints.size(); i++) {
 		for (int j = 0; j < DOF*joints.size(); j++) {
@@ -187,9 +187,9 @@ Spacetime::compute_dfdu_analytic(PxU32 t)
 matrix<double> 
 Spacetime::compute_dfdx_analytic(PxU32 t)
 {	
-	//----------------------------------------------------------------------------------------------//
-	// Set necessary variables for computation of partial derivatives								//
-	//----------------------------------------------------------------------------------------------//
+	//------------------------------------------------------------------------------------------------------------------//
+	// Set necessary variables for computation of partial derivatives													//
+	//------------------------------------------------------------------------------------------------------------------//
 
 	// system dependent variables
 	g   = gScene->getGravity().y;
@@ -202,15 +202,15 @@ Spacetime::compute_dfdx_analytic(PxU32 t)
 
 	// state dependent variables
 	state = stateSequence[t];
-	theta1 = state(0,0) + PxPi/2.0f;
-	theta2 = state(1,0) + PxPi/2.0f - theta1;
+	theta1 = state(0,0);
+	theta2 = state(1,0) - theta1;
 	thetaDot1 = state(2,0);
 	thetaDot2 = state(3,0);
 
-	//----------------------------------------------------------------------------------------------//
-	// compute dG_dX, the derivative of the gravitational torque matrix w.r.t. to the state vector	//
-	// and build full 3D derivative matrix from partials											//
-	//----------------------------------------------------------------------------------------------//
+	//------------------------------------------------------------------------------------------------------------------//
+	// compute dG_dX, the derivative of the gravitational torque matrix w.r.t. to the state vector						//
+	// and build full 3D derivative matrix from partials																//
+	//------------------------------------------------------------------------------------------------------------------//
 	
 	matrix<double> dG_dtheta1    = compute_dG_dtheta1_analytic(t);
 	matrix<double> dG_dtheta2    = compute_dG_dtheta2_analytic(t);
@@ -223,10 +223,10 @@ Spacetime::compute_dfdx_analytic(PxU32 t)
 	dG_dX.push_back(dG_dthetaDot1);
 	dG_dX.push_back(dG_dthetaDot2);
 	
-	//----------------------------------------------------------------------------------------------//
-	// compute dC_dX, the derivative of the centripetal torque matrix w.r.t. to the state vector	//
-	// and build full 3D derivative matrix from partials											//
-	//----------------------------------------------------------------------------------------------//
+	//------------------------------------------------------------------------------------------------------------------//
+	// compute dC_dX, the derivative of the centripetal torque matrix w.r.t. to the state vector						//
+	// and build full 3D derivative matrix from partials																//
+	//------------------------------------------------------------------------------------------------------------------//
 	
 	matrix<double> dC_dtheta1    = compute_dC_dtheta1_analytic(t);
 	matrix<double> dC_dtheta2    = compute_dC_dtheta2_analytic(t);
@@ -239,10 +239,10 @@ Spacetime::compute_dfdx_analytic(PxU32 t)
 	dC_dX.push_back(dC_dthetaDot1);
 	dC_dX.push_back(dC_dthetaDot2);
 	
-	//----------------------------------------------------------------------------------------------//
-	// compute dMinv_dx, the derivative of the inverse mass matrix w.r.t. to the state vector		//
-	// and build full 3D derivative matrix from partials											//
-	//----------------------------------------------------------------------------------------------//
+	//------------------------------------------------------------------------------------------------------------------//
+	// compute dMinv_dx, the derivative of the inverse mass matrix w.r.t. to the state vector							//
+	// and build full 3D derivative matrix from partials																//
+	//------------------------------------------------------------------------------------------------------------------//
 	
 	matrix<double> dMInv_dtheta1    = compute_dMInv_dtheta1_analytic(t);
 	matrix<double> dMInv_dtheta2    = compute_dMInv_dtheta2_analytic(t);
@@ -255,9 +255,9 @@ Spacetime::compute_dfdx_analytic(PxU32 t)
 	dMInv_dX.push_back(dMInv_dthetaDot1);
 	dMInv_dX.push_back(dMInv_dthetaDot2);
 
-	//----------------------------------------------------------------------------------------------//
-	// Perform calculation of df2/dx = dMInv_dX*(u+C+G) - Minv*(dC_dx+dG_dx);						//
-	//----------------------------------------------------------------------------------------------//
+	//------------------------------------------------------------------------------------------------------------------//
+	// Perform calculation of df2/dx = dMInv_dX*(u+C+G) - Minv*(dC_dx+dG_dx);											//
+	//------------------------------------------------------------------------------------------------------------------//
 
 	matrix<double> u = uSequence[t];
 	matrix<double> C = CSequence[t];
@@ -283,10 +283,10 @@ Spacetime::compute_dfdx_analytic(PxU32 t)
 	}
 	matrix<double> dfdx_lower = term1 - term2;
 	
-	//----------------------------------------------------------------------------------------------//
-	// dfdx = |df1/dx| = |        0         |         I          |									//
-	//		  |df2/dx|	 | dMInv_dX*(u+C+G) - Minv*(dC_dx+dG_dx) |									//
-	//----------------------------------------------------------------------------------------------//
+	//------------------------------------------------------------------------------------------------------------------//
+	// dfdx = |df1/dx| = |        0         |         I          |														//
+	//		  |df2/dx|	 | dMInv_dX*(u+C+G) - Minv*(dC_dx+dG_dx) |														//
+	//------------------------------------------------------------------------------------------------------------------//
 
 	matrix<double> dfdx(DOF*joints.size()*2, DOF*joints.size()*2);
 	for (int i = 0; i < DOF*joints.size(); i++) {
