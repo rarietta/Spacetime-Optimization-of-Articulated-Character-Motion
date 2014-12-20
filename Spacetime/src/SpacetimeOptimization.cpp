@@ -39,9 +39,14 @@ Spacetime::makeInitialGuess(void)
 
 	// compute torque with PD controller
 	double Kp = 1.5, Kv = 1.5;
-	matrix<double> theta = calculateAngularPosition();
+	matrix<double> state = getState();
+	matrix<double> theta(2,1);
+	theta(0,0) = state(0,0);
+	theta(1,0) = state(1,0);
 	matrix<double> thetad(state_d); thetad.SetSize(DOF*joints.size(), 1);
-	matrix<double> thetaDot = calculateAngularVelocity();
+	matrix<double> thetaDot(2,1);
+	thetaDot(0,0) = state(2,0);
+	thetaDot(1,0) = state(3,0);
 	matrix<double> u = C + G + M*(Kp*(thetad - theta) - Kv*thetaDot);
 	uSequence.push_back(u);
 
@@ -91,13 +96,22 @@ Spacetime::IterateOptimization(void)
 			G = computeG_analytic();
 			M = computeM_analytic();
 			C = computeC_analytic();
-			MInv = !M;
+			MInv = M.Inv();
 		} else {
 			G = computeG_numeric();
 			MInv = computeMInv_numeric(G);
-			M = !MInv;
+			M = MInv.Inv();
 			C = computeC_numeric(G,!MInv);
 		}
+
+		//if (t == 0) {
+			cout << "---------------------------------------" << endl;
+			cout << "time = " << t << endl;
+			cout << "theta1 = " << getState()(0,0) << endl;
+			cout << "theta2 = " << getState()(1,0) << endl;
+			cout << "G = \n" << G << endl;
+			cout << "C = \n" << C << endl;
+		//}
 
 		// store G, C, M, and MInv state matrices
 		GSequence.push_back(G);
@@ -125,7 +139,7 @@ Spacetime::IterateOptimization(void)
 			dLdx = compute_dLdx_numeric(numTimeSteps-t-1);
 			dfdx = compute_dfdx_numeric(numTimeSteps-t-1);
 		} lambdaDot = ~(-dLdx + (~costateSequence[t])*dfdx);
-		costateSequence.push_back(costateSequence[t] + deltaT*lambdaDot);
+		costateSequence.push_back(costateSequence[t] - deltaT*lambdaDot);
 	} std::reverse(costateSequence.begin(), costateSequence.end());
 
 	//----------------------------------------------------------------------------------------------//

@@ -42,6 +42,40 @@ Spacetime::computeG_analytic(void)
 }
 
 //======================================================================================================================//
+// Simulate the physics engine forward by one timestep																	//
+//======================================================================================================================//
+/*
+matrix<double> 
+Spacetime::calculateAngularVelocity_analytic(void) 
+{
+	matrix<double> angularVelocityVector(DOF*joints.size(), 1);
+	for (int i = 0; i < joints.size(); i++) {
+		PxVec3 angularVelocity = dynamic_actors[i+1]->getAngularVelocity();
+		if (DOF > X) { angularVelocityVector(i*DOF+X, 0) = angularVelocity[X]; }
+		if (DOF > Y) { angularVelocityVector(i*DOF+Y, 0) = angularVelocity[Y]; }
+		if (DOF > Z) { angularVelocityVector(i*DOF+Z, 0) = angularVelocity[Z]; }
+	}
+	return angularVelocityVector;
+}
+
+//======================================================================================================================//
+// Simulate the physics engine forward by one timestep																	//
+//======================================================================================================================//
+
+matrix<double> 
+Spacetime::calculateAngularPosition_analytic(void) 
+{
+	matrix<double> angularPositionVector(DOF*joints.size(), 1);
+	for (unsigned int i = 0; i < joints.size(); i++) {
+		PxVec3 theta = QuaternionToEuler(dynamic_actors[i+1]->getGlobalPose().q);
+		if (DOF > X) { angularPositionVector(i*DOF+X, 0) = theta[X]; }
+		if (DOF > Y) { angularPositionVector(i*DOF+Y, 0) = theta[Y]; }
+		if (DOF > Z) { angularPositionVector(i*DOF+Z, 0) = theta[Z]; }
+	}
+	return angularPositionVector;
+}
+*/
+//======================================================================================================================//
 // Calculate the mass matrix for the system at the current state
 //======================================================================================================================//
 
@@ -115,14 +149,20 @@ Spacetime::stepPhysics_analytic(matrix<double> MInv, matrix<double> u, matrix<do
 {
 	matrix<double> state = getState();
 	matrix<double> stateDot(4,1);
-	matrix<double> thetaDot(2,1); thetaDot(0,0) = state(2,0); thetaDot(1,0) = state(3,0);
+
+	matrix<double> thetaDot(2,1); 
+	thetaDot(0,0) = state(2,0); 
+	thetaDot(1,0) = state(3,0);
+	
 	matrix<double> thetaDotDot = MInv * (u - C - G);
+	
 	stateDot(0,0) = thetaDot(0,0);
 	stateDot(1,0) = thetaDot(1,0);
 	stateDot(2,0) = thetaDotDot(0,0);
 	stateDot(3,0) = thetaDotDot(1,0);
+	
 	setState(state + stateDot*deltaT);
 
-	for (int i = 0; i < dynamic_actors.size(); i++)
-		dynamic_actors[i]->setLinearVelocity(PxVec3(0,0,0));
+	//for (int i = 0; i < dynamic_actors.size(); i++)
+	//	dynamic_actors[i]->setLinearVelocity(PxVec3(0,0,0));
 }

@@ -38,33 +38,37 @@ Spacetime::restoreState(void) {
 void
 Spacetime::setState(matrix<double> stateVector) {
 	std::vector<PxQuat> theta;
-	theta.push_back(PxQuat(stateVector(0,0), PxVec3(1,0,0)));
-	theta.push_back(PxQuat(stateVector(1,0) + stateVector(0,0), PxVec3(1,0,0)));
-	/*for (int i = 1; i <= joints.size(); i++) {
+	for (int i = 0; i < joints.size(); i++) {
 		PxQuat q = PxQuat::createIdentity();
-		if (DOF > X) { q *= PxQuat(stateVector((i-1)*DOF+X,0), PxVec3(1,0,0)); }
-		if (DOF > Y) { q *= PxQuat(stateVector((i-1)*DOF+Y,0), PxVec3(0,1,0)); }
-		if (DOF > Z) { q *= PxQuat(stateVector((i-1)*DOF+Z,0), PxVec3(0,0,1)); }
+		if (i == 0) {
+			if (DOF > X) { q *= PxQuat(stateVector((i)*DOF+X,0), PxVec3(1,0,0)); }
+			if (DOF > Y) { q *= PxQuat(stateVector((i)*DOF+Y,0), PxVec3(0,1,0)); }
+			if (DOF > Z) { q *= PxQuat(stateVector((i)*DOF+Z,0), PxVec3(0,0,1)); }
+		} else {
+			if (DOF > X) { q *= PxQuat(stateVector((i)*DOF+X,0), PxVec3(1,0,0)) * theta[(i-1)*DOF+X]; }
+			if (DOF > Y) { q *= PxQuat(stateVector((i)*DOF+Y,0), PxVec3(0,1,0)) * theta[(i-1)*DOF+Y]; }
+			if (DOF > Z) { q *= PxQuat(stateVector((i)*DOF+Z,0), PxVec3(0,0,1)) * theta[(i-1)*DOF+Z]; }
+		}
 		theta.push_back(q);
-	}*/
+	}
 	dynamic_actors[0]->setGlobalPose(PxTransform(root, PxQuat::createIdentity()));
 	PxVec3 lastJointPos = dynamic_actors[0]->getGlobalPose().p + PxVec3(0,0.5,0);
 	PxQuat lastJointRot = dynamic_actors[0]->getGlobalPose().q;
-	for (int i = 1; i <= joints.size(); i++) {
-		PxRigidDynamic *current = dynamic_actors[i];
-		PxVec3 t = theta[i-1].rotate(-joint_local_positions[i-1]);
+	for (int i = 0; i < joints.size(); i++) {
+		PxRigidDynamic *current = dynamic_actors[i+1];
+		PxVec3 t = theta[i].rotate(-joint_local_positions[i]);
 		PxVec3 gPos = lastJointPos + t;
-		current->setGlobalPose(PxTransform(gPos, theta[i-1]));
+		current->setGlobalPose(PxTransform(gPos, theta[i]));
 		lastJointPos = lastJointPos + 2*t;
 	}
-	for (int i = 1; i <= joints.size(); i++) {
-		PxRigidDynamic *current = dynamic_actors[i];
+	for (int i = 0; i < joints.size(); i++) {
+		PxRigidDynamic *current = dynamic_actors[i+1];
 		PxVec3 angularVelocity;
-		if (DOF > X) { angularVelocity[X] = stateVector(joints.size()*DOF + (i-1)*DOF+X,0); }
+		if (DOF > X) { angularVelocity[X] = stateVector(joints.size()*DOF + i*DOF+X,0); }
 		else		 { angularVelocity[X] = 0.0; }
-		if (DOF > Y) { angularVelocity[Y] = stateVector(joints.size()*DOF + (i-1)*DOF+Y,0); }
+		if (DOF > Y) { angularVelocity[Y] = stateVector(joints.size()*DOF + i*DOF+Y,0); }
 		else		 { angularVelocity[Y] = 0.0; }
-		if (DOF > Z) { angularVelocity[Z] = stateVector(joints.size()*DOF + (i-1)*DOF+Z,0); }
+		if (DOF > Z) { angularVelocity[Z] = stateVector(joints.size()*DOF + i*DOF+Z,0); }
 		else		 { angularVelocity[Z] = 0.0; }
 		current->setAngularVelocity(angularVelocity);
 		current->setLinearVelocity(PxVec3(0,0,0));
@@ -77,12 +81,18 @@ Spacetime::getState(void)
 	matrix<double> state(joints.size()*DOF*2,1);
 	matrix<double> theta = calculateAngularPosition();
 	matrix<double> thetaDot = calculateAngularVelocity();
-	state(0,0) = theta(0,0);
-	state(1,0) = theta(1,0) - theta(0,0);
-	//for (int i = 0; i < joints.size()*DOF; i++)
-	//	state(i,0) = theta(i,0);
-	for (int i = 0; i < joints.size()*DOF; i++)
-		state(i+joints.size()*DOF,0) = thetaDot(i,0);
+	double* currentTheta = new double[DOF];
+	for (int i = 0; i < DOF; i++) currentTheta[i] = 0.0;
+	for (int i = 0; i < joints.size()*DOF; i++) {
+		if (DOF > X) { state(i*DOF+X,0) = theta(i*DOF+X,0) - currentTheta[(i-1)*DOF+X]; currentTheta[X] = state(i*DOF+X,0); }
+		if (DOF > Y) { state(i*DOF+Y,0) = theta(i*DOF+Y,0) - currentTheta[(i-1)*DOF+Y]; currentTheta[Y] = state(i*DOF+Y,0); }
+		if (DOF > Z) { state(i*DOF+Z,0) = theta(i*DOF+Z,0) - currentTheta[(i-1)*DOF+Z]; currentTheta[Z] = state(i*DOF+Z,0); }
+	}
+	for (int i = 0; i < joints.size()*DOF; i++) {
+		if (DOF > X) { state(i*DOF+X+joints.size()*DOF,0) = thetaDot(i*DOF+X,0); }
+		if (DOF > Y) { state(i*DOF+Y+joints.size()*DOF,0) = thetaDot(i*DOF+Y,0); }
+		if (DOF > Z) { state(i*DOF+Z+joints.size()*DOF,0) = thetaDot(i*DOF+Z,0); }
+	}
 	return state;
 }
 
