@@ -77,7 +77,7 @@ Spacetime::buildJacobian(void)
 //======================================================================================================================//
 
 matrix<double> 
-Spacetime::computeGVector(void)
+Spacetime::computeG_numeric(void)
 {
 	matrix<double> G(R3*joints.size(), 1);
 	for (PxU32 i = 0; i < joints.size(); i++) {
@@ -147,7 +147,7 @@ Spacetime::calculateAngularPosition(void)
 //======================================================================================================================//
 
 matrix<double> 
-Spacetime::computeMInv(matrix<double> G)
+Spacetime::computeMInv_numeric(matrix<double> G)
 {
 	matrix<double> MInv(DOF*joints.size(), DOF*joints.size());
 	for (int i = 0; i < DOF*joints.size(); i++) {
@@ -166,8 +166,7 @@ Spacetime::computeMInv(matrix<double> G)
 		matrix<double> velocityBefore = calculateAngularVelocity();
 		matrix<double> G_new(G);
 		G_new(i, 0) += 1.0;
-		applyTorqueVector(G_new);
-		stepPhysics();
+		stepPhysics_numeric(G_new);
 		matrix<double> velocityAfter = calculateAngularVelocity();
 		matrix<double> angularAcceleration = (velocityAfter - velocityBefore) / deltaT;
 
@@ -186,14 +185,13 @@ Spacetime::computeMInv(matrix<double> G)
 //======================================================================================================================//
 
 matrix<double> 
-Spacetime::computeCVector(matrix<double> G, matrix<double> M)
+Spacetime::computeC_numeric(matrix<double> G, matrix<double> M)
 {
 	matrix<double> C(DOF*joints.size(), 1);
 
 	saveState();
 	matrix<double> velocityBefore = calculateAngularVelocity();
-	applyTorqueVector(G);
-	stepPhysics();
+	stepPhysics_numeric(G);
 	matrix<double> velocityAfter = calculateAngularVelocity();
 	matrix<double> angularAcceleration = (velocityAfter - velocityBefore) / (deltaT);
 	C = M * angularAcceleration;
@@ -207,29 +205,10 @@ Spacetime::computeCVector(matrix<double> G, matrix<double> M)
 //======================================================================================================================//
 
 void 
-Spacetime::stepPhysics(void)
+Spacetime::stepPhysics_numeric(matrix<double> u)
 {
 	// simulate and return
+	applyTorqueVector(u);
 	gScene->simulate(deltaT);
 	gScene->fetchResults(true);
-}
-
-
-void 
-Spacetime::stepPhysics(matrix<double> MInv, matrix<double> u, matrix<double> C, matrix<double> G)
-{
-	matrix<double> state = getState();
-	matrix<double> stateDot(4,1);
-	matrix<double> thetaDot(2,1); thetaDot(0,0) = state(2,0); thetaDot(1,0) = state(3,0);
-	matrix<double> thetaDotDot = MInv * (u - C - G);
-	stateDot(0,0) = thetaDot(0,0);
-	stateDot(1,0) = thetaDot(1,0);
-	stateDot(2,0) = thetaDotDot(0,0);
-	stateDot(3,0) = thetaDotDot(1,0);
-	setState(state + stateDot*deltaT);
-
-	for (int i = 0; i < dynamic_actors.size(); i++) {
-		dynamic_actors[i]->setLinearVelocity(PxVec3(0,0,0));
-	}
-
 }

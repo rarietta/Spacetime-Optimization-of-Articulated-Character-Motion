@@ -49,7 +49,8 @@
     <ClCompile Include="src\SpacetimeDerivatives_Analytic.cpp" />
     <ClCompile Include="src\SpacetimeCleanup.cpp" />
     <ClCompile Include="src\SpacetimeDerivatives_Numeric.cpp" />
-    <ClCompile Include="src\SpacetimeDynamics.cpp" />
+    <ClCompile Include="src\SpacetimeDynamics_Analytic.cpp" />
+    <ClCompile Include="src\SpacetimeDynamics_Numeric.cpp" />
     <ClCompile Include="src\SpacetimeApplication.cpp" />
     <ClCompile Include="src\RenderUtil.cpp" />
     <ClCompile Include="src\SpacetimeOptimization.cpp" />

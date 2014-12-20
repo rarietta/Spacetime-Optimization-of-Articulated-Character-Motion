@@ -9,7 +9,6 @@
 //==================================================================================================//
 
 #include "Spacetime.h"
-bool ANALYTIC = true;
 
 //==================================================================================================//
 // Function:																						//
@@ -25,10 +24,18 @@ void
 Spacetime::makeInitialGuess(void)
 {
 	/// compute G, C, M, and MInv state matrices
-	matrix<double> G = computeGVector();
-	matrix<double> MInv = computeMInv(G);
-	matrix<double> M = !MInv;
-	matrix<double> C = computeCVector(G, M);
+	matrix<double> G, C, M, MInv;
+	if (ANALYTIC) {
+		G = computeG_analytic();
+		M = computeM_analytic();
+		C = computeC_analytic();
+		MInv = !M;
+	} else {
+		G = computeG_numeric();
+		MInv = computeMInv_numeric(G); 
+		M = !M;
+		C = computeC_numeric(G,M);
+	}
 
 	// compute torque with PD controller
 	double Kp = 1.5, Kv = 1.5;
@@ -37,8 +44,10 @@ Spacetime::makeInitialGuess(void)
 	matrix<double> thetaDot = calculateAngularVelocity();
 	matrix<double> u = C + G + M*(Kp*(thetad - theta) - Kv*thetaDot);
 	uSequence.push_back(u);
-	applyTorqueVector(u);
-	stepPhysics();
+
+	// apply torque and advance system
+	if (ANALYTIC) stepPhysics_analytic(MInv,u,C,G);
+	else		  stepPhysics_numeric(u);
 }
 
 //==================================================================================================//
@@ -76,19 +85,29 @@ Spacetime::IterateOptimization(void)
 		// store current state
 		stateSequence.push_back(getState());
 
-		// compute and store G, C, M, and MInv state matrices
-		matrix<double> G = computeGVector();					
-		matrix<double> MInv = computeMInv(G);		// THIS DOES NOT MATCH THE ANALYTIC METHOD
-		matrix<double> M = !MInv;					// THIS DOES NOT MATCH THE ANALYTIC METHOD
-		matrix<double> C = computeCVector(G, M);	// THIS DOES NOT MATCH THE ANALYTIC METHOD
+		// compute G, C, M, and MInv state matrices
+		matrix<double> G, C, M, MInv;
+		if (ANALYTIC) {
+			G = computeG_analytic();
+			M = computeM_analytic();
+			C = computeC_analytic();
+			MInv = !M;
+		} else {
+			G = computeG_numeric();
+			MInv = computeMInv_numeric(G); 
+			M = !MInv;
+			C = computeC_numeric(G,!MInv);
+		}
+
+		// store G, C, M, and MInv state matrices
 		GSequence.push_back(G);
 		CSequence.push_back(C);
 		MSequence.push_back(M);
 		MInvSequence.push_back(MInv);
-
-		// apply computed input torque vector u and simulate one step
-		applyTorqueVector(uSequence[t]);
-		stepPhysics();
+		
+		// apply torque and advance system
+		if (ANALYTIC) stepPhysics_analytic(MInv,uSequence[t],C,G);
+		else		  stepPhysics_numeric(uSequence[t]);
 	}
 
 	//----------------------------------------------------------------------------------------------//
@@ -100,13 +119,13 @@ Spacetime::IterateOptimization(void)
 	costateSequence.push_back(lambda_N);
 	for (int t = 0; t < numTimeSteps; t++) {
 		if (ANALYTIC) {
-			dLdx = compute_dLdx_analytic(t);
+			dLdx = compute_dLdx_analytic(numTimeSteps-t-1);
 			dfdx = compute_dfdx_analytic(numTimeSteps-t-1); 
 		} else {
-			dLdx = compute_dLdx_numeric(t);
+			dLdx = compute_dLdx_numeric(numTimeSteps-t-1);
 			dfdx = compute_dfdx_numeric(numTimeSteps-t-1);
 		} lambdaDot = ~(-dLdx + (~costateSequence[t])*dfdx);
-		costateSequence.push_back(costateSequence[t] - deltaT*lambdaDot);
+		costateSequence.push_back(costateSequence[t] + deltaT*lambdaDot);
 	} std::reverse(costateSequence.begin(), costateSequence.end());
 
 	//----------------------------------------------------------------------------------------------//

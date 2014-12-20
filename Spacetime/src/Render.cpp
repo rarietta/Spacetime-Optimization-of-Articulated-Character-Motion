@@ -112,8 +112,8 @@ void renderCallback()
 		uDiff = render_system->IterateOptimization();
 		render_system->setState(render_system->state_0);
 		for (int t = 0; t < render_system->numTimeSteps; t++) {
-			render_system->applyTorqueVector(render_system->uSequence[t]);
-			render_system->stepPhysics();
+			if (render_system->ANALYTIC) render_system->stepPhysics_analytic(render_system->MInvSequence[t], render_system->uSequence[t], render_system->CSequence[t], render_system->GSequence[t]);
+			else						 render_system->stepPhysics_numeric(render_system->uSequence[t]);
 			renderScene(iteration);
 		}
 	} while (uDiff >= render_system->uThreshold);

@@ -51,9 +51,6 @@
     <ClCompile Include="src\Render.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\SpacetimeDynamics.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\Math3D.cpp">
       <Filter>Source Files\Math Utilities</Filter>
     </ClCompile>
@@ -61,6 +58,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\SpacetimeDerivatives_Numeric.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SpacetimeDynamics_Numeric.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SpacetimeDynamics_Analytic.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

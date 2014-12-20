@@ -20,11 +20,10 @@
 #include <algorithm>
 #include <adolc/adolc.h>
 
-//#define T_DEBUG 1
-
 using namespace std;
 using namespace physx;
 
+#define R3 3
 enum {G_TAG, C_TAG, M_TAG, MINV_TAG};
 
 class Spacetime
@@ -40,6 +39,7 @@ public:
 	Spacetime(matrix<double> startPose, matrix<double> endPose, PxU32 numTimeSteps);
 
 	// simulation variables
+	bool ANALYTIC;
 	matrix<double> state_0;					// initial pose
 	matrix<double> state_d;					// desired pose
 	std::vector<matrix<double>> uSequence;	// sequence of input torque vectors
@@ -59,11 +59,6 @@ public:
 	void switchPause(void);
 	void setState(matrix<double> stateVector);
 	void restoreState(void);
-
-	// Kinematics functions (SpacetimeKinematics.cpp)
-	void stepPhysics(void);
-	void stepPhysics(matrix<double> MInv, matrix<double> u, matrix<double> C, matrix<double> G);
-	void applyTorqueVector(matrix<double> T);
 
 	// Cleanup functions (SpacetimeCleanup.cpp)
 	void cleanupPhysics(void);
@@ -108,13 +103,23 @@ public:
 	void saveState(void);
 	matrix<double> getState(void);
 
-	// Kinematics functions (SpacetimeKinematics.cpp)
+	// Numeric dynamics functions (SpacetimeDynamics_Numeric.cpp)
+	// Utilizes ADOL-C library
+	matrix<double> computeG_numeric(void);
+	matrix<double> computeC_numeric(matrix<double> G, matrix<double> M);
+	matrix<double> computeMInv_numeric(matrix<double> G);
+	void stepPhysics_numeric(matrix<double> u);
+	void applyTorqueVector(matrix<double> T);
 	matrix<double> buildJacobian(void);
-	matrix<double> computeGVector(void);
 	matrix<double> calculateAngularVelocity(void);
 	matrix<double> calculateAngularPosition(void);
-	matrix<double> computeMInv(matrix<double> G);
-	matrix<double> computeCVector(matrix<double> G, matrix<double> M);
+	
+	// Analytics dynamics functions (SpacetimeDynamics_Numeric.cpp)
+	// Only valid as ADOL-C alternative for 2 joint system
+	matrix<double> computeG_analytic(void);
+	matrix<double> computeC_analytic(void);
+	matrix<double> computeM_analytic(void);
+	void stepPhysics_analytic(matrix<double> MInv, matrix<double> u, matrix<double> C, matrix<double> G);
 
 	// Optimization sequences
 	std::vector<matrix<double>> GSequence;

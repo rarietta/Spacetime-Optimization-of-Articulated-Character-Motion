@@ -51,7 +51,7 @@ Spacetime::setState(matrix<double> stateVector) {
 	for (int i = 1; i <= joints.size(); i++) {
 		PxRigidDynamic *current = dynamic_actors[i];
 		PxVec3 t = theta[i-1].rotate(-joint_local_positions[i-1]);
-		PxVec3 gPos = lastJointPos + /*lastJointRot.rotate(*/t/*)*/;
+		PxVec3 gPos = lastJointPos + t;
 		current->setGlobalPose(PxTransform(gPos, theta[i-1]));
 		lastJointPos = lastJointPos + 2*t;
 	}
