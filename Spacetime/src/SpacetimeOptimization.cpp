@@ -43,16 +43,21 @@ Spacetime::makeInitialGuess(void)
 	matrix<double> theta(2,1);
 	theta(0,0) = state(0,0);
 	theta(1,0) = state(1,0);
-	matrix<double> thetad(state_d); thetad.SetSize(DOF*joints.size(), 1);
+	matrix<double> thetad(state_d); 
+	thetad.SetSize(DOF*joints.size(), 1);
 	matrix<double> thetaDot(2,1);
 	thetaDot(0,0) = state(2,0);
 	thetaDot(1,0) = state(3,0);
+	cout << "G = \n" << G << endl;
+	cout << "C = \n" << C << endl;
+	cout << "M = \n" << M << endl;
 	matrix<double> u = C + G + M*(Kp*(thetad - theta) - Kv*thetaDot);
+	cout << "u = \n" << u << endl;
 	uSequence.push_back(u);
 
 	// apply torque and advance system
-	if (ANALYTIC) stepPhysics_analytic(MInv,u,C,G);
-	else		  stepPhysics_numeric(u);
+	if (ANALYTIC) stepPhysics_analytic(u);
+	else		  stepPhysics_numeric (u);
 }
 
 //==================================================================================================//
@@ -96,22 +101,26 @@ Spacetime::IterateOptimization(void)
 			G = computeG_analytic();
 			M = computeM_analytic();
 			C = computeC_analytic();
-			MInv = M.Inv();
+			MInv = !M;
+			if (t == 0) {
+				cout << "G = \n" << G << endl;
+				cout << "C = \n" << C << endl;
+				cout << "M = \n" << M << endl;
+				cout << "MInv = \n" << MInv << endl;
+			}
 		} else {
 			G = computeG_numeric();
 			MInv = computeMInv_numeric(G);
 			M = MInv.Inv();
 			C = computeC_numeric(G,!MInv);
 		}
-
-		//if (t == 0) {
-			cout << "---------------------------------------" << endl;
-			cout << "time = " << t << endl;
-			cout << "theta1 = " << getState()(0,0) << endl;
-			cout << "theta2 = " << getState()(1,0) << endl;
-			cout << "G = \n" << G << endl;
-			cout << "C = \n" << C << endl;
-		//}
+		
+		cout << "---------------------------------------" << endl;
+		cout << "time = " << t << endl;
+		cout << "theta1 = " << getState()(0,0) << endl;
+		cout << "theta2 = " << getState()(1,0) << endl;
+		cout << "thetaDot1 = " << getState()(2,0) << endl;
+		cout << "thetaDot2 = " << getState()(3,0) << endl;
 
 		// store G, C, M, and MInv state matrices
 		GSequence.push_back(G);
@@ -120,8 +129,8 @@ Spacetime::IterateOptimization(void)
 		MInvSequence.push_back(MInv);
 		
 		// apply torque and advance system
-		if (ANALYTIC) stepPhysics_analytic(MInv,uSequence[t],C,G);
-		else		  stepPhysics_numeric(uSequence[t]);
+		if (ANALYTIC) stepPhysics_analytic(uSequence[t]);
+		else		  stepPhysics_numeric (uSequence[t]);
 	}
 
 	//----------------------------------------------------------------------------------------------//
@@ -138,7 +147,10 @@ Spacetime::IterateOptimization(void)
 		} else {
 			dLdx = compute_dLdx_numeric(numTimeSteps-t-1);
 			dfdx = compute_dfdx_numeric(numTimeSteps-t-1);
-		} lambdaDot = ~(-dLdx + (~costateSequence[t])*dfdx);
+		} lambdaDot = ~(-dLdx + -(~costateSequence[t])*dfdx);
+		cout << "costateSequence[" << numTimeSteps-1-t << "] = \n" << costateSequence[t] << endl;
+		cout << "dfdx[" << numTimeSteps-1-t << "] = \n" << dfdx << endl;
+		cout << "lmabdaDot[" << numTimeSteps-1-t << "] = \n" << lambdaDot << endl;
 		costateSequence.push_back(costateSequence[t] - deltaT*lambdaDot);
 	} std::reverse(costateSequence.begin(), costateSequence.end());
 
@@ -153,7 +165,12 @@ Spacetime::IterateOptimization(void)
 		else		  dfdu = compute_dfdu_numeric(t);
 		u = ~(~costateSequence[t]*dfdu);
 		new_uSequence.push_back(u);
+		cout << "costateSequence[" << t << "] =\n" << costateSequence[t] << endl;
+		cout << "dfdu =\n" << dfdu << endl;
+		cout << "~cS[t] = \n" << ~costateSequence[t] << endl;
+		cout << "~cS[t]*dfdu = \n" << ~costateSequence[t]*dfdu << endl;
 		cout << "new u = \n" << u << endl;
+		cout << "old u = \n" << uSequence[t] << endl;
 	} 
 	PxReal uDiff = SSDvector(uSequence, new_uSequence);
 	uSequence.clear(); uSequence = new_uSequence;

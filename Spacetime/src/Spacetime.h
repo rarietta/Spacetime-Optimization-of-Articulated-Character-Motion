@@ -119,7 +119,7 @@ public:
 	matrix<double> computeG_analytic(void);
 	matrix<double> computeC_analytic(void);
 	matrix<double> computeM_analytic(void);
-	void stepPhysics_analytic(matrix<double> MInv, matrix<double> u, matrix<double> C, matrix<double> G);
+	void stepPhysics_analytic(matrix<double> u);
 
 	// Optimization sequences
 	std::vector<matrix<double>> GSequence;
