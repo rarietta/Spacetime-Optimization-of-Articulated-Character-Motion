@@ -31,7 +31,7 @@ Spacetime::computeG_analytic(void)
 	// state dependent variables
 	matrix<double> state = getState();
 	double theta1 = state(0,0);
-	double theta2 = state(1,0) - theta1;
+	double theta2 = state(1,0);
 	double thetaDot1 = state(2,0);
 	double thetaDot2 = state(3,0);
 
@@ -62,7 +62,7 @@ Spacetime::computeM_analytic(void)
 	// state dependent variables
 	matrix<double> state = getState();
 	double theta1 = state(0,0);
-	double theta2 = state(1,0) - theta1;
+	double theta2 = state(1,0);
 	double thetaDot1 = state(2,0);
 	double thetaDot2 = state(3,0);
 
@@ -95,7 +95,7 @@ Spacetime::computeC_analytic(void)
 	// state dependent variables
 	matrix<double> state = getState();
 	double theta1 = state(0,0);
-	double theta2 = state(1,0) - theta1;
+	double theta2 = state(1,0);
 	double thetaDot1 = state(2,0);
 	double thetaDot2 = state(3,0);
 

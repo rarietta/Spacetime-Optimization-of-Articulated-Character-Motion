@@ -203,7 +203,7 @@ Spacetime::compute_dfdx_analytic(PxU32 t)
 	// state dependent variables
 	state = stateSequence[t];
 	theta1 = state(0,0);
-	theta2 = state(1,0) - theta1;
+	theta2 = state(1,0);
 	thetaDot1 = state(2,0);
 	thetaDot2 = state(3,0);
 

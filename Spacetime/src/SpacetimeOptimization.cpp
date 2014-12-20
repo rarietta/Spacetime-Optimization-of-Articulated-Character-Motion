@@ -94,7 +94,7 @@ Spacetime::IterateOptimization(void)
 			MInv = !M;
 		} else {
 			G = computeG_numeric();
-			MInv = computeMInv_numeric(G); 
+			MInv = computeMInv_numeric(G);
 			M = !MInv;
 			C = computeC_numeric(G,!MInv);
 		}
@@ -132,13 +132,16 @@ Spacetime::IterateOptimization(void)
 	// update u from constraint formula																//
 	//----------------------------------------------------------------------------------------------//
 	
-	matrix<double> dfdu;
+	matrix<double> dfdu, u;
 	std::vector<matrix<double>> new_uSequence;
 	for (int t = 0; t < numTimeSteps; t++) {
 		if (ANALYTIC) dfdu = compute_dfdu_analytic(t);
 		else		  dfdu = compute_dfdu_numeric(t);
-		new_uSequence.push_back(~(~costateSequence[t]*dfdu));
-	} PxReal uDiff = SSDvector(uSequence, new_uSequence);
+		u = ~(~costateSequence[t]*dfdu);
+		new_uSequence.push_back(u);
+		cout << "new u = \n" << u << endl;
+	} 
+	PxReal uDiff = SSDvector(uSequence, new_uSequence);
 	uSequence.clear(); uSequence = new_uSequence;
 	return uDiff;
 }
