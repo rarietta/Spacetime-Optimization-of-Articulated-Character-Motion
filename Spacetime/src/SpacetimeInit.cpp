@@ -52,12 +52,9 @@ Spacetime::addDynamicActors(void)
 	// first leg geometry
 	PxBoxGeometry leg1_geometry(0.5, 0.5, 10.0);
 	PxVec3 leg1_translation(0,0,0);
-	PxQuat leg1_rotation = PxQuat::createIdentity();
-	PxTransform leg1_transform(leg1_translation, leg1_rotation);
+	PxTransform leg1_transform(leg1_translation);
 	PxRigidDynamic *leg1 = PxCreateDynamic(*gPhysics, leg1_transform, 
 		leg1_geometry, *mMaterial, density);
-	if (!leg1) cerr << "create actor failed!" << endl;
-    leg1->setAngularDamping(0.75);
 	leg1->setMass(10.0f);
 	gScene->addActor(*leg1);
 	dynamic_actors.push_back(leg1);
@@ -65,12 +62,9 @@ Spacetime::addDynamicActors(void)
 	// second leg geometry
 	PxBoxGeometry leg2_geometry(0.5, 0.5, 10.0);
 	PxVec3 leg2_translation = PxVec3(0,0,0);
-	PxQuat leg2_rotation = PxQuat::createIdentity();
-	PxTransform leg2_transform(leg2_translation, leg2_rotation);
+	PxTransform leg2_transform(leg2_translation);
 	PxRigidDynamic *leg2 = PxCreateDynamic(*gPhysics, leg2_transform, 
 		leg2_geometry, *mMaterial, density);
-	if (!leg2) cerr << "create actor failed!" << endl;
-	leg2->setAngularDamping(0.75);
 	leg2->setMass(10.0f);
 	gScene->addActor(*leg2);
 	dynamic_actors.push_back(leg2);

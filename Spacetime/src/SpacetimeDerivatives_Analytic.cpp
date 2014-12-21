@@ -116,7 +116,7 @@ Spacetime::compute_dMInv_dtheta1_analytic(PxU32 t)
 matrix<double>  
 Spacetime::compute_dMInv_dtheta2_analytic(PxU32 t) 
 {
-	if (t % 1000 == 0) {
+	if (false) {
 		cout << "-------------------------------------------------------------------------------------------" << endl;
 		cout << "t = " << t << endl;
 		cout << "theta1 = " << theta1 << endl;
@@ -269,7 +269,7 @@ Spacetime::compute_dfdx_analytic(PxU32 t)
 	// DEBUG																											//
 	//------------------------------------------------------------------------------------------------------------------//
 
-	if (t % 1000 == 0) {
+	if (false) {
 		cout << "dG_dtheta1 = \n" << dG_dtheta1 << endl;
 		cout << "dG_dtheta2 = \n" << dG_dtheta2 << endl;
 		cout << "dG_dthetaDot1 = \n" << dG_dthetaDot1 << endl;

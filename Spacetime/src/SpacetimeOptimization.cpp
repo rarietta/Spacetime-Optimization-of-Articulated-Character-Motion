@@ -42,8 +42,8 @@ Spacetime::makeInitialGuess(void)
 	matrix<double> state = getState();
 	
 	matrix<double> theta(2,1);
-	double theta1 = state(0,0); while (theta1 > PxPi) theta1 -= PxPi; while (theta1 < -PxPi) theta1 += PxPi;
-	double theta2 = state(1,0); while (theta2 > PxPi) theta2 -= PxPi; while (theta2 < -PxPi) theta2 += PxPi;
+	double theta1 = state(0,0);
+	double theta2 = state(1,0);
 	theta(0,0) = theta1;
 	theta(1,0) = theta2;
 	
@@ -136,9 +136,18 @@ Spacetime::IterateOptimization(void)
 		} else {
 			dLdx = compute_dLdx_numeric (numTimeSteps-t-1);
 			dfdx = compute_dfdx_numeric (numTimeSteps-t-1);
-		} lambdaDot = ~(-dLdx + (~costateSequence[t])*dfdx);
+		} 
+		//cout << "dfdx = \n" << dfdx << endl;
+		//cout << "costateSequence[" << t << "] =\n" << costateSequence[t] << endl;
+		lambdaDot = ~(-dLdx + (~costateSequence[t])*dfdx);
+		//cout << "lambdaDot[" << t << "] = \n" << lambdaDot << endl;
 		costateSequence.push_back(costateSequence[t] - deltaT*lambdaDot);
 	} std::reverse(costateSequence.begin(), costateSequence.end());
+
+	//cout << "------------------------------------------------" << endl;
+	//for (int t = 0; t < numTimeSteps; t++)
+	//	cout << "costateSequence[" << t << "] = \n" << costateSequence[t] << endl;
+	//cout << "------------------------------------------------" << endl;
 
 	//----------------------------------------------------------------------------------------------//
 	// update u from constraint formula																//
@@ -149,7 +158,9 @@ Spacetime::IterateOptimization(void)
 	for (int t = 0; t < numTimeSteps; t++) {
 		if (ANALYTIC) dfdu = compute_dfdu_analytic(t);
 		else		  dfdu = compute_dfdu_numeric(t);
-		u = ~(~costateSequence[t]*dfdu);
+		//cout << "dfdu = \n" << dfdu << endl;
+		u = -1.0 * ~(~costateSequence[t]*dfdu);
+		//cout << "u = \n" << u << endl;
 		new_uSequence.push_back(u);
 	} 
 	PxReal uDiff = SSDvector(uSequence, new_uSequence);

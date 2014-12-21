@@ -25,8 +25,6 @@ Spacetime::computeG_analytic(void)
 	double lc2 = joint_local_positions[1].magnitude();
 	double l1  = 2.0 * joint_local_positions[0].magnitude();
 	double l2  = 2.0 * joint_local_positions[1].magnitude();
-	double I1  = (1.0/12.0)*m1*l1*l1;
-	double I2  = (1.0/12.0)*m1*l2*l2;
 
 	// state dependent variables
 	matrix<double> state = getState();
@@ -49,7 +47,6 @@ matrix<double>
 Spacetime::computeM_analytic(void)
 {
 	// system dependent variables
-	double g   = abs(gScene->getGravity().y);
 	double m1  = dynamic_actors[1]->getMass();
 	double m2  = dynamic_actors[2]->getMass();
 	double lc1 = joint_local_positions[0].magnitude();
@@ -82,15 +79,12 @@ matrix<double>
 Spacetime::computeC_analytic(void)
 {
 	// system dependent variables
-	double g   = abs(gScene->getGravity().y);
 	double m1  = dynamic_actors[1]->getMass();
 	double m2  = dynamic_actors[2]->getMass();
 	double lc1 = joint_local_positions[0].magnitude();
 	double lc2 = joint_local_positions[1].magnitude();
 	double l1  = 2.0 * joint_local_positions[0].magnitude();
 	double l2  = 2.0 * joint_local_positions[1].magnitude();
-	double I1  = (1.0/12.0)*m1*l1*l1;
-	double I2  = (1.0/12.0)*m1*l2*l2;
 
 	// state dependent variables
 	matrix<double> state = getState();
@@ -114,25 +108,17 @@ void
 Spacetime::stepPhysics_analytic(matrix<double> u)
 {
 	matrix<double> state = getState();
-	matrix<double> stateDot(4,1);
-
-	matrix<double> thetaDot(2,1); 
-	thetaDot(0,0) = state(2,0); 
-	thetaDot(1,0) = state(3,0);
-	
 	matrix<double> C = computeC_analytic();
 	matrix<double> G = computeG_analytic();
 	matrix<double> MInv = !computeM_analytic();
 
 	matrix<double> thetaDotDot = MInv * (u - C - G);
 	
-	stateDot(0,0) = thetaDot(0,0);
-	stateDot(1,0) = thetaDot(1,0);
+	matrix<double> stateDot(4,1);
+	stateDot(0,0) = state(2,0);
+	stateDot(1,0) = state(3,0);
 	stateDot(2,0) = thetaDotDot(0,0);
 	stateDot(3,0) = thetaDotDot(1,0);
 	
 	setState(state + stateDot*deltaT);
-
-	//for (int i = 0; i < dynamic_actors.size(); i++)
-	//	dynamic_actors[i]->setLinearVelocity(PxVec3(0,0,0));
 }

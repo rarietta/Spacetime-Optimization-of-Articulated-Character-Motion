@@ -61,7 +61,7 @@ void renderScene(int iteration) {
 		scene->getActors(PxActorTypeSelectionFlag::eRIGID_DYNAMIC, 
 							(PxActor**)&actors[0], nbActors);
 		for (PxU32 i = 0; i < nbActors; i++)
-			RenderUtil::renderActors(&actors[i], 1, true, PxVec3(0.3,0.3,0.3));
+			RenderUtil::renderActors(&actors[i], 1, false, PxVec3(0.3,0.3,0.3));
 	}		
 	if (iteration == 0) {
 		char* result = "Initial Guess";
