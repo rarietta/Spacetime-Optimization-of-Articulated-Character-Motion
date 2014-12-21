@@ -9,6 +9,7 @@
 //======================================================================================================================//
 
 #include "Render.h"
+#include <sstream>
 
 Spacetime *render_system;
 RenderUtil::Camera*	sCamera;
@@ -76,6 +77,25 @@ void renderScene(int iteration) {
 		for(int i = 0; i < strlen(result); i++)
 			glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, result[i]);
 	}
+	
+	std::string buffer, result;
+	matrix<double> state = render_system->getState();
+	std::string theta1 = "theta1 = " + to_string((long double) state(0,0));
+	std::string theta2 = "theta2 = " + to_string((long double) state(1,0));
+	std::string thetaDot1 = "thetaDot1 = " + to_string((long double) state(2,0));
+	std::string thetaDot2 = "thetaDot1 = " + to_string((long double) state(3,0));
+	glRasterPos2i(-35,38);
+	for(int i = 0; i < theta1.length(); i++)
+		glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, theta1[i]);
+	glRasterPos2i(-37,33);
+	for(int i = 0; i < theta2.length(); i++)
+		glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, theta2[i]);
+	glRasterPos2i(-39,28);
+	for(int i = 0; i < thetaDot1.length(); i++)
+		glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, thetaDot1[i]);
+	glRasterPos2i(-41,23);
+	for(int i = 0; i < thetaDot2.length(); i++)
+		glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, thetaDot2[i]);
 	RenderUtil::finishRender();
 }
 

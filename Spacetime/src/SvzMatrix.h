@@ -439,7 +439,7 @@ operator << (ostream& ostrm, const matrixT& m)
       for (size_t j=0; j < m.ColNo(); j++)
       {
          T x = m(i,j);
-		 printf("%9.4f\t", x);
+		 printf("%20.12f\t", x);
          //ostrm << x << '\t';
       }
       ostrm << endl;

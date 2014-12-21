@@ -84,15 +84,16 @@ Spacetime::getState(void)
 	double* currentTheta = new double[DOF];
 	for (int i = 0; i < DOF; i++) currentTheta[i] = 0.0;
 	for (int i = 0; i < joints.size()*DOF; i++) {
-		if (DOF > X) { state(i*DOF+X,0) = theta(i*DOF+X,0) - currentTheta[(i-1)*DOF+X]; currentTheta[X] = state(i*DOF+X,0); }
-		if (DOF > Y) { state(i*DOF+Y,0) = theta(i*DOF+Y,0) - currentTheta[(i-1)*DOF+Y]; currentTheta[Y] = state(i*DOF+Y,0); }
-		if (DOF > Z) { state(i*DOF+Z,0) = theta(i*DOF+Z,0) - currentTheta[(i-1)*DOF+Z]; currentTheta[Z] = state(i*DOF+Z,0); }
+		if (DOF > X) { state(i*DOF+X,0) = theta(i*DOF+X,0) - currentTheta[X]; currentTheta[X] = state(i*DOF+X,0); }
+		if (DOF > Y) { state(i*DOF+Y,0) = theta(i*DOF+Y,0) - currentTheta[Y]; currentTheta[Y] = state(i*DOF+Y,0); }
+		if (DOF > Z) { state(i*DOF+Z,0) = theta(i*DOF+Z,0) - currentTheta[Z]; currentTheta[Z] = state(i*DOF+Z,0); }
 	}
 	for (int i = 0; i < joints.size()*DOF; i++) {
 		if (DOF > X) { state(i*DOF+X+joints.size()*DOF,0) = thetaDot(i*DOF+X,0); }
 		if (DOF > Y) { state(i*DOF+Y+joints.size()*DOF,0) = thetaDot(i*DOF+Y,0); }
 		if (DOF > Z) { state(i*DOF+Z+joints.size()*DOF,0) = thetaDot(i*DOF+Z,0); }
 	}
+	
 	return state;
 }
 

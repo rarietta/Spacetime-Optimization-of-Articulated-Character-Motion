@@ -77,8 +77,8 @@ matrix<double>
 Spacetime::compute_dC_dtheta2_analytic(PxU32 t) 
 {
 	matrix<double> dC_dtheta2(2,1);
-	dC_dtheta2(0,0) = -(-m2*l1*lc2 * (cos(theta2)*thetaDot2*thetaDot2 - 2*cos(theta2)*thetaDot1*thetaDot2));
-	dC_dtheta2(1,0) =  m2*l1*lc2 *  cos(theta2)*thetaDot1*thetaDot1;
+	dC_dtheta2(0,0) = -m2*l1*lc2*cos(theta2) * (thetaDot2*thetaDot2 - 2*thetaDot1*thetaDot2);
+	dC_dtheta2(1,0) =  m2*l1*lc2*cos(theta2) * (thetaDot1*thetaDot1);
 	return dC_dtheta2;
 }
 
@@ -86,7 +86,7 @@ matrix<double>
 Spacetime::compute_dC_dthetaDot1_analytic(PxU32 t) 
 {
 	matrix<double> dC_dthetaDot1(2,1);
-	dC_dthetaDot1(0,0) = -(-2*m2*l1*lc2*sin(theta2)*thetaDot2);
+	dC_dthetaDot1(0,0) = -2*m2*l1*lc2*sin(theta2)*thetaDot2;
 	dC_dthetaDot1(1,0) =  2*m2*l1*lc2*sin(theta2)*thetaDot1;
 	return dC_dthetaDot1;
 }
@@ -95,7 +95,7 @@ matrix<double>
 Spacetime::compute_dC_dthetaDot2_analytic(PxU32 t) 
 {
 	matrix<double> dC_dthetaDot2(2,1);
-	dC_dthetaDot2(0,0) = -(-2*m2*l1*lc2*sin(theta2) * (thetaDot2 - thetaDot1));
+	dC_dthetaDot2(0,0) = -2*m2*l1*lc2*sin(theta2) * (thetaDot2 + thetaDot1);
 	dC_dthetaDot2(1,0) =  0;
 	return dC_dthetaDot2;
 }
@@ -116,6 +116,16 @@ Spacetime::compute_dMInv_dtheta1_analytic(PxU32 t)
 matrix<double>  
 Spacetime::compute_dMInv_dtheta2_analytic(PxU32 t) 
 {
+	if (t % 1000 == 0) {
+		cout << "-------------------------------------------------------------------------------------------" << endl;
+		cout << "t = " << t << endl;
+		cout << "theta1 = " << theta1 << endl;
+		cout << "theta2 = " << theta2 << endl;
+		cout << "thetaDot1 = " << thetaDot1 << endl;
+		cout << "thetaDot2 = " << thetaDot2 << endl;
+		cout << "MInv = \n" << MInvSequence[t] << endl;
+	}
+
 	matrix<double> dM_dtheta2(2,2);
 	dM_dtheta2(0,0) = -2*(m2*l1*lc2*sin(theta2)); dM_dtheta2(0,1) = -(m2*l1*lc2*sin(theta2));
 	dM_dtheta2(1,0) =   -(m2*l1*lc2*sin(theta2)); dM_dtheta2(1,1) = 0.0;
@@ -192,7 +202,7 @@ Spacetime::compute_dfdx_analytic(PxU32 t)
 	//------------------------------------------------------------------------------------------------------------------//
 
 	// system dependent variables
-	g   = gScene->getGravity().y;
+	g   = abs(gScene->getGravity().y);
 	m1  = dynamic_actors[1]->getMass();
 	m2  = dynamic_actors[2]->getMass();
 	lc1 = joint_local_positions[0].magnitude();
@@ -254,9 +264,29 @@ Spacetime::compute_dfdx_analytic(PxU32 t)
 	dMInv_dX.push_back(dMInv_dtheta2);
 	dMInv_dX.push_back(dMInv_dthetaDot1);
 	dMInv_dX.push_back(dMInv_dthetaDot2);
+	
+	//------------------------------------------------------------------------------------------------------------------//
+	// DEBUG																											//
+	//------------------------------------------------------------------------------------------------------------------//
+
+	if (t % 1000 == 0) {
+		cout << "dG_dtheta1 = \n" << dG_dtheta1 << endl;
+		cout << "dG_dtheta2 = \n" << dG_dtheta2 << endl;
+		cout << "dG_dthetaDot1 = \n" << dG_dthetaDot1 << endl;
+		cout << "dG_dthetaDot2 = \n" << dG_dthetaDot2 << endl;
+		cout << "dC_dtheta1 = \n" << dC_dtheta1 << endl;
+		cout << "dC_dtheta2 = \n" << dC_dtheta2 << endl;
+		cout << "dC_dthetaDot1 = \n" << dC_dthetaDot1 << endl;
+		cout << "dC_dthetaDot2 = \n" << dC_dthetaDot2 << endl;
+		cout << "dMInv_dtheta1 = \n" << dMInv_dtheta1 << endl;
+		cout << "dMInv_dtheta2 = \n" << dMInv_dtheta2 << endl;
+		cout << "dMInv_dthetaDot1 = \n" << dMInv_dthetaDot1 << endl;
+		cout << "dMInv_dthetaDot2 = \n" << dMInv_dthetaDot2 << endl;
+	}
 
 	//------------------------------------------------------------------------------------------------------------------//
-	// Perform calculation of df2/dx = dMInv_dX*(u+C+G) - Minv*(dC_dx+dG_dx);											//
+	// dfdx = |df1/dx| = |        0         |         I          |														//
+	//		  |df2/dx|	 | dMInv_dX*(u+C+G) - Minv*(dC_dx+dG_dx) |														//
 	//------------------------------------------------------------------------------------------------------------------//
 
 	matrix<double> u = uSequence[t];
@@ -264,40 +294,31 @@ Spacetime::compute_dfdx_analytic(PxU32 t)
 	matrix<double> G = GSequence[t];
 	matrix<double> MInv = MInvSequence[t];
 
-	matrix<double> term1(DOF*joints.size(), DOF*joints.size()*2);
-	for (int i = 0; i < DOF*joints.size()*2; i++) {
-		matrix<double> sum = (u - C - G);
-		matrix<double> column_i = dMInv_dX[i] * sum;
-		for (int j = 0; j < DOF*joints.size(); j++) {
-			term1(j,i) = column_i(j,0);
-		}
-	}
-
-	matrix<double> term2(DOF*joints.size(), DOF*joints.size()*2);
-	for (int i = 0; i < DOF*joints.size()*2; i++) {
-		matrix<double> sum = dC_dX[i] + dG_dX[i];
-		matrix<double> column_i = MInv * sum;
-		for (int j = 0; j < DOF*joints.size(); j++) {
-			term2(j,i) = column_i(j,0);
-		}
-	}
-	matrix<double> dfdx_lower = term1 - term2;
-	
-	//------------------------------------------------------------------------------------------------------------------//
-	// dfdx = |df1/dx| = |        0         |         I          |														//
-	//		  |df2/dx|	 | dMInv_dX*(u+C+G) - Minv*(dC_dx+dG_dx) |														//
-	//------------------------------------------------------------------------------------------------------------------//
-
-	matrix<double> dfdx(DOF*joints.size()*2, DOF*joints.size()*2);
+	// df1/dx
+	matrix<double> df1dx(DOF*joints.size(), DOF*joints.size()*2);
 	for (int i = 0; i < DOF*joints.size(); i++) {
 		for (int j = 0; j < DOF*joints.size(); j++) {
-			dfdx(i,j) = 0;
-			if (i == j) dfdx(i,j+DOF*joints.size()) = 1;
-			else		dfdx(i,j+DOF*joints.size()) = 0;
+			df1dx(i,j) = 0;
+			if (i == j) df1dx(i,j+DOF*joints.size()) = 1;
+			else		df1dx(i,j+DOF*joints.size()) = 0;
 		}
-	} for (int i = DOF*joints.size(); i < DOF*joints.size()*2; i++) {
+	}
+
+	// df2/dx
+	matrix<double> df2dx(DOF*joints.size(), DOF*joints.size()*2);
+	for (int i = 0; i < DOF*joints.size()*2; i++) {
+		matrix<double> column_i = (dMInv_dX[i]*u) - (dMInv_dX[i]*C + MInv*dC_dX[i]) - (dMInv_dX[i]*G + MInv*dG_dX[i]);
+		for (int j = 0; j < DOF*joints.size(); j++) {
+			df2dx(j,i) = column_i(j,0);
+		}
+	}
+	
+	// df/dx
+	matrix<double> dfdx(DOF*joints.size()*2, DOF*joints.size()*2);
+	for (int i = 0; i < DOF*joints.size(); i++) {
 		for (int j = 0; j < DOF*joints.size()*2; j++) {
-			dfdx(i,j) = dfdx_lower(i-DOF*joints.size(), j);
+			dfdx(i,j) = df1dx(i,j);
+			dfdx(i+DOF*joints.size(),j) = df2dx(i, j);
 		}
 	}
 	

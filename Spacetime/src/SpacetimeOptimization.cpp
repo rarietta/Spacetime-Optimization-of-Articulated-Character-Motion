@@ -40,19 +40,21 @@ Spacetime::makeInitialGuess(void)
 	// compute torque with PD controller
 	double Kp = 1.5, Kv = 1.5;
 	matrix<double> state = getState();
+	
 	matrix<double> theta(2,1);
-	theta(0,0) = state(0,0);
-	theta(1,0) = state(1,0);
+	double theta1 = state(0,0); while (theta1 > PxPi) theta1 -= PxPi; while (theta1 < -PxPi) theta1 += PxPi;
+	double theta2 = state(1,0); while (theta2 > PxPi) theta2 -= PxPi; while (theta2 < -PxPi) theta2 += PxPi;
+	theta(0,0) = theta1;
+	theta(1,0) = theta2;
+	
 	matrix<double> thetad(state_d); 
 	thetad.SetSize(DOF*joints.size(), 1);
+	
 	matrix<double> thetaDot(2,1);
 	thetaDot(0,0) = state(2,0);
 	thetaDot(1,0) = state(3,0);
-	cout << "G = \n" << G << endl;
-	cout << "C = \n" << C << endl;
-	cout << "M = \n" << M << endl;
+	
 	matrix<double> u = C + G + M*(Kp*(thetad - theta) - Kv*thetaDot);
-	cout << "u = \n" << u << endl;
 	uSequence.push_back(u);
 
 	// apply torque and advance system
@@ -102,12 +104,6 @@ Spacetime::IterateOptimization(void)
 			M = computeM_analytic();
 			C = computeC_analytic();
 			MInv = !M;
-			if (t == 0) {
-				cout << "G = \n" << G << endl;
-				cout << "C = \n" << C << endl;
-				cout << "M = \n" << M << endl;
-				cout << "MInv = \n" << MInv << endl;
-			}
 		} else {
 			G = computeG_numeric();
 			MInv = computeMInv_numeric(G);
@@ -115,13 +111,6 @@ Spacetime::IterateOptimization(void)
 			C = computeC_numeric(G,!MInv);
 		}
 		
-		cout << "---------------------------------------" << endl;
-		cout << "time = " << t << endl;
-		cout << "theta1 = " << getState()(0,0) << endl;
-		cout << "theta2 = " << getState()(1,0) << endl;
-		cout << "thetaDot1 = " << getState()(2,0) << endl;
-		cout << "thetaDot2 = " << getState()(3,0) << endl;
-
 		// store G, C, M, and MInv state matrices
 		GSequence.push_back(G);
 		CSequence.push_back(C);
@@ -145,12 +134,9 @@ Spacetime::IterateOptimization(void)
 			dLdx = compute_dLdx_analytic(numTimeSteps-t-1);
 			dfdx = compute_dfdx_analytic(numTimeSteps-t-1); 
 		} else {
-			dLdx = compute_dLdx_numeric(numTimeSteps-t-1);
-			dfdx = compute_dfdx_numeric(numTimeSteps-t-1);
-		} lambdaDot = ~(-dLdx + -(~costateSequence[t])*dfdx);
-		cout << "costateSequence[" << numTimeSteps-1-t << "] = \n" << costateSequence[t] << endl;
-		cout << "dfdx[" << numTimeSteps-1-t << "] = \n" << dfdx << endl;
-		cout << "lmabdaDot[" << numTimeSteps-1-t << "] = \n" << lambdaDot << endl;
+			dLdx = compute_dLdx_numeric (numTimeSteps-t-1);
+			dfdx = compute_dfdx_numeric (numTimeSteps-t-1);
+		} lambdaDot = ~(-dLdx + (~costateSequence[t])*dfdx);
 		costateSequence.push_back(costateSequence[t] - deltaT*lambdaDot);
 	} std::reverse(costateSequence.begin(), costateSequence.end());
 
@@ -165,12 +151,6 @@ Spacetime::IterateOptimization(void)
 		else		  dfdu = compute_dfdu_numeric(t);
 		u = ~(~costateSequence[t]*dfdu);
 		new_uSequence.push_back(u);
-		cout << "costateSequence[" << t << "] =\n" << costateSequence[t] << endl;
-		cout << "dfdu =\n" << dfdu << endl;
-		cout << "~cS[t] = \n" << ~costateSequence[t] << endl;
-		cout << "~cS[t]*dfdu = \n" << ~costateSequence[t]*dfdu << endl;
-		cout << "new u = \n" << u << endl;
-		cout << "old u = \n" << uSequence[t] << endl;
 	} 
 	PxReal uDiff = SSDvector(uSequence, new_uSequence);
 	uSequence.clear(); uSequence = new_uSequence;

@@ -24,9 +24,9 @@ void main(int argc, char** argv) {
 	matrix<double> state_0(4,1), state_d(4,1);
 	state_0(0,0) = theta1; state_0(1,0) = theta2;
 	state_0(2,0) = 0.0; state_0(3,0) = 0.0;
-	state_d(0,0) = PxPi/2.0; state_d(1,0) = -PxPi/2.0;
+	state_d(0,0) = PxPi/4.0; state_d(1,0) = -3.0*PxPi/4.0;
 	state_d(2,0) = 0.0; state_d(3,0) = 0.0;
-	int numTimeSteps = 20000;
+	int numTimeSteps = 10000;
 	Spacetime *render_system = new Spacetime(state_0, state_d, numTimeSteps);
 	renderLoop(render_system);
 }

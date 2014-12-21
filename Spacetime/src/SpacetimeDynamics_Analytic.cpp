@@ -18,7 +18,7 @@ matrix<double>
 Spacetime::computeG_analytic(void)
 {
 	// system dependent variables
-	double g   = -gScene->getGravity().y;
+	double g   = abs(gScene->getGravity().y);
 	double m1  = dynamic_actors[1]->getMass();
 	double m2  = dynamic_actors[2]->getMass();
 	double lc1 = joint_local_positions[0].magnitude();
@@ -49,7 +49,7 @@ matrix<double>
 Spacetime::computeM_analytic(void)
 {
 	// system dependent variables
-	double g   = gScene->getGravity().y;
+	double g   = abs(gScene->getGravity().y);
 	double m1  = dynamic_actors[1]->getMass();
 	double m2  = dynamic_actors[2]->getMass();
 	double lc1 = joint_local_positions[0].magnitude();
@@ -82,7 +82,7 @@ matrix<double>
 Spacetime::computeC_analytic(void)
 {
 	// system dependent variables
-	double g   = gScene->getGravity().y;
+	double g   = abs(gScene->getGravity().y);
 	double m1  = dynamic_actors[1]->getMass();
 	double m2  = dynamic_actors[2]->getMass();
 	double lc1 = joint_local_positions[0].magnitude();
@@ -133,6 +133,6 @@ Spacetime::stepPhysics_analytic(matrix<double> u)
 	
 	setState(state + stateDot*deltaT);
 
-	for (int i = 0; i < dynamic_actors.size(); i++)
-		dynamic_actors[i]->setLinearVelocity(PxVec3(0,0,0));
+	//for (int i = 0; i < dynamic_actors.size(); i++)
+	//	dynamic_actors[i]->setLinearVelocity(PxVec3(0,0,0));
 }
