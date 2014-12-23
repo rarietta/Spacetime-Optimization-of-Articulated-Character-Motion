@@ -137,17 +137,9 @@ Spacetime::IterateOptimization(void)
 			dLdx = compute_dLdx_numeric (numTimeSteps-t-1);
 			dfdx = compute_dfdx_numeric (numTimeSteps-t-1);
 		} 
-		//cout << "dfdx = \n" << dfdx << endl;
-		//cout << "costateSequence[" << t << "] =\n" << costateSequence[t] << endl;
-		lambdaDot = ~(-dLdx + (~costateSequence[t])*dfdx);
-		//cout << "lambdaDot[" << t << "] = \n" << lambdaDot << endl;
+		lambdaDot = ~(-dLdx - (~costateSequence[t])*dfdx);
 		costateSequence.push_back(costateSequence[t] - deltaT*lambdaDot);
 	} std::reverse(costateSequence.begin(), costateSequence.end());
-
-	//cout << "------------------------------------------------" << endl;
-	//for (int t = 0; t < numTimeSteps; t++)
-	//	cout << "costateSequence[" << t << "] = \n" << costateSequence[t] << endl;
-	//cout << "------------------------------------------------" << endl;
 
 	//----------------------------------------------------------------------------------------------//
 	// update u from constraint formula																//
@@ -158,9 +150,7 @@ Spacetime::IterateOptimization(void)
 	for (int t = 0; t < numTimeSteps; t++) {
 		if (ANALYTIC) dfdu = compute_dfdu_analytic(t);
 		else		  dfdu = compute_dfdu_numeric(t);
-		//cout << "dfdu = \n" << dfdu << endl;
-		u = -1.0 * ~(~costateSequence[t]*dfdu);
-		//cout << "u = \n" << u << endl;
+		u = ~(~(-costateSequence[t])*dfdu);
 		new_uSequence.push_back(u);
 	} 
 	PxReal uDiff = SSDvector(uSequence, new_uSequence);

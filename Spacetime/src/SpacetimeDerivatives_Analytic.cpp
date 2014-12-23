@@ -77,7 +77,7 @@ matrix<double>
 Spacetime::compute_dC_dtheta2_analytic(PxU32 t) 
 {
 	matrix<double> dC_dtheta2(2,1);
-	dC_dtheta2(0,0) = -m2*l1*lc2*cos(theta2) * (thetaDot2*thetaDot2 - 2*thetaDot1*thetaDot2);
+	dC_dtheta2(0,0) = -m2*l1*lc2*cos(theta2) * (thetaDot2*thetaDot2 + 2*thetaDot1*thetaDot2);
 	dC_dtheta2(1,0) =  m2*l1*lc2*cos(theta2) * (thetaDot1*thetaDot1);
 	return dC_dtheta2;
 }
@@ -116,16 +116,6 @@ Spacetime::compute_dMInv_dtheta1_analytic(PxU32 t)
 matrix<double>  
 Spacetime::compute_dMInv_dtheta2_analytic(PxU32 t) 
 {
-	if (false) {
-		cout << "-------------------------------------------------------------------------------------------" << endl;
-		cout << "t = " << t << endl;
-		cout << "theta1 = " << theta1 << endl;
-		cout << "theta2 = " << theta2 << endl;
-		cout << "thetaDot1 = " << thetaDot1 << endl;
-		cout << "thetaDot2 = " << thetaDot2 << endl;
-		cout << "MInv = \n" << MInvSequence[t] << endl;
-	}
-
 	matrix<double> dM_dtheta2(2,2);
 	dM_dtheta2(0,0) = -2*(m2*l1*lc2*sin(theta2)); dM_dtheta2(0,1) = -(m2*l1*lc2*sin(theta2));
 	dM_dtheta2(1,0) =   -(m2*l1*lc2*sin(theta2)); dM_dtheta2(1,1) = 0.0;
@@ -265,25 +255,6 @@ Spacetime::compute_dfdx_analytic(PxU32 t)
 	dMInv_dX.push_back(dMInv_dthetaDot1);
 	dMInv_dX.push_back(dMInv_dthetaDot2);
 	
-	//------------------------------------------------------------------------------------------------------------------//
-	// DEBUG																											//
-	//------------------------------------------------------------------------------------------------------------------//
-
-	if (false) {
-		cout << "dG_dtheta1 = \n" << dG_dtheta1 << endl;
-		cout << "dG_dtheta2 = \n" << dG_dtheta2 << endl;
-		cout << "dG_dthetaDot1 = \n" << dG_dthetaDot1 << endl;
-		cout << "dG_dthetaDot2 = \n" << dG_dthetaDot2 << endl;
-		cout << "dC_dtheta1 = \n" << dC_dtheta1 << endl;
-		cout << "dC_dtheta2 = \n" << dC_dtheta2 << endl;
-		cout << "dC_dthetaDot1 = \n" << dC_dthetaDot1 << endl;
-		cout << "dC_dthetaDot2 = \n" << dC_dthetaDot2 << endl;
-		cout << "dMInv_dtheta1 = \n" << dMInv_dtheta1 << endl;
-		cout << "dMInv_dtheta2 = \n" << dMInv_dtheta2 << endl;
-		cout << "dMInv_dthetaDot1 = \n" << dMInv_dthetaDot1 << endl;
-		cout << "dMInv_dthetaDot2 = \n" << dMInv_dthetaDot2 << endl;
-	}
-
 	//------------------------------------------------------------------------------------------------------------------//
 	// dfdx = |df1/dx| = |        0         |         I          |														//
 	//		  |df2/dx|	 | dMInv_dX*(u+C+G) - Minv*(dC_dx+dG_dx) |														//

@@ -87,6 +87,7 @@ Spacetime::Spacetime(matrix<double> startPose, matrix<double> endPose, PxU32 num
 	gConnection	= NULL;
 	deltaT = 1.0 / 600.0f;
 	ANALYTIC = true;
+	uThreshold = 0.00001;
 
 	this->state_0 = startPose;
 	this->state_d = endPose;

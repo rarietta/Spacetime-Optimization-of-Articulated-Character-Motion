@@ -130,6 +130,7 @@ void renderCallback()
 	do {
 		iteration++;
 		uDiff = render_system->IterateOptimization();
+		cout << "uDiff = " << uDiff << endl;
 		render_system->setState(render_system->state_0);
 		for (int t = 0; t < render_system->numTimeSteps; t++) {
 			if (render_system->ANALYTIC) render_system->stepPhysics_analytic(render_system->uSequence[t]);

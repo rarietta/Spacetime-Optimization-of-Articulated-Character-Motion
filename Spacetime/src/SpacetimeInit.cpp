@@ -38,13 +38,9 @@ Spacetime::addDynamicActors(void)
 	// base geometry
 	PxBoxGeometry base_geometry(4.0, 0.5, 4.0);
 	PxVec3 base_translation(0,0.6f,0); root = base_translation;
-	PxQuat base_rotation(PxQuat::createIdentity());
-	PxTransform base_transform(base_translation, base_rotation);
+	PxTransform base_transform(base_translation);
 	PxRigidDynamic *base = PxCreateDynamic(*gPhysics, base_transform, 
 		base_geometry, *mMaterial, density);
-	if (!base) cerr << "create actor failed!" << endl;
-	base->setAngularDamping(0.75);
-    base->setLinearVelocity(PxVec3(0,0,0));
 	base->setRigidBodyFlag(PxRigidBodyFlag::eKINEMATIC, true);
 	gScene->addActor(*base);
 	dynamic_actors.push_back(base);
