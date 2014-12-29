@@ -11,6 +11,8 @@
 #include "Render.h"
 #include <sstream>
 
+enum {ANALYTIC, DISCRETE, NUMERIC};
+
 Spacetime *render_system;
 RenderUtil::Camera*	sCamera;
 
@@ -107,6 +109,7 @@ void renderScene(int iteration) {
 
 void renderCallback()
 {
+	int mode = ANALYTIC;
 	int iteration = 0;
 
 	//----------------------------------------------------------------------------------------------//
@@ -117,7 +120,9 @@ void renderCallback()
 	render_system->uSequence.clear();
 	render_system->setState(render_system->state_0);
 	for (int t = 0; t < render_system->numTimeSteps; t++) {
-		render_system->makeInitialGuess();
+		if (mode == ANALYTIC) render_system->makeInitialGuess_analytic();
+		if (mode == DISCRETE) render_system->makeInitialGuess_discrete();
+		if (mode == NUMERIC ) render_system->makeInitialGuess_numeric();
 		renderScene(iteration);
 	}
 	
@@ -129,12 +134,14 @@ void renderCallback()
 	double uDiff = std::numeric_limits<double>::infinity();
 	do {
 		iteration++;
-		uDiff = render_system->IterateOptimization();
+		if (mode == ANALYTIC) uDiff = render_system->IterateOptimization_analytic();
+		if (mode == DISCRETE) uDiff = render_system->IterateOptimization_discrete();
+		if (mode == NUMERIC ) uDiff = render_system->IterateOptimization_numeric();
 		cout << "uDiff = " << uDiff << endl;
 		render_system->setState(render_system->state_0);
 		for (int t = 0; t < render_system->numTimeSteps; t++) {
-			if (render_system->ANALYTIC) render_system->stepPhysics_analytic(render_system->uSequence[t]);
-			else						 render_system->stepPhysics_numeric (render_system->uSequence[t]);
+			if (mode == ANALYTIC || DISCRETE) render_system->stepPhysics_analytic(render_system->uSequence[t]);
+			else							  render_system->stepPhysics_numeric (render_system->uSequence[t]);
 			renderScene(iteration);
 		}
 	} while (uDiff >= render_system->uThreshold);

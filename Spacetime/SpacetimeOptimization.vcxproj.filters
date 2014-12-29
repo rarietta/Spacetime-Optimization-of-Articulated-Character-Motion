@@ -21,9 +21,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\SpacetimeOptimization.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\SvzAlgebra.cpp">
       <Filter>Source Files\Math Utilities</Filter>
     </ClCompile>
@@ -64,6 +61,21 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\SpacetimeDynamics_Analytic.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SpacetimeDynamics_Discrete.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SpacetimeDerivatives_Discrete.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SpacetimeOptimization_Analytic.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SpacetimeOptimization_Discrete.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SpacetimeOptimization_Numeric.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

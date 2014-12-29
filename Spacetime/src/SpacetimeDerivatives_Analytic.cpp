@@ -9,18 +9,6 @@
 #include "Spacetime.h"
 
 //======================================================================================================================//
-// Global variables utilized by partial derivative calculations															//
-//======================================================================================================================//
-
-// system dependent variables
-double g, m1, m2, lc1, lc2, l1, l2;
-
-// state dependent variables
-matrix<double> state;
-double theta1, theta2;
-double thetaDot1, thetaDot2;
-
-//======================================================================================================================//
 // Analytic G partial derivatives																						//
 //======================================================================================================================//
 
@@ -171,6 +159,19 @@ matrix<double>
 Spacetime::compute_dfdu_analytic(PxU32 t)
 {
 	matrix<double> MInv = MInvSequence[t];
+	matrix<double> dfdu(DOF*joints.size()*2, DOF*joints.size());
+	for (int i = 0; i < DOF*joints.size(); i++) {
+		for (int j = 0; j < DOF*joints.size(); j++) {
+			dfdu(i,j) = 0.0;
+			dfdu(i+DOF*joints.size(),j) = MInv(i,j);
+		}
+	} return dfdu;
+}
+
+matrix<double> 
+Spacetime::compute_dfdu_analytic(void)
+{
+	matrix<double> MInv = !computeM_analytic();
 	matrix<double> dfdu(DOF*joints.size()*2, DOF*joints.size());
 	for (int i = 0; i < DOF*joints.size(); i++) {
 		for (int j = 0; j < DOF*joints.size(); j++) {

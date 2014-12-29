@@ -31,8 +31,8 @@ void main(int argc, char** argv) {
 
 	// desired state
 	matrix<double> state_d(4,1);
-	state_d(0,0) = PxPi/4.0; 
-	state_d(1,0) = PxPi/4.0;
+	state_d(0,0) = 3.0*PxPi/4.0; 
+	state_d(1,0) = -PxPi/2.0;//0.0;//PxPi/4.0;
 	state_d(2,0) = 0.0; 
 	state_d(3,0) = 0.0;
 

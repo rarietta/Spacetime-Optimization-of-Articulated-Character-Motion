@@ -52,8 +52,12 @@ public:
 	void initPhysics(void);
 
 	// Optimization functions (SpacetimeOptimization.cpp)
-	void makeInitialGuess(void);
-	double IterateOptimization(void);
+	void makeInitialGuess_analytic(void);
+	void makeInitialGuess_discrete(void);
+	void makeInitialGuess_numeric(void);
+	double IterateOptimization_analytic(void);
+	double IterateOptimization_discrete(void);
+	double IterateOptimization_numeric(void);
 	
 	// State functions (SpacetimeState.cpp)
 	void switchPause(void);
@@ -120,6 +124,7 @@ public:
 	matrix<double> computeC_analytic(void);
 	matrix<double> computeM_analytic(void);
 	void stepPhysics_analytic(matrix<double> u);
+	void reversePhysics_analytic(matrix<double> u);
 
 	// Optimization sequences
 	std::vector<matrix<double>> GSequence;
@@ -128,6 +133,11 @@ public:
 	std::vector<matrix<double>> MInvSequence;
 	std::vector<matrix<double>> stateSequence;
 	std::vector<matrix<double>> costateSequence;
+
+	// Synthesis and Stabilization sequences
+	std::vector<double> valueSequence;
+	std::vector<matrix<double>> kSequence;
+	std::vector<matrix<double>> KSequence;
 
 	// Numeric derivative functions (SpacetimeDerivatives.cpp)
 	// Utilizes ADOL-C library
@@ -150,6 +160,7 @@ public:
 
 	// Analytic derivative functions (SpacetimeAnalytic.cpp)
 	// Only valid as ADOL-C alternative for 2 joint system
+	matrix<double> compute_dfdu_analytic(void);
 	matrix<double> compute_dLdx_analytic(PxU32 t);
 	matrix<double> compute_dLdu_analytic(PxU32 t);
 	matrix<double> compute_dfdx_analytic(PxU32 t);
@@ -167,8 +178,61 @@ public:
 	matrix<double> compute_dMInv_dthetaDot1_analytic(PxU32 t);
 	matrix<double> compute_dMInv_dthetaDot2_analytic(PxU32 t);
 
+	// Discrete Online Trajectory Optimization
+	void stepPhysics_discrete(matrix<double> u);
+	matrix<double> computeG_discrete(void);
+	matrix<double> computeC_discrete(void);
+	matrix<double> computeM_discrete(void);
+	matrix<double> compute_Lu(PxU32 t);
+	matrix<double> compute_Lx(PxU32 t);
+	matrix<double> compute_Fx(PxU32 t);
+	matrix<double> compute_Fu(PxU32 t);
+	matrix<double> compute_Luu(PxU32 t);
+	matrix<double> compute_Lxx(PxU32 t);
+	matrix<double> compute_Lux(PxU32 t);
+	matrix<double> compute_Lxu(PxU32 t);
+	matrix<double> compute_Fxx(PxU32 t);
+	matrix<double> compute_Fxu(PxU32 t);
+	std::vector<matrix<double>> compute_Fux(PxU32 t);
+	std::vector<matrix<double>> compute_Fuu(PxU32 t);
+	matrix<double> compute_dG_dtheta1(PxU32 t);
+	matrix<double> compute_dG_dtheta2(PxU32 t);
+	matrix<double> compute_dG_dthetaDot1(PxU32 t);
+	matrix<double> compute_dG_dthetaDot2(PxU32 t);
+	std::vector<matrix<double>> compute_dG_dX_dtheta1(PxU32 t);
+	std::vector<matrix<double>> compute_dG_dX_dtheta2(PxU32 t);
+	std::vector<matrix<double>> compute_dG_dX_dthetaDot1(PxU32 t);
+	std::vector<matrix<double>> compute_dG_dX_dthetaDot2(PxU32 t);
+	matrix<double> compute_dC_dtheta1(PxU32 t);
+	matrix<double> compute_dC_dtheta2(PxU32 t);
+	matrix<double> compute_dC_dthetaDot1(PxU32 t);
+	matrix<double> compute_dC_dthetaDot2(PxU32 t);
+	std::vector<matrix<double>> compute_dC_dX_dtheta1(PxU32 t);
+	std::vector<matrix<double>> compute_dC_dX_dtheta2(PxU32 t);
+	std::vector<matrix<double>> compute_dC_dX_dthetaDot1(PxU32 t);
+	std::vector<matrix<double>> compute_dC_dX_dthetaDot2(PxU32 t);
+	matrix<double> compute_dMInv_dtheta1(PxU32 t);
+	matrix<double> compute_dMInv_dtheta2(PxU32 t);
+	matrix<double> compute_dMInv_dthetaDot1(PxU32 t);
+	matrix<double> compute_dMInv_dthetaDot2(PxU32 t);
+	std::vector<matrix<double>> compute_dMInv_dX_dtheta1(PxU32 t);
+	std::vector<matrix<double>> compute_dMInv_dX_dtheta2(PxU32 t);
+	std::vector<matrix<double>> compute_dMInv_dX_dthetaDot1(PxU32 t);
+	std::vector<matrix<double>> compute_dMInv_dX_dthetaDot2(PxU32 t);
+	matrix<double> F(matrix<double> x, matrix<double> u);
+
 	// Math3D functions
 	PxVec3 QuaternionToEuler(PxQuat q);
 	PxReal SSDmatrix(matrix<double> A, matrix<double> B);
 	PxReal SSDvector(std::vector<matrix<double>> A, std::vector<matrix<double>> B);
+	matrix<double> clamp(matrix<double> theta);
+	matrix<double> I(PxU32 x);
+
+	// system dependent variables
+	double g, m1, m2, lc1, lc2, l1, l2;
+
+	// state dependent variables for derivatives
+	matrix<double> state;
+	double theta1, theta2;
+	double thetaDot1, thetaDot2;
 };

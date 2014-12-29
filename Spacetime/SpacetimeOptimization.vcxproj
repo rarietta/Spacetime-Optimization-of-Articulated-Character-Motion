@@ -50,12 +50,16 @@
     <ClCompile Include="src\SpacetimeCleanup.cpp" />
     <ClCompile Include="src\SpacetimeDerivatives_Numeric.cpp" />
     <ClCompile Include="src\SpacetimeDynamics_Analytic.cpp" />
+    <ClCompile Include="src\SpacetimeDynamics_Discrete.cpp" />
     <ClCompile Include="src\SpacetimeDynamics_Numeric.cpp" />
     <ClCompile Include="src\SpacetimeApplication.cpp" />
     <ClCompile Include="src\RenderUtil.cpp" />
-    <ClCompile Include="src\SpacetimeOptimization.cpp" />
+    <ClCompile Include="src\SpacetimeOptimization_Analytic.cpp" />
     <ClCompile Include="src\Render.cpp" />
+    <ClCompile Include="src\SpacetimeOptimization_Discrete.cpp" />
+    <ClCompile Include="src\SpacetimeOptimization_Numeric.cpp" />
     <ClCompile Include="src\SpacetimeState.cpp" />
+    <ClCompile Include="src\SpacetimeDerivatives_Discrete.cpp" />
     <ClCompile Include="src\SvzAlgebra.cpp" />
     <ClCompile Include="src\SpacetimeInit.cpp" />
   </ItemGroup>

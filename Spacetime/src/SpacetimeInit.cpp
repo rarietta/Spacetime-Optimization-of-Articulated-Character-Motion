@@ -51,7 +51,7 @@ Spacetime::addDynamicActors(void)
 	PxTransform leg1_transform(leg1_translation);
 	PxRigidDynamic *leg1 = PxCreateDynamic(*gPhysics, leg1_transform, 
 		leg1_geometry, *mMaterial, density);
-	leg1->setMass(10.0f);
+	leg1->setMass(1.0f);
 	gScene->addActor(*leg1);
 	dynamic_actors.push_back(leg1);
 
@@ -61,7 +61,7 @@ Spacetime::addDynamicActors(void)
 	PxTransform leg2_transform(leg2_translation);
 	PxRigidDynamic *leg2 = PxCreateDynamic(*gPhysics, leg2_transform, 
 		leg2_geometry, *mMaterial, density);
-	leg2->setMass(10.0f);
+	leg2->setMass(1.0f);
 	gScene->addActor(*leg2);
 	dynamic_actors.push_back(leg2);
 }

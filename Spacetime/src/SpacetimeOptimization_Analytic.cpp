@@ -21,21 +21,14 @@
 //==================================================================================================//
 
 void
-Spacetime::makeInitialGuess(void)
+Spacetime::makeInitialGuess_analytic(void)
 {
 	/// compute G, C, M, and MInv state matrices
 	matrix<double> G, C, M, MInv;
-	if (ANALYTIC) {
-		G = computeG_analytic();
-		M = computeM_analytic();
-		C = computeC_analytic();
-		MInv = !M;
-	} else {
-		G = computeG_numeric();
-		MInv = computeMInv_numeric(G); 
-		M = !M;
-		C = computeC_numeric(G,M);
-	}
+	G = computeG_analytic();
+	M = computeM_analytic();
+	C = computeC_analytic();
+	MInv = !M;
 
 	// compute torque with PD controller
 	double Kp = 1.5, Kv = 1.5;
@@ -58,8 +51,7 @@ Spacetime::makeInitialGuess(void)
 	uSequence.push_back(u);
 
 	// apply torque and advance system
-	if (ANALYTIC) stepPhysics_analytic(u);
-	else		  stepPhysics_numeric (u);
+	stepPhysics_analytic(u);
 }
 
 //==================================================================================================//
@@ -74,8 +66,10 @@ Spacetime::makeInitialGuess(void)
 //==================================================================================================//
 
 double
-Spacetime::IterateOptimization(void)
+Spacetime::IterateOptimization_analytic(void)
 {	
+	//return Synthesis();
+
 	//----------------------------------------------------------------------------------------------//
 	// clear the state and costate sequences from the last solver iteration							//
 	//----------------------------------------------------------------------------------------------//
@@ -92,24 +86,15 @@ Spacetime::IterateOptimization(void)
 	// solve forward for the state sequence given the current u vector sequence						//
 	//----------------------------------------------------------------------------------------------//
 
+	stateSequence.push_back(state_0);
 	for (int t = 0; t < numTimeSteps; t++) 
 	{	
-		// store current state
-		stateSequence.push_back(getState());
-
 		// compute G, C, M, and MInv state matrices
 		matrix<double> G, C, M, MInv;
-		if (ANALYTIC) {
-			G = computeG_analytic();
-			M = computeM_analytic();
-			C = computeC_analytic();
-			MInv = !M;
-		} else {
-			G = computeG_numeric();
-			MInv = computeMInv_numeric(G);
-			M = MInv.Inv();
-			C = computeC_numeric(G,!MInv);
-		}
+		G = computeG_analytic();
+		M = computeM_analytic();
+		C = computeC_analytic();
+		MInv = !M;
 		
 		// store G, C, M, and MInv state matrices
 		GSequence.push_back(G);
@@ -118,26 +103,26 @@ Spacetime::IterateOptimization(void)
 		MInvSequence.push_back(MInv);
 		
 		// apply torque and advance system
-		if (ANALYTIC) stepPhysics_analytic(uSequence[t]);
-		else		  stepPhysics_numeric (uSequence[t]);
+		stepPhysics_analytic(uSequence[t]);
+		
+		// store current state
+		stateSequence.push_back(getState());
 	}
 
 	//----------------------------------------------------------------------------------------------//
 	// simulate lagrangian costate sequence backwards from final state using x, u					//
 	//----------------------------------------------------------------------------------------------//
 	
-	matrix<double> lambdaDot, dfdx, dLdx;
-	matrix<double> lambda_N = state_d - stateSequence[numTimeSteps-1];
+	matrix<double> lambdaDot, lambdaDotTranspose, dfdx, dLdx; 
+	matrix<double> transpose_dfdu = ~compute_dfdu_analytic(numTimeSteps-1);
+	matrix<double> inverse_transpose_dfdu = ~transpose_dfdu * !(transpose_dfdu * ~transpose_dfdu);
+	matrix<double> lambda_N = -inverse_transpose_dfdu * uSequence[numTimeSteps-1];
 	costateSequence.push_back(lambda_N);
 	for (int t = 0; t < numTimeSteps; t++) {
-		if (ANALYTIC) {
-			dLdx = compute_dLdx_analytic(numTimeSteps-t-1);
-			dfdx = compute_dfdx_analytic(numTimeSteps-t-1); 
-		} else {
-			dLdx = compute_dLdx_numeric (numTimeSteps-t-1);
-			dfdx = compute_dfdx_numeric (numTimeSteps-t-1);
-		} 
-		lambdaDot = ~(-dLdx - (~costateSequence[t])*dfdx);
+		dLdx = compute_dLdx_analytic(numTimeSteps-t-1);
+		dfdx = compute_dfdx_analytic(numTimeSteps-t-1); 
+		lambdaDotTranspose = -dLdx + ~costateSequence[t]*dfdx;
+		lambdaDot = ~lambdaDotTranspose;
 		costateSequence.push_back(costateSequence[t] - deltaT*lambdaDot);
 	} std::reverse(costateSequence.begin(), costateSequence.end());
 
@@ -145,13 +130,14 @@ Spacetime::IterateOptimization(void)
 	// update u from constraint formula																//
 	//----------------------------------------------------------------------------------------------//
 	
+	setState(state_0);
 	matrix<double> dfdu, u;
 	std::vector<matrix<double>> new_uSequence;
 	for (int t = 0; t < numTimeSteps; t++) {
-		if (ANALYTIC) dfdu = compute_dfdu_analytic(t);
-		else		  dfdu = compute_dfdu_numeric(t);
-		u = ~(~(-costateSequence[t])*dfdu);
+		dfdu = compute_dfdu_analytic();
+		u = -(~(~(-costateSequence[t])*dfdu));
 		new_uSequence.push_back(u);
+		stepPhysics_analytic(u);
 	} 
 	PxReal uDiff = SSDvector(uSequence, new_uSequence);
 	uSequence.clear(); uSequence = new_uSequence;

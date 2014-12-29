@@ -64,3 +64,26 @@ Spacetime::SSDvector(std::vector<matrix<double>> A, std::vector<matrix<double>> 
 		SSD += SSDmatrix(A[i], B[i]);
 	return SSD;
 }
+
+matrix<double>
+Spacetime::clamp(matrix<double> theta)
+{
+	matrix<double> clamped(theta.RowNo(), theta.ColNo());
+	for (int i = 0; i < theta.RowNo(); i++) {
+		clamped(i,0) = theta(i,0);
+		while (clamped(i,0) >  PxPi) clamped(i,0) -= PxPi;
+		while (clamped(i,0) < -PxPi) clamped(i,0) += PxPi;
+	}
+	return clamped;
+}
+
+matrix<double> 
+Spacetime::I(PxU32 x) {
+	matrix<double> I(x,x);
+	for (int i = 0; i < x; i++) {
+		for (int j = 0; j < x; j++) {
+			if (i==j) I(i,j) = 1.0;
+			else	  I(i,j) = 0.0;
+		}
+	}
+}
