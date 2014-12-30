@@ -26,14 +26,13 @@ using namespace physx;
 #define R3 3
 enum {G_TAG, C_TAG, M_TAG, MINV_TAG};
 
-class Spacetime
-{
+class Spacetime {
 public:
 
 	// for accessing X, Y, and Z components
 	#define DOF 1
 	enum {X, Y, Z};
-	
+
 	// constructor
 	Spacetime(void);
 	Spacetime(matrix<double> startPose, matrix<double> endPose, PxU32 numTimeSteps);
@@ -46,34 +45,7 @@ public:
 	PxU32 numTimeSteps;						// number of time steps in simulation
 	double deltaT;							// length of each time step
 	PxVec3 root;							// position of root (static)
-	double uThreshold;
-
-	// Init functions (SpacetimeInit.cpp)
-	void initPhysics(void);
-
-	// Optimization functions (SpacetimeOptimization.cpp)
-	void makeInitialGuess_analytic(void);
-	void makeInitialGuess_discrete(void);
-	void makeInitialGuess_numeric(void);
-	double IterateOptimization_analytic(void);
-	double IterateOptimization_discrete(void);
-	double IterateOptimization_numeric(void);
-	
-	// State functions (SpacetimeState.cpp)
-	void switchPause(void);
-	void setState(matrix<double> stateVector);
-	void restoreState(void);
-
-	// Cleanup functions (SpacetimeCleanup.cpp)
-	void cleanupPhysics(void);
-
-//private:
-	
-	// is the program running?
-	bool pause;
-
-	// list of actor components
-	enum {BASE, LEG1, LEG2, LEG3, HEAD};
+	double uThreshold;						// threshold on difference btwn successive input sequences before convergence
 
 	// Required physX runtime variable initializations
 	PxScene* gScene;
@@ -98,12 +70,32 @@ public:
 	std::vector<PxVec3> angularVelocityVector;
 	std::vector<PxTransform> globalPoseVector;
 
+	// global variables for use in analytic derivatives
+	double g, m1, m2, lc1, lc2, l1, l2;
+	matrix<double> state;
+	double theta1, theta2;
+	double thetaDot1, thetaDot2;
+	
 	// Init functions (SpacetimeInit.cpp)
+	void initPhysics(void);
 	void addStaticActors(void);
 	void addDynamicActors(void);
 	void addJoints(void);
 
+	// Cleanup functions (SpacetimeCleanup.cpp)
+	void cleanupPhysics(void);
+
+	// Optimization functions (SpacetimeOptimization*.cpp)
+	void makeInitialGuess_analytic(void);
+	void makeInitialGuess_discrete(void);
+	void makeInitialGuess_numeric(void);
+	double IterateOptimization_analytic(void);
+	double IterateOptimization_discrete(void);
+	double IterateOptimization_numeric(void);
+	
 	// State functions (SpacetimeState.cpp)
+	void setState(matrix<double> stateVector);
+	void restoreState(void);
 	void saveState(void);
 	matrix<double> getState(void);
 
@@ -118,13 +110,21 @@ public:
 	matrix<double> calculateAngularVelocity(void);
 	matrix<double> calculateAngularPosition(void);
 	
-	// Analytics dynamics functions (SpacetimeDynamics_Numeric.cpp)
+	// Analytics dynamics functions (SpacetimeDynamics_Analytic.cpp)
 	// Only valid as ADOL-C alternative for 2 joint system
 	matrix<double> computeG_analytic(void);
 	matrix<double> computeC_analytic(void);
 	matrix<double> computeM_analytic(void);
 	void stepPhysics_analytic(matrix<double> u);
 	void reversePhysics_analytic(matrix<double> u);
+	
+	// Discrete dynamics functions (SpacetimeDynamics_Discrete.cpp)
+	// Only valid as ADOL-C alternative for 2 joint system
+	matrix<double> computeG_discrete(void);
+	matrix<double> computeC_discrete(void);
+	matrix<double> computeM_discrete(void);
+	void stepPhysics_discrete(matrix<double> u);
+	matrix<double> F(matrix<double> x, matrix<double>);
 
 	// Optimization sequences
 	std::vector<matrix<double>> GSequence;
@@ -133,14 +133,12 @@ public:
 	std::vector<matrix<double>> MInvSequence;
 	std::vector<matrix<double>> stateSequence;
 	std::vector<matrix<double>> costateSequence;
-
-	// Synthesis and Stabilization sequences
 	std::vector<double> valueSequence;
 	std::vector<matrix<double>> kSequence;
 	std::vector<matrix<double>> KSequence;
 
-	// Numeric derivative functions (SpacetimeDerivatives.cpp)
-	// Utilizes ADOL-C library
+	// Numeric derivative functions (SpacetimeDerivatives_Numeric.cpp)
+	// Should utilize ADOL-C library
 	matrix<double> compute_dLdx_numeric(PxU32 t);
 	matrix<double> compute_dLdu_numeric(PxU32 t);
 	matrix<double> compute_dfdx_numeric(PxU32 t);
@@ -158,7 +156,7 @@ public:
 	matrix<double> compute_dMInv_dthetaDot1_numeric(PxU32 t);
 	matrix<double> compute_dMInv_dthetaDot2_numeric(PxU32 t);
 
-	// Analytic derivative functions (SpacetimeAnalytic.cpp)
+	// Analytic derivative functions (SpacetimeDerivatives_Analytic.cpp)
 	// Only valid as ADOL-C alternative for 2 joint system
 	matrix<double> compute_dfdu_analytic(void);
 	matrix<double> compute_dLdx_analytic(PxU32 t);
@@ -177,12 +175,9 @@ public:
 	matrix<double> compute_dMInv_dtheta2_analytic(PxU32 t);
 	matrix<double> compute_dMInv_dthetaDot1_analytic(PxU32 t);
 	matrix<double> compute_dMInv_dthetaDot2_analytic(PxU32 t);
-
-	// Discrete Online Trajectory Optimization
-	void stepPhysics_discrete(matrix<double> u);
-	matrix<double> computeG_discrete(void);
-	matrix<double> computeC_discrete(void);
-	matrix<double> computeM_discrete(void);
+	
+	// Dsicrete derivative functions (SpacetimeDerivatives_Discrete.cpp)
+	// Only valid as ADOL-C alternative for 2 joint system
 	matrix<double> compute_Lu(PxU32 t);
 	matrix<double> compute_Lx(PxU32 t);
 	matrix<double> compute_Fx(PxU32 t);
@@ -191,8 +186,8 @@ public:
 	matrix<double> compute_Lxx(PxU32 t);
 	matrix<double> compute_Lux(PxU32 t);
 	matrix<double> compute_Lxu(PxU32 t);
-	matrix<double> compute_Fxx(PxU32 t);
-	matrix<double> compute_Fxu(PxU32 t);
+	std::vector<matrix<double>> compute_Fxx(PxU32 t);
+	std::vector<matrix<double>> compute_Fxu(PxU32 t);
 	std::vector<matrix<double>> compute_Fux(PxU32 t);
 	std::vector<matrix<double>> compute_Fuu(PxU32 t);
 	matrix<double> compute_dG_dtheta1(PxU32 t);
@@ -219,20 +214,18 @@ public:
 	std::vector<matrix<double>> compute_dMInv_dX_dtheta2(PxU32 t);
 	std::vector<matrix<double>> compute_dMInv_dX_dthetaDot1(PxU32 t);
 	std::vector<matrix<double>> compute_dMInv_dX_dthetaDot2(PxU32 t);
-	matrix<double> F(matrix<double> x, matrix<double> u);
 
-	// Math3D functions
+	// Math utility functions
 	PxVec3 QuaternionToEuler(PxQuat q);
 	PxReal SSDmatrix(matrix<double> A, matrix<double> B);
 	PxReal SSDvector(std::vector<matrix<double>> A, std::vector<matrix<double>> B);
 	matrix<double> clamp(matrix<double> theta);
 	matrix<double> I(PxU32 x);
-
-	// system dependent variables
-	double g, m1, m2, lc1, lc2, l1, l2;
-
-	// state dependent variables for derivatives
-	matrix<double> state;
-	double theta1, theta2;
-	double thetaDot1, thetaDot2;
+	std::vector<matrix<double>> vectorTranspose(std::vector<matrix<double>> vec);
+	std::vector<matrix<double>> vectorSum(std::vector<matrix<double>> A, std::vector<matrix<double>> B);
+	std::vector<matrix<double>> vectorDifference(std::vector<matrix<double>> A, std::vector<matrix<double>> B);
+	std::vector<matrix<double>> vectorVectorProduct(std::vector<matrix<double>> A, std::vector<matrix<double>> B);
+	std::vector<matrix<double>> vectorMatrixProduct(std::vector<matrix<double>> vec, matrix<double> mat);
+	std::vector<matrix<double>> matrixVectorProduct(matrix<double> mat, std::vector<matrix<double>> vec);
+	matrix<double> vec2mat(std::vector<matrix<double>> vec);
 };

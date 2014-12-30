@@ -146,3 +146,21 @@ Spacetime::stepPhysics_discrete(matrix<double> u)
 	
 	setState(state_1 + stateDot_2*deltaT);
 }
+
+matrix<double>
+Spacetime::F(matrix<double> x, matrix<double> u) {
+	
+	matrix<double> C = computeC_discrete();
+	matrix<double> G = computeG_discrete();
+	matrix<double> MInv = !computeM_discrete();
+
+	matrix<double> thetaDotDot =  (MInv * (u - C - G));
+	
+	matrix<double> xDot(4,1);
+	xDot(0,0) = x(2,0);
+	xDot(1,0) = x(3,0);
+	xDot(2,0) = thetaDotDot(0,0);
+	xDot(3,0) = thetaDotDot(1,0);
+
+	return x + deltaT * xDot;
+}

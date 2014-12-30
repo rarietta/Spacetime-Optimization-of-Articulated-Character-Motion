@@ -96,8 +96,3 @@ Spacetime::getState(void)
 	
 	return state;
 }
-
-void
-Spacetime::switchPause(void) {
-	pause = !pause;
-}

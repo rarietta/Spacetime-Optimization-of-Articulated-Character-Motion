@@ -53,12 +53,34 @@ Spacetime::compute_dG_dthetaDot2(PxU32 t)
 std::vector<matrix<double>> 
 Spacetime::compute_dG_dX_dtheta1(PxU32 t) {
 	std::vector<matrix<double>> vec;
+	matrix<double> mat1(2,1), mat2(2,1), mat3(2,1), mat4(2,1);
+	mat1(0,0) = -m1*lc1*g*cos(theta1)-m2*g*lc2*cos(theta1)*cos(theta2) + m2*g*lc2*sin(theta1)*sin(theta2) - m2*g*l1*cos(theta1);
+	mat1(1,0) = -m2*g*lc2*cos(theta1)*cos(theta2) + m2*g*lc2*sin(theta1)*sin(theta2);
+	mat2(0,0) = m2*g*lc2*(sin(theta1)*sin(theta2) - cos(theta1)*cos(theta2));
+	mat2(1,0) = m2*g*lc2*(sin(theta1)*sin(theta2) - cos(theta1)*cos(theta2));
+	mat3 *= 0.0;
+	mat4 *= 0.0;
+	vec.push_back(mat1);
+	vec.push_back(mat2);
+	vec.push_back(mat3);
+	vec.push_back(mat4);
 	return vec;
 }
 
 std::vector<matrix<double>> 
 Spacetime::compute_dG_dX_dtheta2(PxU32 t) {
 	std::vector<matrix<double>> vec;
+	matrix<double> mat1(2,1), mat2(2,1), mat3(2,1), mat4(2,1);
+	mat1(0,0) = m2*g*lc2*(sin(theta1)*sin(theta2) - cos(theta1)*cos(theta2));
+	mat1(1,0) = m2*g*lc2*(sin(theta1)*sin(theta2) - cos(theta1)*cos(theta2));
+	mat2(0,0) = m2*g*lc2*(sin(theta1)*sin(theta2) - cos(theta1)*cos(theta2));
+	mat2(1,0) = m2*g*lc2*(sin(theta1)*sin(theta2) - cos(theta1)*cos(theta2));
+	mat3 *= 0.0;
+	mat4 *= 0.0;
+	vec.push_back(mat1);
+	vec.push_back(mat2);
+	vec.push_back(mat3);
+	vec.push_back(mat4);
 	return vec;
 }
 
@@ -138,18 +160,59 @@ Spacetime::compute_dC_dX_dtheta1(PxU32 t) {
 std::vector<matrix<double>> 
 Spacetime::compute_dC_dX_dtheta2(PxU32 t) {
 	std::vector<matrix<double>> vec;
+	matrix<double> mat1(2,1);
+	mat1 *= 0.0;
+	matrix<double> mat2(2,1);
+	mat2(0,0) = m2*l1*lc2*sin(theta2)*(thetaDot2*thetaDot2 + 2.0*thetaDot1*thetaDot2);
+	mat2(1,0) = -m2*l1*lc2*sin(theta2)*thetaDot1;
+	vec.push_back(mat1);
+	vec.push_back(mat2);
+	vec.push_back(mat1);
+	vec.push_back(mat1);
 	return vec;
 }
 
 std::vector<matrix<double>> 
 Spacetime::compute_dC_dX_dthetaDot1(PxU32 t) {
 	std::vector<matrix<double>> vec;
+	matrix<double> mat1(2,1);
+	mat1(0,0) = 0.0;
+	mat1(1,0) = 0.0;
+	matrix<double> mat2(2,1);
+	mat2(0,0) = -2.0*m2*l1*lc2*cos(theta2)*thetaDot2;
+	mat2(1,0) =  2.0*m2*l1*lc2*cos(theta2)*thetaDot1;
+	matrix<double> mat3(2,1);
+	mat3(0,0) = 0.0;
+	mat3(1,0) = 2.0*m2*l1*lc2*sin(theta2);
+	matrix<double> mat4(2,1);
+	mat4(0,0) = -2.0*m2*l1*lc2*sin(theta2);
+	mat4(1,0) = 0.0;
+	vec.push_back(mat1);
+	vec.push_back(mat2);
+	vec.push_back(mat3);
+	vec.push_back(mat4);
 	return vec;
 }
 
 std::vector<matrix<double>> 
 Spacetime::compute_dC_dX_dthetaDot2(PxU32 t) {
 	std::vector<matrix<double>> vec;
+	matrix<double> mat1(2,1);
+	mat1(0,0) = 0.0;
+	mat1(1,0) = 0.0;
+	matrix<double> mat2(2,1);
+	mat2(0,0) = -2.0*m2*l1*lc2*cos(theta2)*(thetaDot1 + thetaDot2);
+	mat2(1,0) = 0.0;
+	matrix<double> mat3(2,1);
+	mat3(0,0) = -2.0*m2*l1*lc2*sin(theta2);
+	mat3(1,0) = 0.0;
+	matrix<double> mat4(2,1);
+	mat4(0,0) = -2.0*m2*l1*lc2*sin(theta2);
+	mat4(1,0) = 0.0;
+	vec.push_back(mat1);
+	vec.push_back(mat2);
+	vec.push_back(mat3);
+	vec.push_back(mat4);
 	return vec;
 }
 
@@ -207,6 +270,14 @@ Spacetime::compute_dMInv_dX_dtheta1(PxU32 t) {
 std::vector<matrix<double>>  
 Spacetime::compute_dMInv_dX_dtheta2(PxU32 t) {
 	std::vector<matrix<double>> vec;
+	matrix<double> zeros(2,2); zeros *= 0.0;
+	matrix<double> mat2(2,2);
+	mat2(0,0) = -2*m2*l1*lc2*cos(theta2);  mat2(0,1) = -m2*l1*lc2*cos(theta2);
+	mat2(1,0) = -m2*l1*lc2*cos(theta2);    mat2(1,1) = 0.0;
+	vec.push_back(zeros);
+	vec.push_back(mat2);
+	vec.push_back(zeros);
+	vec.push_back(zeros);
 	return vec;
 }
 
@@ -414,7 +485,7 @@ Spacetime::compute_Lxu(PxU32 t) {
 	return (0.0 * Lxu);
 }
 
-matrix<double>
+std::vector<matrix<double>>
 Spacetime::compute_Fxx(PxU32 t) 
 {
 	//------------------------------------------------------------------------------------------------------------------//
@@ -443,9 +514,6 @@ Spacetime::compute_Fxx(PxU32 t)
 	thetaDot1 = state(2,0);
 	thetaDot2 = state(3,0);
 
-	matrix<double> Fxx;
-	return Fxx;
-	
 	//------------------------------------------------------------------------------------------------------------------//
 	// compute dG_dX, the derivative of the gravitational torque matrix w.r.t. to the state vector						//
 	// and build full 3D derivative matrix from partials																//
@@ -539,23 +607,92 @@ Spacetime::compute_Fxx(PxU32 t)
 	dMInv_dX_dX.push_back(dMInv_dX_dthetaDot1);
 	dMInv_dX_dX.push_back(dMInv_dX_dthetaDot2);
 
-	//matrix<double>F2xx = _prod(dMInv_dX_dX, (u-C-G)) - 2*_prod(dMInv_dX,(_sum(dC_dX,dG_dX)) - _prod(MInv,(_sum(dC_dX_dX,dG_dX_dX)));
-	matrix<double> mat(1,1);
-	return mat;
+	//------------------------------------------------------------------------------------------------------------------//
+	// compute df2x w.r.t. each element of X, which constitute the bottom 2 rows of each matrix in the final vector,	//
+	// and concatenate into vector of matrices
+	//------------------------------------------------------------------------------------------------------------------//
+	
+	std::vector<matrix<double>> Fxx;
+
+	// fxtheta1
+	matrix<double> fx2theta1 = vec2mat(vectorMatrixProduct(dMInv_dX_dtheta1,(u-C-G))) 
+							   - 2.0*vec2mat((matrixVectorProduct(dMInv_dtheta1,(vectorSum(dC_dX,dG_dX))))) 
+							   - vec2mat(matrixVectorProduct(MInv, (vectorDifference(dC_dX_dtheta1, dG_dX_dtheta1))));
+	matrix<double> fxtheta1(4,4);
+	for (int i = 0; i < 2; i++) {
+		for (int j = 0; j < 4; j++) {
+			fxtheta1(i,j) = 0.0;
+		}
+	} for (int i = 0; i < 2; i++) {
+		for (int j = 0; j < 4; j++) {
+			fxtheta1(i+2,j) = fx2theta1(i,j);
+		}
+	} Fxx.push_back(deltaT * fxtheta1);
+	
+
+	// fxtheta2
+	matrix<double> fx2theta2 = vec2mat(vectorMatrixProduct(dMInv_dX_dtheta2,(u-C-G))) 
+							   - 2.0*vec2mat((matrixVectorProduct(dMInv_dtheta2,(vectorSum(dC_dX,dG_dX))))) 
+							   - vec2mat(matrixVectorProduct(MInv, (vectorDifference(dC_dX_dtheta2, dG_dX_dtheta2))));
+	matrix<double> fxtheta2(4,4);
+	for (int i = 0; i < 2; i++) {
+		for (int j = 0; j < 4; j++) {
+			fxtheta2(i,j) = 0.0;
+		}
+	} for (int i = 0; i < 2; i++) {
+		for (int j = 0; j < 4; j++) {
+			fxtheta2(i+2,j) = fx2theta2(i,j);
+		}
+	} Fxx.push_back(deltaT * fxtheta2);
+	
+	// fxthetaDot1
+	matrix<double> fx2thetaDot1 = vec2mat(vectorMatrixProduct(dMInv_dX_dthetaDot1,(u-C-G))) 
+								  - 2.0*vec2mat((matrixVectorProduct(dMInv_dthetaDot1,(vectorSum(dC_dX,dG_dX))))) 
+							      - vec2mat(matrixVectorProduct(MInv, (vectorDifference(dC_dX_dthetaDot1, dG_dX_dthetaDot1))));
+	matrix<double> fxthetaDot1(4,4);
+	for (int i = 0; i < 2; i++) {
+		for (int j = 0; j < 4; j++) {
+			fxthetaDot1(i,j) = 0.0;
+		}
+	} for (int i = 0; i < 2; i++) {
+		for (int j = 0; j < 4; j++) {
+			fxthetaDot1(i+2,j) = fx2thetaDot1(i,j);
+		}
+	} Fxx.push_back(deltaT * fxthetaDot1);
+	
+	// fxthetaDot2
+	matrix<double> fx2thetaDot2 = vec2mat(vectorMatrixProduct(dMInv_dX_dthetaDot2,(u-C-G))) 
+							      - 2.0*vec2mat((matrixVectorProduct(dMInv_dthetaDot2,(vectorSum(dC_dX,dG_dX))))) 
+							      - vec2mat(matrixVectorProduct(MInv, (vectorDifference(dC_dX_dthetaDot2, dG_dX_dthetaDot2))));
+	matrix<double> fxthetaDot2(4,4);
+	for (int i = 0; i < 2; i++) {
+		for (int j = 0; j < 4; j++) {
+			fxthetaDot2(i,j) = 0.0;
+		}
+	} for (int i = 0; i < 2; i++) {
+		for (int j = 0; j < 4; j++) {
+			fxthetaDot2(i+2,j) = fx2thetaDot2(i,j);
+		}
+	} Fxx.push_back(deltaT * fxthetaDot2);
+	
+	return Fxx;
 }
 
 std::vector<matrix<double>> 
 Spacetime::compute_Fux(PxU32 t) {
 	std::vector<matrix<double>> Fux;
 	matrix<double> dMInv_dtheta2 = compute_dMInv_dtheta2(t);
-	Fux.push_back(0.0 * dMInv_dtheta2);
-	Fux.push_back(dMInv_dtheta2);
-	Fux.push_back(0.0 * dMInv_dtheta2);
-	Fux.push_back(0.0 * dMInv_dtheta2);
+	matrix<double> mat(4,2); mat *= 0.0;
+	mat(2,0) = dMInv_dtheta2(0,0);  mat(2,1) = dMInv_dtheta2(0,1);
+	mat(3,0) = dMInv_dtheta2(1,0);  mat(3,1) = dMInv_dtheta2(1,1);
+	Fux.push_back(0.0 * mat);
+	Fux.push_back(mat);
+	Fux.push_back(0.0 * mat);
+	Fux.push_back(0.0 * mat);
 	return Fux;
 }
 
-matrix<double> 
+std::vector<matrix<double>> 
 Spacetime::compute_Fxu(PxU32 t) 
 {
 	//------------------------------------------------------------------------------------------------------------------//
@@ -577,8 +714,31 @@ Spacetime::compute_Fxu(PxU32 t)
 	theta2 = state(1,0);
 	thetaDot1 = state(2,0);
 	thetaDot2 = state(3,0);
+	
+	//------------------------------------------------------------------------------------------------------------------//
+	// compute dMinv_dx, the derivative of the inverse mass matrix w.r.t. to the state vector							//
+	// and build full 3D derivative matrix from partials																//
+	//------------------------------------------------------------------------------------------------------------------//
+	
+	matrix<double> dMInv_dtheta1    = compute_dMInv_dtheta1(t);
+	matrix<double> dMInv_dtheta2    = compute_dMInv_dtheta2(t);
+	matrix<double> dMInv_dthetaDot1 = compute_dMInv_dthetaDot1(t);
+	matrix<double> dMInv_dthetaDot2 = compute_dMInv_dthetaDot2(t);
+		
+	std::vector<matrix<double>> Fxu;
+	
+	matrix<double> Fxu1(4,4);
+	Fxu1 = 0.0* Fxu1;
+	Fxu1(2,0) = dMInv_dtheta1(0,0); Fxu1(2,1) = dMInv_dtheta1(0,0); Fxu1(2,2) = dMInv_dthetaDot1(0,0); Fxu1(2,3) = dMInv_dthetaDot2(0,0);
+	Fxu1(3,0) = dMInv_dtheta1(1,0); Fxu1(3,1) = dMInv_dtheta2(1,0); Fxu1(3,2) = dMInv_dthetaDot1(1,0); Fxu1(3,3) = dMInv_dthetaDot2(1,0);
+	Fxu.push_back(Fxu1);
 
-	matrix<double> Fxu;
+	matrix<double> Fxu2(4,4);
+	Fxu2 = 0.0* Fxu2;
+	Fxu2(2,0) = dMInv_dtheta1(0,1); Fxu2(2,1) = dMInv_dtheta1(0,1); Fxu2(2,2) = dMInv_dthetaDot1(0,1); Fxu2(2,3) = dMInv_dthetaDot2(0,1);
+	Fxu2(3,0) = dMInv_dtheta1(1,1); Fxu2(3,1) = dMInv_dtheta2(1,1); Fxu2(3,2) = dMInv_dthetaDot1(1,1); Fxu2(3,3) = dMInv_dthetaDot2(1,1);
+	Fxu.push_back(Fxu2);
+
 	return Fxu;
 }
 

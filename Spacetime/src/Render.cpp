@@ -24,7 +24,6 @@ void motionCallback(int x, int y)
 void keyPress(const char key)
 {
 	switch(toupper(key)) {
-		case 'P': render_system->switchPause(); break;
 		default: break;
 	}
 }

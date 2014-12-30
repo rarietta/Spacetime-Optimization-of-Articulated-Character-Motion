@@ -84,6 +84,7 @@ Spacetime::IterateOptimization_discrete(void)
 	// compute the G, C, and M matrices for each timestep before the backwards sweep				//
 	//----------------------------------------------------------------------------------------------//
 
+	setState(state_0);
 	stateSequence.push_back(state_0);
 	for (int t = 0; t < numTimeSteps; t++) 
 	{	
@@ -100,8 +101,7 @@ Spacetime::IterateOptimization_discrete(void)
 		MInvSequence.push_back(MInv);
 		
 		// apply torque and advance system
-		if (ANALYTIC) stepPhysics_analytic(uSequence[t]);
-		else		  stepPhysics_numeric (uSequence[t]);
+		stepPhysics_discrete(uSequence[t]);
 		
 		// store current state
 		stateSequence.push_back(getState());
@@ -117,13 +117,14 @@ Spacetime::IterateOptimization_discrete(void)
 	valueSequence.clear();
 
 	// declare V derivative values
-	matrix<double> Vx;
-	matrix<double> Vxx;
-	/*
+	matrix<double> Vx = -1.0 * ~(state_d - stateSequence[numTimeSteps-1]);
+	matrix<double> Vxx = I(4);
+	
 	// backward pass
-	double final_error = SSDmatrix(state_d, stateSequence[numTimeSteps-1]);
+	double final_error = 0.5 * (~(state_d - stateSequence[numTimeSteps-1])*(state_d - stateSequence[numTimeSteps-1]))(0,0);
 	valueSequence.push_back(final_error);
-	for (int t = numTimeSteps-1; t >= 0; t--) {
+	for (int t = numTimeSteps-1; t >= 0; t--) 
+	{
 		// compute value V = cost-to-go function = 
 		// sum of u^2 values for all successive timesteps + final error
 		matrix<double> cost_t = ~uSequence[t]*uSequence[t];
@@ -140,27 +141,26 @@ Spacetime::IterateOptimization_discrete(void)
 		matrix<double> Lxx = compute_Lxx(t);
 		matrix<double> Lux = compute_Lux(t);
 		matrix<double> Lxu = compute_Lxu(t);
-		std::vector<matrix<double>> Fxx = compute_Fxx(t);
+		std::vector<matrix<double>> Fuu = compute_Fuu(t);
 		std::vector<matrix<double>> Fux = compute_Fux(t);
 		std::vector<matrix<double>> Fxu = compute_Fxu(t);
-		std::vector<matrix<double>> Fuu = compute_Fuu(t);
+		std::vector<matrix<double>> Fxx = compute_Fxx(t);
 
 		// compute expansion coefficients for current timestep
-		matrix<double> Qu = Lx + ~Fx*Vx;
-		matrix<double> Qx = Lu + ~Fu*Vx;
-		matrix<double> Qxx = Lxx + ~Fx*Vxx*Fx + Vx*Fxx;
-		matrix<double> Quu = Luu + ~Fu*Vxx*Fu + Vx*Fuu;
-		matrix<double> Qux = Lux + ~Fu*Vxx*Fx + Vx*Fux;
-		matrix<double> Qxu = Lxu + ~Fx*Vxx*Fu + Vx*Fxu;
+		matrix<double> Qx = Lx + Vx*Fx;
+		matrix<double> Qu = Lu + Vx*Fu;
+		matrix<double> Qxx = Lxx + ~Fx*Vxx*Fx + vec2mat(vectorMatrixProduct(vectorTranspose(Fxx), ~Vx));
+		matrix<double> Quu = Luu + ~Fu*Vxx*Fu + vec2mat(vectorMatrixProduct(vectorTranspose(Fuu), ~Vx));
+		matrix<double> Qux = Lux + ~Fu*Vxx*Fx + vec2mat(vectorMatrixProduct(vectorTranspose(Fux), ~Vx));
+		matrix<double> Qxu = Lxu + ~Fx*Vxx*Fu + vec2mat(vectorMatrixProduct(vectorTranspose(Fxu), ~Vx));
 
 		// compute k and K terms for current timestep
-		kSequence.push_back(-(!Quu)*Qu);
+		kSequence.push_back(-(!Quu)*(~Qu));
 		KSequence.push_back(-(!Quu)*Qux);
 
 		// compute Vx and Vxx terms for current timestep
 		Vx  = Qx  - Qu*!Quu*Qux;
 		Vxx = Qxx - Qxu*!Quu*Qux;
-		
 	}
 
 	// reverse sequences for forward pass
@@ -187,6 +187,4 @@ Spacetime::IterateOptimization_discrete(void)
 	stateSequence = xHatSequence;
 	uSequence = uHatSequence;
 	return uDiff;
-	*/
-	return 0.5;
 }

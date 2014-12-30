@@ -171,7 +171,7 @@ Spacetime::compute_dMInv_dthetaDot2_numeric(PxU32 t)
 matrix<double> 
 Spacetime::compute_dLdx_numeric(PxU32 t)
 {
-	// REPLACE WITH ADOL-C?
+	// REPLACE WITH ADOL-C
 	matrix<double> dLdx(DOF*joints.size(), 1);
 	for (int i = 0; i < DOF*joints.size(); i++)
 		dLdx(i,0) = 0.0;
@@ -185,7 +185,7 @@ Spacetime::compute_dLdx_numeric(PxU32 t)
 matrix<double> 
 Spacetime::compute_dLdu_numeric(PxU32 t)
 {
-	// REPLACE WITH ADOL-C?
+	// REPLACE WITH ADOL-C
 	return uSequence[t];
 }
 
@@ -445,7 +445,7 @@ Spacetime::compute_dfdx_numeric(PxU32 t)
 matrix<double> 
 Spacetime::compute_dfdu_numeric(PxU32 t)
 {
-	// REPLACE WITH ADOL-C?
+	// REPLACE WITH ADOL-C
 	matrix<double> u = uSequence[t];
 	matrix<double> C = CSequence[t];
 	matrix<double> G = GSequence[t];

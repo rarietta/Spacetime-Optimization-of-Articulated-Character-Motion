@@ -86,4 +86,103 @@ Spacetime::I(PxU32 x) {
 			else	  I(i,j) = 0.0;
 		}
 	}
+	return I;
+}
+
+std::vector<matrix<double>>
+Spacetime::vectorTranspose(std::vector<matrix<double>> vec)
+{
+	std::vector<matrix<double>> vecTranspose;
+
+	int size = vec.size();
+	for (int i = 0; i < size; i++)
+		vecTranspose.push_back(~vec[i]);
+
+	return vecTranspose;
+}
+
+std::vector<matrix<double>> 
+Spacetime::vectorSum(std::vector<matrix<double>> A, std::vector<matrix<double>> B) {
+	
+	std::vector<matrix<double>> C;
+
+	int size = A.size();
+	for (int i = 0; i < size; i++)
+		C.push_back(A[i]+B[i]);
+
+	return C;
+}
+
+std::vector<matrix<double>> 
+Spacetime::vectorDifference(std::vector<matrix<double>> A, std::vector<matrix<double>> B) {
+	
+	cout << "A.size() = " << A.size() << endl;
+	cout << "B.size() = " << B.size() << endl;
+
+	std::vector<matrix<double>> C;
+
+	int size = A.size();
+	for (int i = 0; i < size; i++)
+		C.push_back(A[i]-B[i]);
+
+	return C;
+}
+
+std::vector<matrix<double>> 
+Spacetime::vectorVectorProduct(std::vector<matrix<double>> A, std::vector<matrix<double>> B) {
+
+	std::vector<matrix<double>> C;
+
+	int sizeA = A.size();
+	int sizeB = B.size();
+
+	for (int i = 0; i < sizeA; i++) {
+		for (int j = 0; j < sizeB; j++) {
+			C.push_back(A[i]*B[i]);
+		}
+	}
+
+	return C;
+}
+
+
+std::vector<matrix<double>> 
+Spacetime::vectorMatrixProduct(std::vector<matrix<double>> vec, matrix<double> mat) {
+	
+	std::vector<matrix<double>> C;
+
+	int size = vec.size();
+	for (int i = 0; i < size; i++)
+		C.push_back(vec[i]*mat);
+	
+	return C;
+}
+
+
+std::vector<matrix<double>> 
+Spacetime::matrixVectorProduct(matrix<double> mat, std::vector<matrix<double>> vec) {
+	
+	std::vector<matrix<double>> C;
+
+	int size = vec.size();
+	for (int i = 0; i < size; i++)
+		C.push_back(mat*vec[i]);
+	
+	return C;
+}
+
+matrix<double>
+Spacetime::vec2mat(std::vector<matrix<double>> vec) {
+	
+	int m = vec[0].RowNo();
+	int n = vec.size();
+
+	matrix<double> mat(m,n);
+	for (int i = 0; i < m; i++) {
+		for (int j = 0; j < n; j++) {
+			mat(i,j) = vec[j](i,0);
+		}
+	}
+
+	return mat;
 }

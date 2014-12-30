@@ -12,9 +12,6 @@
 
 Spacetime::Spacetime(void) 
 {
-	// is the program running?
-	pause = false;
-
 	// Required physX runtime variable initializations
 	gScene = NULL;
 	gPhysics = NULL;
@@ -75,9 +72,6 @@ Spacetime::Spacetime(void)
 
 Spacetime::Spacetime(matrix<double> startPose, matrix<double> endPose, PxU32 numTimeSteps) 
 {
-	// is the program running?
-	pause = false;
-
 	// Required physX runtime variable initializations
 	gScene = NULL;
 	gPhysics = NULL;
